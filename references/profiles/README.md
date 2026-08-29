@@ -47,6 +47,8 @@ Each profile owns only role-local behavior:
 - approval meaning;
 - reactivation conditions.
 
-Shared Issue, state, event, return, and consensus rules belong in `references/`, not duplicated across profiles.
+Shared Issue, state, event, return, consensus, and evidence rules belong in `references/`, not duplicated across profiles.
+
+Each profile may state how it applies `references/evidence-policy.md`, but the canonical rule remains there.
 
 Profiles are intentionally separate so their behavior can evolve independently.
