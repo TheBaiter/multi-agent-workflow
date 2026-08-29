@@ -23,6 +23,16 @@ Este proyecto intenta reducir ese riesgo mediante un workflow deliberadamente it
 
 Si una etapa posterior encuentra una premisa incorrecta, puede devolver el caso a cualquier etapa anterior, incluso al principio.
 
+## Requisitos de ejecución
+
+La skill es instalable como Agent Skill, pero su workflow completo requiere:
+
+- un runtime capaz de crear/delegar en subagentes reales o contextos aislados equivalentes;
+- acceso autenticado de lectura/escritura a GitHub Issues;
+- acceso al repositorio que los perfiles deben investigar.
+
+Si falta alguna de las dos primeras capacidades, la skill no debe fingir que ejecutó la organización completa dentro de un único agente ni crear un sistema de estado paralelo: debe indicar que el workflow está bloqueado para ese runtime.
+
 ## Alcance: sólo backend funcional
 
 Esta skill **no es un code reviewer genérico**.
