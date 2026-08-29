@@ -106,3 +106,14 @@ When `Execution-Mode: MANUAL_OWNER`:
 8. If the implementation exposes a plan/scope/test defect, return to the responsible agent role normally.
 
 Manual ownership removes automated implementation; it does not remove evidence, test, or validation requirements.
+
+
+## Cross-chat continuity
+
+Do not assume the next execution shares the current chat context.
+
+The authoritative Issue must therefore expose the current position of every automation/role that has inspected the active case.
+
+Each execution refreshes its own state comment checkpoint, including while WAITING or dormant. This makes the workflow reconstructable from GitHub alone.
+
+Waiting is a real state and should be visible. Silence between executions must not be used as the only representation of waiting.
