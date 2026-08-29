@@ -116,6 +116,29 @@ Completing the number does not force approval. An agent may end REJECTED, INCONC
 
 After approval, become dormant. Wake only for a directed question, material new evidence, explicit return, test failure, or implementation divergence.
 
+## Conclusion Maturity
+
+Every role must continuously update its own state comment with what it has found so far.
+
+Intermediate passes are visible evidence, not final authority.
+
+For roles with a fixed pass count, the state comment must declare:
+
+- `Assessment-Maturity: PROVISIONAL` while the role is below its required final pass;
+- `Assessment-Maturity: FINAL` only after all required differentiated passes for that workflow configuration are complete.
+
+A downstream role may read and challenge provisional findings, but must not treat them as the completed upstream verdict and must not begin its normal stage merely because an intermediate pass looks convincing.
+
+The handoff gate is:
+
+`required passes complete + Assessment-Maturity: FINAL + explicit terminal decision`.
+
+The terminal decision may be APPROVED, REJECTED, INCONCLUSIVE, or BLOCKED. Completing all passes does not force APPROVED.
+
+For Detective, which has no global fixed pass count, a candidate becomes FINAL only when its configured discovery gate is complete and the Detective explicitly hands that candidate to Analyzer.
+
+Each state comment should preserve a compact cumulative `FINDINGS SO FAR` section. New passes refine, add, contradict, or retire prior findings; they must not erase relevant uncertainty merely to make the final narrative cleaner.
+
 ## Execution Mode
 
 Each Issue must declare one execution mode before implementation:
