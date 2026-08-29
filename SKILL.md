@@ -32,9 +32,12 @@ A structural, migration, architecture, or data concern is relevant only when it 
 
 ## Companion Context Skill
 
-Use TheBaiter/agent-context-foundation when available to establish repository context, canonical owners, project organization, and durable task trace rules.
+This repository is organized using **$agent-context-foundation** from:
+https://github.com/TheBaiter/agent-context-foundation
 
-Read references/agent-context-foundation.md for the boundary between both skills.
+Use it when available to establish repository context, canonical owners, progressive disclosure, project organization, and durable task trace rules.
+
+Read references/agent-context-foundation.md for the boundary between both skills and the canonical ownership map used by this skill.
 
 Do not duplicate per-Issue investigation history into durable Agent/ documentation.
 
