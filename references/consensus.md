@@ -8,7 +8,9 @@ The last agent is not a dictator.
 
 ## Required roles
 
-Unless the repository explicitly defines a narrower valid workflow, the required Agent-Keys are:
+Required roles depend on the Issue execution mode.
+
+For `Execution-Mode: AGENT_EXECUTOR`:
 
 - detective;
 - analyzer;
@@ -17,6 +19,17 @@ Unless the repository explicitly defines a narrower valid workflow, the required
 - test-strategist;
 - executor;
 - validator.
+
+For `Execution-Mode: MANUAL_OWNER`:
+
+- detective;
+- analyzer;
+- planner;
+- challenger;
+- test-strategist;
+- validator.
+
+In MANUAL_OWNER mode, implementation is not approved by silence or omitted. It is represented by the durable MANUAL_IMPLEMENTATION handoff and validated by Validator.
 
 ## Closable condition
 
@@ -30,10 +43,11 @@ All of the following must be true:
 6. no blocking event remains unresolved;
 7. no approval is known to be stale because a dependent premise changed;
 8. Validator completed its current ten-pass cycle against the current implementation;
-9. the implementation under review is the implementation described by Executor;
-10. every material test case is documented with its validation mode (EXECUTED, DOCUMENTATION_BACKED, or MIXED), evidence, result, and limitations;
-11. documentation-backed cases cite authoritative applicable anchors rather than claiming fictional execution;
-12. closure reason can be explained without relying on hidden chat context.
+9. when AGENT_EXECUTOR, the implementation under review is the implementation described by Executor;
+10. when MANUAL_OWNER, a valid MANUAL_IMPLEMENTATION event identifies the exact implementation under review and READY_FOR_VALIDATOR is YES;
+11. every material test case is documented with its validation mode (EXECUTED, DOCUMENTATION_BACKED, or MIXED), evidence, result, and limitations;
+12. documentation-backed cases cite authoritative applicable anchors rather than claiming fictional execution;
+13. closure reason can be explained without relying on hidden chat context.
 
 APPROVED_WITH_RISK is not final consensus.
 
@@ -54,7 +68,7 @@ analyzer: APPROVED @ revision 9
 planner: APPROVED @ revision 7
 challenger: APPROVED @ revision 4
 test-strategist: APPROVED @ revision 6
-executor: APPROVED @ revision 5
+executor: APPROVED @ revision 5   # AGENT_EXECUTOR only
 validator: APPROVED @ revision 11
 
 DECISION
@@ -91,3 +105,14 @@ IDLE, WAITING, BLOCKED, INCONCLUSIVE, REJECTED, REOPENED, QUESTIONING, STATE_CON
 If new material evidence appears after consensus but before closure, invalidate the consensus snapshot and reopen affected roles.
 
 If the Issue is already closed and a real contradiction appears, follow repository policy to reopen or create a linked regression Issue; never hide the new evidence to preserve the prior conclusion.
+
+
+For MANUAL_OWNER consensus snapshots, omit executor and include the implementation anchor:
+
+~~~text
+Execution-Mode: MANUAL_OWNER
+Implementation-Ref: <immutable anchor>
+validator: APPROVED @ revision <n>
+~~~
+
+A manual implementation anchor is evidence of what was validated; it is not an agent approval.
