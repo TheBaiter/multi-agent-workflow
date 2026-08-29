@@ -31,7 +31,9 @@ All of the following must be true:
 7. no approval is known to be stale because a dependent premise changed;
 8. Validator completed its current ten-pass cycle against the current implementation;
 9. the implementation under review is the implementation described by Executor;
-10. closure reason can be explained without relying on hidden chat context.
+10. every material test case is documented with its validation mode (EXECUTED, DOCUMENTATION_BACKED, or MIXED), evidence, result, and limitations;
+11. documentation-backed cases cite authoritative applicable anchors rather than claiming fictional execution;
+12. closure reason can be explained without relying on hidden chat context.
 
 APPROVED_WITH_RISK is not final consensus.
 
