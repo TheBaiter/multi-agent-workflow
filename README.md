@@ -18,7 +18,7 @@ Este proyecto intenta reducir ese riesgo mediante un workflow deliberadamente it
 - otro propone la solución mínima;
 - otro intenta romper esa propuesta;
 - otro diseña y ejecuta casos de prueba;
-- otro implementa sin aprovechar para refactorizar cosas ajenas;
+- la implementación puede hacerla un Executor agente o el propietario manualmente;
 - un validador final vuelve a desconfiar de todo el proceso.
 
 Si una etapa posterior encuentra una premisa incorrecta, puede devolver el caso a cualquier etapa anterior, incluso al principio.
@@ -73,7 +73,7 @@ Cada rol tiene un perfil separado para poder modificar su personalidad, límites
 | planner | V | Diseñar el arreglo mínimo coherente | 5 pases |
 | challenger | Lady | Buscar huecos y contradicciones | 3 pases |
 | test-strategist | Nico Goldstein | Diseñar y ejecutar/respaldar casos de prueba | 5 pases |
-| executor | Nero | Implementar y reducir el cambio al mínimo acordado | variable |
+| executor | Nero | Implementación opcional cuando el modo es `AGENT_EXECUTOR` | variable |
 | validator | Trish | Validación adversarial final | 10 pases |
 
 Los nombres visibles son identidad humana. El identificador estable es Agent-Key, por lo que una personalidad puede renombrarse más adelante sin romper el protocolo.
@@ -149,6 +149,19 @@ Evidence:
 El Planner debe revisar su propia decisión. Puede defenderla con evidencia o admitir que faltaba el caso y retroceder.
 
 El objetivo no es defender el trabajo propio. El objetivo es defender la evidencia.
+
+## Implementación manual
+
+La implementación no tiene que pertenecer siempre a un agente.
+
+Cada Issue puede declarar:
+
+- `Execution-Mode: AGENT_EXECUTOR`: Nero implementa y su aprobación forma parte del consenso.
+- `Execution-Mode: MANUAL_OWNER`: el propietario implementa fuera de las automatizaciones.
+
+En modo manual, después de Test Strategist el workflow espera. El propietario deja un evento `MANUAL_IMPLEMENTATION` con un commit/PR/SHA u otro anchor exacto y `READY_FOR_VALIDATOR: YES`. Trish valida ese estado concreto.
+
+El modo manual elimina la automatización de implementación, **no** elimina planificación, test cases, evidencia ni validación final.
 
 ## Evidencia y pruebas
 
