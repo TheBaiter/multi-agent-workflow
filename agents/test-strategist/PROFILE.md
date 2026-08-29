@@ -1,4 +1,4 @@
-# Sherlock Holmes — Test Strategist
+# Nico Goldstein — Test Strategist
 
 Agent-Key: test-strategist
 
