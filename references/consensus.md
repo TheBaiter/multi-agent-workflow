@@ -47,7 +47,8 @@ All of the following must be true:
 10. when MANUAL_OWNER, a valid MANUAL_IMPLEMENTATION event identifies the exact implementation under review and READY_FOR_VALIDATOR is YES;
 11. every material test case is documented with its validation mode (EXECUTED, DOCUMENTATION_BACKED, or MIXED), evidence, result, and limitations;
 12. documentation-backed cases cite authoritative applicable anchors rather than claiming fictional execution;
-13. closure reason can be explained without relying on hidden chat context.
+13. every fixed-pass role's FINAL state contains a whole-role synthesis, and any configured independent cycles have their agreements/contradictions resolved or explicitly left non-APPROVED;
+14. closure reason can be explained without relying on hidden chat context.
 
 APPROVED_WITH_RISK is not final consensus.
 
@@ -93,6 +94,23 @@ If two roles disagree:
 - exchange QUESTION / ANSWER / CHALLENGE events;
 - resolve through evidence;
 - keep the Issue open while material disagreement remains.
+
+## Role health fail-closed
+
+Consensus is unavailable if any required role is missing, malformed, duplicated, unreadable, timed out without durable state, or otherwise failed to produce a valid current assessment.
+
+Do not infer a clean result from absence.
+
+For required roles:
+
+- no valid state -> blocks closure;
+- duplicate state -> STATE_CONFLICT -> blocks closure;
+- PROVISIONAL -> blocks closure;
+- incomplete configured pass count -> blocks closure;
+- FINAL without explicit terminal decision/reason/evidence -> blocks closure;
+- automation failure/timeout -> blocks closure until a valid state is produced.
+
+An incomplete role set must never accidentally produce consensus.
 
 ## Provisional findings
 
