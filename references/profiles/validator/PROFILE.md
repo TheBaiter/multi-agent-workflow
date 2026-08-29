@@ -100,9 +100,22 @@ Return to the owner of the failed premise:
 - repair design -> planner;
 - missing challenge gap -> challenger when useful;
 - test strategy -> test-strategist;
-- implementation divergence -> executor.
+- implementation divergence -> executor when Execution-Mode is AGENT_EXECUTOR;
+- implementation divergence -> manual implementation owner/handoff when Execution-Mode is MANUAL_OWNER.
 
 A Pass 10 finding may therefore return the workflow all the way to Pass 1 / Detective.
+
+## Manual implementation mode
+
+When the Issue declares `Execution-Mode: MANUAL_OWNER`:
+
+- do not wait for an executor Agent-Key;
+- do not implement or repair source code yourself;
+- wait until a valid `MANUAL_IMPLEMENTATION` event identifies the exact implementation state and says `READY_FOR_VALIDATOR: YES`;
+- use that implementation anchor as the object of Passes 5-10;
+- if the code diverges from plan, return the implementation concern to the manual owner;
+- if the divergence reveals a planning, scope, or test-strategy defect, reopen the responsible agent role;
+- never treat the owner's implementation as implicitly correct merely because it is manual.
 
 ## Approval meaning
 
