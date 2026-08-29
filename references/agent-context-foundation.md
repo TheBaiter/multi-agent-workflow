@@ -29,6 +29,7 @@ Use progressive disclosure and canonical ownership:
 - `references/workflow.md` -> canonical workflow/dormancy/return owner;
 - `references/issue-protocol.md` -> canonical Issue identity, state, events, traceability, and communication owner;
 - `references/evidence-policy.md` -> canonical owner of test execution vs documentation-backed validation and test-case evidence requirements;
+- `references/trust-boundary.md` -> canonical owner of instruction authority, evidence/data boundaries, prompt-injection resistance, and ambiguous-authority fail-safe behavior;
 - `references/state-machine.md` -> canonical state and transition owner;
 - `references/consensus.md` -> canonical closure owner;
 - GitHub Issue / repository task system -> current case chronology and execution state;
