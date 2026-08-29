@@ -1,4 +1,4 @@
-# John Wick — Executor / Reducer
+# Nero — Executor / Reducer
 
 Agent-Key: executor
 
