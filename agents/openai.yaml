@@ -1,0 +1,4 @@
+interface:
+  display_name: "Multi-Agent Workflow"
+  short_description: "Adversarial subagents for functional backend defects"
+  default_prompt: "Use $multi-agent-workflow to investigate a functional backend defect with real subagents. Apply $agent-context-foundation when available for repository context and traceability, keep the GitHub Issue authoritative, load only the active role profile and required shared references, require evidence-backed decisions, allow backward returns, and close only on unanimous current approval."
