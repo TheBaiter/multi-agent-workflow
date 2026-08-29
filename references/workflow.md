@@ -43,6 +43,20 @@ They do not mean:
 
 A role may finish its required passes and still conclude REJECTED, INCONCLUSIVE, or BLOCKED.
 
+## Independent cycle semantics
+
+If a project configuration doubles or otherwise extends a role into multiple review cycles, later cycles must be independent in purpose.
+
+For a two-cycle configuration:
+
+- **Cycle A** performs the role's normal investigation.
+- **Cycle B** reconstructs the role's conclusion from primary evidence and actively tries to disprove Cycle A.
+- Cycle B must not begin from "Cycle A is probably right".
+- Cycle B must search for a different cause, path, configuration/version, data state, contract interpretation, or counterexample where relevant.
+- After both cycles, perform one explicit synthesis comparing them.
+
+The extra cycle adds value only if it can disagree with the first one.
+
 ## Stage handoff gate
 
 A role does not hand the workflow forward merely because its current pass is persuasive.
