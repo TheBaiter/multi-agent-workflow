@@ -24,7 +24,7 @@ $agent-context-foundation
 Use progressive disclosure and canonical ownership:
 
 - `SKILL.md` -> entrypoint and router only;
-- `agents/<agent-key>/PROFILE.md` -> canonical owner of that role's mission, personality, knowledge boundary, limits, passes, and approval meaning;
+- `references/profiles/<agent-key>/PROFILE.md` -> canonical owner of that role's mission, personality, knowledge boundary, limits, passes, and approval meaning;
 - `references/scope.md` -> canonical scope owner;
 - `references/workflow.md` -> canonical workflow/dormancy/return owner;
 - `references/issue-protocol.md` -> canonical Issue identity, state, events, traceability, and communication owner;
