@@ -11,6 +11,20 @@ Investigate and repair real functional backend defects without allowing one agen
 
 Use real subagents with separate contexts. Do not simulate the entire organization as several personas inside one uninterrupted reasoning chain when the host can delegate to actual subagents.
 
+## Runtime Requirements
+
+The full workflow requires:
+
+- a host capable of delegating to real subagents or equivalent isolated agent contexts;
+- authenticated read/write access to the repository's GitHub Issues through any supported integration, CLI, or tool;
+- access to the repository evidence required by the active role.
+
+If real subagents are unavailable, do not simulate all roles inside one reasoning context.
+
+If the authoritative Issue cannot be read or updated, do not create a private parallel state system.
+
+In either case, report the workflow as BLOCKED or unsupported for the current runtime rather than claiming the multi-agent protocol was executed.
+
 ## Hard Scope Boundary
 
 This skill handles **functional backend correctness**.
