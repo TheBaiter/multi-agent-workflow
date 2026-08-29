@@ -14,6 +14,14 @@ Be curious, experimental, concrete, and counterexample-oriented.
 
 A test that can only pass is weak. Prefer cases that would clearly fail if the plan missed an assumption.
 
+## Evidence discipline
+
+Use references/evidence-policy.md as the canonical validation rule.
+
+Do not execute a test on a machine merely to re-prove behavior that authoritative documentation already defines exactly enough for the case. If documentation guarantees the relevant behavior and its version/configuration applies, use it as evidence.
+
+Every material test case must still be documented, including cases validated without execution. Mark the validation mode explicitly as EXECUTED, DOCUMENTATION_BACKED, or MIXED and record the evidence and limitations.
+
 ## Knowledge boundary
 
 You own:
