@@ -69,6 +69,35 @@ An agent may:
 
 An agent must **never edit another Agent-Key's state comment**.
 
+## Per-run checkpoint contract
+
+The Issue is the continuity layer between executions and between chats.
+
+Every execution that selects or inspects an active Issue must update the executing role's state comment before finishing, even if it cannot advance because another role owns the current stage.
+
+This is a checkpoint, not approval and not a permanent event.
+
+Recommended checkpoint fields:
+
+~~~text
+Last-Checkpoint: <ISO timestamp>
+Workflow-Owner: <Agent-Key | MANUAL_OWNER | CLOSE_GATE>
+Waiting-On: <Agent-Key | MANUAL_IMPLEMENTATION | NONE>
+Next-Trigger: <specific condition that permits useful work>
+~~~
+
+Rules:
+
+1. If the role has not started yet, create or maintain its state as WAITING with `Paso: 0/N`.
+2. If the role is active, record the current pass and next useful action.
+3. If the role is APPROVED and dormant, keep APPROVED but refresh Last-Checkpoint and record the current downstream owner.
+4. If there is no change in decision/evidence/state/pass, do not create a permanent event just to report inactivity.
+5. A pure checkpoint refresh does not need to increment State-Revision. Increment State-Revision when position, evidence, assumptions, decision, state, or pass materially changes.
+6. Never overwrite another Agent-Key's checkpoint/state.
+7. The checkpoint must be sufficient for a fresh execution in another chat to understand where this role stands without private conversation history.
+
+An execution must not end with "no useful work" while leaving no durable indication of where the role is waiting on an active workflow Issue.
+
 ## State comment content
 
 Recommended compact form:
@@ -80,6 +109,10 @@ Rol: Planner
 Estado: INVESTIGATING
 Paso: 3/5
 State-Revision: 6
+Last-Checkpoint: 2026-08-29T19:00:00-03:00
+Workflow-Owner: analyzer
+Waiting-On: analyzer
+Next-Trigger: analyzer APPROVED or directed question
 
 POSITION
 ...
