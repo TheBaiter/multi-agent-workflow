@@ -36,6 +36,7 @@ Agent-Key: <stable key>
 Rol: <role>
 Estado: <state>
 Paso: <current pass>
+Assessment-Maturity: <PROVISIONAL | FINAL>
 State-Revision: <integer>
 ~~~
 
@@ -68,6 +69,27 @@ An agent may:
 - answer questions directed to itself.
 
 An agent must **never edit another Agent-Key's state comment**.
+
+## Progressive findings contract
+
+Each role's editable state comment is a living cumulative report.
+
+Every execution that learns something about the active Issue must update that same comment with a compact `FINDINGS SO FAR` section.
+
+Rules:
+
+1. Preserve the useful conclusions from earlier passes.
+2. Add new evidence and explicitly mark earlier findings as CONFIRMED, MODIFIED, REJECTED, or STILL_UNCERTAIN when later passes change them.
+3. Do not create a fresh state comment per pass.
+4. Do not hide contradictions discovered later.
+5. Keep exact evidence anchors for material findings.
+6. Intermediate findings remain `Assessment-Maturity: PROVISIONAL`.
+7. A role with N required passes may set `Assessment-Maturity: FINAL` only at N/N after synthesizing all passes.
+8. Downstream roles may inspect provisional findings for context or raise a directed question, but they may not start their normal stage based on them.
+9. A terminal role decision has workflow authority only when maturity is FINAL.
+10. An early serious contradiction may be recorded and challenged immediately, but it does not become the role's final verdict until the configured pass requirement is completed, unless the workflow is externally BLOCKED and cannot physically continue.
+
+The purpose is to make each comment increasingly valuable as evidence accumulates, while preventing a 1/N or 3/N snapshot from being mistaken for the role's completed judgment.
 
 ## Per-run checkpoint contract
 
@@ -108,6 +130,7 @@ Agent-Key: planner
 Rol: Planner
 Estado: INVESTIGATING
 Paso: 3/5
+Assessment-Maturity: PROVISIONAL
 State-Revision: 6
 Last-Checkpoint: 2026-08-29T19:00:00-03:00
 Workflow-Owner: analyzer
@@ -116,6 +139,9 @@ Next-Trigger: analyzer APPROVED or directed question
 
 POSITION
 ...
+
+FINDINGS SO FAR
+- ...
 
 EVIDENCE
 - ...
