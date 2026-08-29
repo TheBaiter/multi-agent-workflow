@@ -6,6 +6,24 @@ The Issue is the authoritative shared case file for one defect investigation.
 
 All subagents may authenticate through the same GitHub account. Therefore the GitHub author does not identify the logical agent.
 
+## Minimum case record
+
+Following $agent-context-foundation task-traceability principles, the Issue or repository-authoritative task record must preserve enough context for a new subagent to resume without private chat history.
+
+Before substantial downstream work, ensure the record contains:
+
+- goal / functional defect candidate;
+- current status;
+- accepted scope and explicit out-of-scope boundary;
+- success criteria / backend invariant to restore;
+- known constraints and assumptions;
+- current handoff / owning Agent-Key;
+- next useful action.
+
+During the workflow, preserve material changes to plan, evidence, decisions, blockers, verification, and handoff.
+
+Do not create a second planning/history system under Agent/ or elsewhere merely to mirror the Issue.
+
 ## State comment ownership
 
 Each role owns exactly one editable state comment identified by Agent-Key.
@@ -56,7 +74,7 @@ An agent must **never edit another Agent-Key's state comment**.
 Recommended compact form:
 
 ~~~text
-Agente: Michael Scofield
+Agente: V
 Agent-Key: planner
 Rol: Planner
 Estado: INVESTIGATING
@@ -86,6 +104,19 @@ NEXT
 ~~~
 
 Increment State-Revision on every material state update.
+
+### Same-agent collision guard
+
+Before overwriting its own state comment, an agent should re-read that comment and confirm its current State-Revision still matches the revision it based its work on.
+
+If the revision changed:
+
+- do not overwrite the newer state;
+- re-read the Issue and new evidence;
+- reconsider the pending update;
+- then write a new revision only if still valid.
+
+This protects two concurrent executions of the **same Agent-Key** from silently overwriting one another.
 
 Do not use the state comment as an exhaustive command log.
 
