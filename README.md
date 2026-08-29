@@ -150,6 +150,30 @@ El Planner debe revisar su propia decisión. Puede defenderla con evidencia o ad
 
 El objetivo no es defender el trabajo propio. El objetivo es defender la evidencia.
 
+## Evidencia y pruebas
+
+Ejecutar una prueba es evidencia, pero no es la única evidencia válida.
+
+No hace falta ejecutar una prueba en una PC solamente para volver a demostrar un comportamiento que ya está definido de forma suficiente por documentación autoritativa y aplicable a la versión/configuración relevante.
+
+Por ejemplo, si lo único que necesitamos validar es la semántica documentada de una operación SQL como `SELECT * FROM ENT`, no tiene sentido iniciar una base local únicamente para redescubrir lo que la documentación del motor ya garantiza. Sí deben validarse aparte condiciones que puedan cambiar el resultado, como permisos, row-level security, vistas, configuración, versión, transacciones o lógica propia de la aplicación.
+
+La regla es:
+
+> si la ejecución no resolvería ninguna incertidumbre que la evidencia autoritativa deje abierta, no es necesario ejecutarla.
+
+Eso no reduce la trazabilidad. **Todos los test cases materiales deben quedar documentados**, incluso cuando no se ejecuten.
+
+Cada caso debe indicar si fue:
+
+- `EXECUTED`;
+- `DOCUMENTATION_BACKED`;
+- `MIXED`.
+
+Y debe registrar propósito, precondiciones, resultado esperado, señal de fallo, evidencia, resultado y limitaciones.
+
+La política canónica está en `references/evidence-policy.md`.
+
 ## Consenso
 
 La Issue sólo puede cerrarse cuando **todos los roles obligatorios** están en APPROVED y cada aprobación está justificada.
@@ -198,6 +222,7 @@ references/
   scope.md
   workflow.md
   issue-protocol.md
+  evidence-policy.md
   state-machine.md
   consensus.md
   agent-context-foundation.md
