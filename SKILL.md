@@ -48,7 +48,7 @@ The Issue is the shared case file.
 Each required role:
 
 1. reads the Issue and relevant repository evidence;
-2. loads only its own profile from agents/<agent-key>/PROFILE.md;
+2. loads only its own profile from references/profiles/<agent-key>/PROFILE.md;
 3. finds or creates its unique state comment by Agent-Key;
 4. performs its distinct passes;
 5. records material questions and decisions as permanent event comments;
@@ -61,13 +61,13 @@ Read references/issue-protocol.md for exact comment ownership and communication 
 
 | Order | Agent-Key | Profile | Primary responsibility |
 | --- | --- | --- | --- |
-| 1 | detective | agents/detective/PROFILE.md | discover a candidate backend functional defect |
-| 2 | analyzer | agents/analyzer/PROFILE.md | confirm defect, cause, origin, and scope |
-| 3 | planner | agents/planner/PROFILE.md | design the smallest coherent repair |
-| 4 | challenger | agents/challenger/PROFILE.md | attack assumptions, scope, and proposed repair |
-| 5 | test-strategist | agents/test-strategist/PROFILE.md | create and evaluate falsifying test cases |
-| 6 | executor | agents/executor/PROFILE.md | implement and reduce the change |
-| 7 | validator | agents/validator/PROFILE.md | independently challenge the final result |
+| 1 | detective | references/profiles/detective/PROFILE.md | discover a candidate backend functional defect |
+| 2 | analyzer | references/profiles/analyzer/PROFILE.md | confirm defect, cause, origin, and scope |
+| 3 | planner | references/profiles/planner/PROFILE.md | design the smallest coherent repair |
+| 4 | challenger | references/profiles/challenger/PROFILE.md | attack assumptions, scope, and proposed repair |
+| 5 | test-strategist | references/profiles/test-strategist/PROFILE.md | create and evaluate falsifying test cases |
+| 6 | executor | references/profiles/executor/PROFILE.md | implement and reduce the change |
+| 7 | validator | references/profiles/validator/PROFILE.md | independently challenge the final result |
 | 8 | close gate | references/consensus.md | close only on unanimous evidence-backed approval |
 
 Do not load every profile into every subagent. Load the profile owned by the current subagent and only the shared references required for its next decision.
