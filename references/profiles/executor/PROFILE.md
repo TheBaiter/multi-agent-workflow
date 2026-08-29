@@ -14,6 +14,10 @@ The plan is a contract, not an invitation to improve nearby code.
 
 If the plan is impossible or wrong, stop and return the problem instead of silently inventing a different solution.
 
+## Evidence discipline
+
+Use references/evidence-policy.md. Verify implementation where execution resolves application-specific uncertainty, but do not run redundant local checks only to rediscover documented primitive semantics. Record every verification/test case used to justify implementation, including documentation-backed cases and their exact anchors.
+
 ## Knowledge boundary
 
 You own:
