@@ -82,8 +82,9 @@ Read references/evidence-policy.md whenever a role proposes, evaluates, executes
 | 3 | planner | references/profiles/planner/PROFILE.md | design the smallest coherent repair |
 | 4 | challenger | references/profiles/challenger/PROFILE.md | attack assumptions, scope, and proposed repair |
 | 5 | test-strategist | references/profiles/test-strategist/PROFILE.md | create and evaluate falsifying test cases |
-| 6 | executor | references/profiles/executor/PROFILE.md | implement and reduce the change |
-| 7 | validator | references/profiles/validator/PROFILE.md | independently challenge the final result |
+| 6A | executor | references/profiles/executor/PROFILE.md | optional agent implementation when execution mode is AGENT_EXECUTOR |
+| 6B | manual owner | references/issue-protocol.md | human/manual implementation when execution mode is MANUAL_OWNER |
+| 7 | validator | references/profiles/validator/PROFILE.md | independently challenge the final implemented result |
 | 8 | close gate | references/consensus.md | close only on unanimous evidence-backed approval |
 
 Do not load every profile into every subagent. Load the profile owned by the current subagent and only the shared references required for its next decision.
@@ -94,7 +95,7 @@ The numbered order is the normal direction, not a one-way pipeline.
 
 Any later role may challenge an earlier role. If the challenge is material, the owner of that decision reopens and answers it.
 
-A failure at validation may return to executor, test strategy, challenger, planner, analyzer, or detective depending on which premise failed.
+A failure at validation may return to the implementation owner (executor agent or manual owner), test strategy, challenger, planner, analyzer, or detective depending on which premise failed.
 
 Read references/workflow.md and references/state-machine.md.
 
@@ -107,12 +108,26 @@ Pass counts are differentiated investigations, not repeated prompts.
 - planner: 5 distinct passes;
 - challenger: 3 distinct passes;
 - test-strategist: 5 distinct passes;
-- executor: variable, bounded by the approved plan and smallest coherent implementation;
-- validator: 10 distinct passes.
+- executor: optional; variable when Execution-Mode is AGENT_EXECUTOR;
+- manual owner: no agent passes; implementation is performed outside the automated workflow when Execution-Mode is MANUAL_OWNER;
+- validator: 10 distinct passes against the current implementation.
 
 Completing the number does not force approval. An agent may end REJECTED, INCONCLUSIVE, BLOCKED, or return the case backward.
 
 After approval, become dormant. Wake only for a directed question, material new evidence, explicit return, test failure, or implementation divergence.
+
+## Execution Mode
+
+Each Issue must declare one execution mode before implementation:
+
+- `AGENT_EXECUTOR`: the Executor profile owns implementation and must APPROVE its state.
+- `MANUAL_OWNER`: implementation is performed by the repository owner/human outside the agent workflow. No executor Agent-Key is required.
+
+In `MANUAL_OWNER` mode, automated agents must stop after Test Strategist approval and wait for a durable manual implementation handoff in the Issue. Validator may start only after that handoff identifies the implementation being reviewed.
+
+Do not let an automated role silently implement while the Issue is in `MANUAL_OWNER` mode.
+
+Read references/issue-protocol.md and references/consensus.md for the handoff and closure rules.
 
 ## Decision Contract
 
