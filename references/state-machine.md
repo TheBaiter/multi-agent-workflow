@@ -8,6 +8,7 @@
 | INVESTIGATING | role is performing its required work |
 | QUESTIONING | role has raised a material question |
 | WAITING | role cannot continue until a response/evidence arrives |
+| WAITING_FOR_MANUAL_IMPLEMENTATION | automated workflow is paused until the manual owner provides an implementation handoff |
 | APPROVED | role explicitly accepts its owned responsibility |
 | APPROVED_WITH_RISK | role accepts direction but a known risk remains unresolved for final consensus |
 | REJECTED | role found a blocking contradiction or invalid premise |
@@ -30,6 +31,8 @@ APPROVED -> REOPENED
 REOPENED -> INVESTIGATING
 QUESTIONING -> WAITING
 WAITING -> INVESTIGATING
+APPROVED(test-strategist) -> WAITING_FOR_MANUAL_IMPLEMENTATION
+WAITING_FOR_MANUAL_IMPLEMENTATION -> INVESTIGATING(validator)
 ~~~
 
 Do not transition directly from a material unanswered QUESTION to APPROVED.
@@ -83,3 +86,16 @@ The close gate is not irreversible.
 If final consensus review reveals a problem, return to any required earlier role, including Detective.
 
 The workflow may discard the entire prior chain when the original candidate is disproven.
+
+
+## Manual implementation transition
+
+When `Execution-Mode: MANUAL_OWNER`, Test Strategist approval does not activate an Executor agent.
+
+The workflow enters `WAITING_FOR_MANUAL_IMPLEMENTATION`.
+
+It may leave that state only when a valid `MANUAL_IMPLEMENTATION` event identifies the implementation anchor and declares `READY_FOR_VALIDATOR: YES`.
+
+The next active agent is Validator.
+
+If the manual handoff changes a material plan premise, reopen the responsible upstream role instead of advancing directly to validation.
