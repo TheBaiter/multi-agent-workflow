@@ -13,7 +13,9 @@
     ↓
 5 Test Strategist
     ↓
-6 Executor / Reducer
+6 Implementation
+    ├─ AGENT_EXECUTOR -> Executor / Reducer
+    └─ MANUAL_OWNER  -> Human / repository owner
     ↓
 7 Final Validator
     ↓
@@ -64,8 +66,9 @@ Examples:
 - Validator discovers the original behavior is documented as intentional -> Detective/Analyzer;
 - Test Strategist discovers scope not modeled -> Analyzer;
 - Challenger finds an unhandled repair branch -> Planner;
-- Executor cannot implement plan without changing contract -> Planner and possibly Analyzer;
-- Validator finds code differs from plan -> Executor.
+- Agent Executor cannot implement plan without changing contract -> Planner and possibly Analyzer;
+- Manual owner reports that the plan cannot be implemented as written -> Planner and possibly Analyzer;
+- Validator finds code differs from plan -> Executor when AGENT_EXECUTOR, or manual implementation handoff/owner when MANUAL_OWNER.
 
 Returning backward invalidates downstream conclusions that depended on the changed premise.
 
@@ -87,3 +90,19 @@ The workflow is expensive by design, but should avoid waste:
 - keep state comments compact;
 - use permanent events only for material transitions;
 - reactivate only affected roles.
+
+
+## Manual implementation mode
+
+When `Execution-Mode: MANUAL_OWNER`:
+
+1. Test Strategist finishes and APPROVES the verification contract.
+2. The automated workflow enters `WAITING_FOR_MANUAL_IMPLEMENTATION`.
+3. No agent edits source code on behalf of the Executor role.
+4. The repository owner implements the change.
+5. The Issue receives a durable `MANUAL_IMPLEMENTATION` handoff identifying the exact code state to validate.
+6. Validator wakes and validates that implementation.
+7. If Validator finds an implementation-only defect, it returns to the manual owner through a permanent event rather than waking Executor.
+8. If the implementation exposes a plan/scope/test defect, return to the responsible agent role normally.
+
+Manual ownership removes automated implementation; it does not remove evidence, test, or validation requirements.
