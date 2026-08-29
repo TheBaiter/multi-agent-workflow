@@ -196,3 +196,52 @@ State tells **where an agent stands now**.
 Events tell **how the case changed over time**.
 
 Do not sacrifice either layer.
+
+
+## Manual implementation handoff
+
+An Issue may declare:
+
+~~~text
+Execution-Mode: MANUAL_OWNER
+Implementation-Owner: repository owner / human
+~~~
+
+In this mode, `executor` is not an active required Agent-Key.
+
+After Test Strategist approval, automated roles must wait. No agent may implement the planned source change unless the execution mode is explicitly changed.
+
+When the human implementation is ready for validation, add a permanent event:
+
+~~~text
+MAW-EVENT
+Event-Type: MANUAL_IMPLEMENTATION
+
+Execution-Mode: MANUAL_OWNER
+Implementation-Ref: <commit SHA, PR, branch+SHA, or other immutable repository anchor>
+
+CHANGE SUMMARY
+- ...
+
+PLAN DEVIATIONS
+- NONE
+  or
+- ...
+
+VERIFICATION ALREADY PERFORMED
+- ...
+
+KNOWN LIMITATIONS
+- ...
+
+READY_FOR_VALIDATOR
+YES
+~~~
+
+`Implementation-Ref` must identify the exact repository state Trish should validate. A vague statement such as "I fixed it" is insufficient.
+
+Validator must not begin implementation-sensitive passes until `READY_FOR_VALIDATOR: YES` and a usable implementation anchor exist.
+
+If Validator finds an implementation-only defect in MANUAL_OWNER mode, create a permanent return/question event addressed to the manual implementation owner. Do not create or edit an executor state comment.
+
+If the manual implementation changes the approved plan materially, Planner and any dependent roles become stale and must be reopened before validation can continue.
