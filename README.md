@@ -175,15 +175,16 @@ La historia concreta del incidente debe permanecer en la Issue. Sólo conclusion
 SKILL.md
 agents/
   openai.yaml
-  README.md
-  detective/PROFILE.md
-  analyzer/PROFILE.md
-  planner/PROFILE.md
-  challenger/PROFILE.md
-  test-strategist/PROFILE.md
-  executor/PROFILE.md
-  validator/PROFILE.md
 references/
+  profiles/
+    README.md
+    detective/PROFILE.md
+    analyzer/PROFILE.md
+    planner/PROFILE.md
+    challenger/PROFILE.md
+    test-strategist/PROFILE.md
+    executor/PROFILE.md
+    validator/PROFILE.md
   scope.md
   workflow.md
   issue-protocol.md
