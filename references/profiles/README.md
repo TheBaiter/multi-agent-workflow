@@ -52,3 +52,13 @@ Shared Issue, state, event, return, consensus, and evidence rules belong in `ref
 Each profile may state how it applies `references/evidence-policy.md`, but the canonical rule remains there.
 
 Profiles are intentionally separate so their behavior can evolve independently.
+
+
+## Execution ownership
+
+Executor is optional at workflow level.
+
+- `AGENT_EXECUTOR` activates Nero / `executor`.
+- `MANUAL_OWNER` leaves Nero inactive and hands implementation to the repository owner/human.
+
+Do not delete the Executor profile simply because one project uses manual implementation; it remains available for other projects.
