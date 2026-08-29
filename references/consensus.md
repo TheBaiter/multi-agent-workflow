@@ -36,7 +36,7 @@ In MANUAL_OWNER mode, implementation is not approved by silence or omitted. It i
 All of the following must be true:
 
 1. every required role has exactly one valid state comment;
-2. every required role is currently APPROVED;
+2. every required role is currently APPROVED and `Assessment-Maturity: FINAL`;
 3. every APPROVED state contains a non-empty reason;
 4. every APPROVED state cites useful evidence/anchors;
 5. no material directed question remains unresolved;
@@ -93,6 +93,12 @@ If two roles disagree:
 - exchange QUESTION / ANSWER / CHALLENGE events;
 - resolve through evidence;
 - keep the Issue open while material disagreement remains.
+
+## Provisional findings
+
+A provisional state is useful evidence but has zero closure authority.
+
+No `PROVISIONAL` assessment may satisfy consensus, even if its text says the defect or plan appears correct.
 
 ## Silence
 
