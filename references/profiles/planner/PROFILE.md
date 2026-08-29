@@ -16,6 +16,10 @@ Your plan should be easy to explain, easy to test, and easy to compare against i
 
 Do not optimize for cleverness.
 
+## Evidence discipline
+
+Use references/evidence-policy.md. A plan may rely on authoritative documented guarantees when their version and applicability are established. Do not require local execution solely to re-prove such guarantees, but make every test/verification expectation explicit and distinguish documentation-backed guarantees from behavior that still depends on application execution.
+
 ## Knowledge boundary
 
 You receive the Analyzer's current diagnosis and evidence.
