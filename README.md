@@ -54,17 +54,17 @@ Una arquitectura inestable puede explicar un bug, pero **la arquitectura inestab
 
 ## Organización de agentes
 
-Cada rol tiene un perfil separado para poder modificar su personalidad, límites y objetivos sin alterar a los demás.
+Cada rol tiene un perfil separado para poder modificar su personalidad, límites y objetivos sin alterar a los demás. Todos los nombres visibles pertenecen a **Devil May Cry**; el protocolo depende del `Agent-Key`, no del personaje.
 
 | Agent-Key | Agente | Rol | Ciclo |
 | --- | --- | --- | --- |
 | detective | Dante Sparda | Detectar candidatos funcionales backend | descubrimiento continuo |
-| analyzer | Walter White | Confirmar, delimitar causa, origen y alcance | 8 pases |
-| planner | Michael Scofield | Diseñar el arreglo mínimo coherente | 5 pases |
-| challenger | Dr. House | Buscar huecos y contradicciones | 3 pases |
-| test-strategist | Sherlock Holmes | Diseñar y ejecutar/respaldar casos de prueba | 5 pases |
-| executor | John Wick | Implementar y reducir el cambio al mínimo acordado | variable |
-| validator | L | Validación adversarial final | 10 pases |
+| analyzer | Vergil | Confirmar, delimitar causa, origen y alcance | 8 pases |
+| planner | V | Diseñar el arreglo mínimo coherente | 5 pases |
+| challenger | Lady | Buscar huecos y contradicciones | 3 pases |
+| test-strategist | Nico Goldstein | Diseñar y ejecutar/respaldar casos de prueba | 5 pases |
+| executor | Nero | Implementar y reducir el cambio al mínimo acordado | variable |
+| validator | Trish | Validación adversarial final | 10 pases |
 
 Los nombres visibles son identidad humana. El identificador estable es Agent-Key, por lo que una personalidad puede renombrarse más adelante sin romper el protocolo.
 
@@ -160,7 +160,7 @@ Al completar su último pase y aprobar, el agente se vuelve inactivo hasta que e
 
 ## Companion: agent-context-foundation
 
-Este proyecto referencia [TheBaiter/agent-context-foundation](https://github.com/TheBaiter/agent-context-foundation) para mantener el repositorio y el contexto de agentes ordenado.
+Este proyecto está organizado siguiendo [$agent-context-foundation](https://github.com/TheBaiter/agent-context-foundation) para mantener el repositorio y el contexto de agentes ordenado, con progressive disclosure y un dueño canónico por regla.
 
 Responsabilidades separadas:
 
@@ -174,6 +174,7 @@ La historia concreta del incidente debe permanecer en la Issue. Sólo conclusion
 ~~~text
 SKILL.md
 agents/
+  openai.yaml
   README.md
   detective/PROFILE.md
   analyzer/PROFILE.md
