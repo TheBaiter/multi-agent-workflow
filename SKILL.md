@@ -71,6 +71,8 @@ Each required role:
 
 Read references/issue-protocol.md for exact comment ownership and communication rules.
 
+Read references/evidence-policy.md whenever a role proposes, evaluates, executes, or accepts a test case. Documentation-backed validation is valid when authoritative documentation fully resolves the relevant behavior; execution is not mandatory ritual.
+
 ## Role Router
 
 | Order | Agent-Key | Profile | Primary responsibility |
