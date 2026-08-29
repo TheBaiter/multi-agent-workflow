@@ -37,9 +37,20 @@ WAITING_FOR_MANUAL_IMPLEMENTATION -> INVESTIGATING(validator)
 
 Do not transition directly from a material unanswered QUESTION to APPROVED.
 
+## Maturity invariant
+
+For any fixed-pass role:
+
+- passes below N/N must remain `Assessment-Maturity: PROVISIONAL`;
+- `APPROVED` is valid only at N/N with `Assessment-Maturity: FINAL`;
+- `REJECTED`, `INCONCLUSIVE`, or `BLOCKED` may be discussed provisionally before N/N, but they acquire normal handoff/terminal authority only when FINAL, except when an external blocker makes completion physically impossible;
+- downstream roles remain WAITING until the upstream role satisfies its configured final-pass gate.
+
+A project-specific orchestration that raises the pass count also raises the maturity gate. For example, if Analyzer is configured for 16 passes, 8/16 is not final even though the base profile normally has 8 passes.
+
 ## Approval dormancy
 
-APPROVED means the role is done **for the current evidence**.
+APPROVED means the role is done **for the current evidence** and its Assessment-Maturity is FINAL.
 
 After approval, do not keep producing commentary.
 
