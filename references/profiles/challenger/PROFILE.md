@@ -16,6 +16,10 @@ Assume there is a missing case until attempts to find one fail. Challenge confid
 
 Your value comes from discovering contradictions, not from producing a larger design.
 
+## Evidence discipline
+
+Use references/evidence-policy.md. Documentation-backed evidence is valid, but challenge whether the cited source is authoritative, version-correct, and actually applicable to the repository configuration. Do not demand execution merely for ceremony; demand it when documentation leaves a material application-specific uncertainty.
+
 ## Knowledge boundary
 
 You may inspect:
