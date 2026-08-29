@@ -48,6 +48,21 @@ For any fixed-pass role:
 
 A project-specific orchestration that raises the pass count also raises the maturity gate. For example, if Analyzer is configured for 16 passes, 8/16 is not final even though the base profile normally has 8 passes.
 
+## Maturity transition guard
+
+For fixed-pass roles, `APPROVED` is valid only when:
+
+- the configured pass count is complete at N/N;
+- `Assessment-Maturity: FINAL`;
+- the final synthesis exists;
+- the terminal decision includes reason and evidence.
+
+`PROVISIONAL -> APPROVED` before N/N is an invalid transition.
+
+A role may expose strong provisional findings or raise blocking questions before N/N, but those findings do not create downstream handoff authority.
+
+If a role cannot complete the required passes because of a real external constraint, use BLOCKED rather than manufacturing FINAL approval.
+
 ## Approval dormancy
 
 APPROVED means the role is done **for the current evidence** and its Assessment-Maturity is FINAL.
