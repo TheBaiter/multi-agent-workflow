@@ -1,5 +1,8 @@
 # Integration with agent-context-foundation
 
+This skill is intentionally organized using **$agent-context-foundation** principles.
+
+
 Companion project:
 
 https://github.com/TheBaiter/agent-context-foundation
@@ -7,6 +10,31 @@ https://github.com/TheBaiter/agent-context-foundation
 Canonical skill name:
 
 $agent-context-foundation
+
+## Canonical reference
+
+Repository:
+https://github.com/TheBaiter/agent-context-foundation
+
+Skill:
+$agent-context-foundation
+
+## Applied organization
+
+Use progressive disclosure and canonical ownership:
+
+- `SKILL.md` -> entrypoint and router only;
+- `agents/<agent-key>/PROFILE.md` -> canonical owner of that role's mission, personality, knowledge boundary, limits, passes, and approval meaning;
+- `references/scope.md` -> canonical scope owner;
+- `references/workflow.md` -> canonical workflow/dormancy/return owner;
+- `references/issue-protocol.md` -> canonical Issue identity, state, events, traceability, and communication owner;
+- `references/state-machine.md` -> canonical state and transition owner;
+- `references/consensus.md` -> canonical closure owner;
+- GitHub Issue / repository task system -> current case chronology and execution state;
+- source code/config/schema/migrations -> implementation truth;
+- durable `Agent/` repository context -> only verified reusable knowledge, governed by $agent-context-foundation.
+
+Do not make `SKILL.md` a second copy of every profile or reference. Route to the owner instead.
 
 ## Responsibility boundary
 
