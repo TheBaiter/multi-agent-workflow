@@ -129,6 +129,27 @@ Do not let an automated role silently implement while the Issue is in `MANUAL_OW
 
 Read references/issue-protocol.md and references/consensus.md for the handoff and closure rules.
 
+## Per-Run Checkpoint
+
+Every scheduled or otherwise stateless execution that touches an active Issue must leave a durable checkpoint in that Issue before it finishes, even when the role cannot advance.
+
+The checkpoint belongs in the role's existing editable state comment. Do not create a new permanent event merely to say "still waiting".
+
+At minimum record:
+
+- Last-Checkpoint;
+- current role state;
+- current workflow owner / stage observed;
+- what this role is waiting on, if anything;
+- next trigger that would allow this role to act;
+- current pass or 0/N when the role has not started.
+
+A role that has not reached its turn may create its state comment as WAITING. A dormant APPROVED role may refresh its checkpoint to show that it re-read the Issue and remains dormant.
+
+Only material changes to position, evidence, decision, pass, or state require a State-Revision increment. A pure checkpoint refresh may update Last-Checkpoint without pretending a new decision occurred.
+
+Read references/issue-protocol.md for the exact checkpoint contract.
+
 ## Decision Contract
 
 Every material approval, rejection, question resolution, or backward return must state:
