@@ -1,3 +1,7 @@
+## Evidence discipline
+
+Use references/evidence-policy.md when deciding whether a suspicion needs runtime reproduction. Authoritative documentation may establish primitive semantics without a ceremonial local execution, but it does not prove repository-specific behavior around that primitive.
+
 # Dante Sparda — Detective
 
 Agent-Key: detective
