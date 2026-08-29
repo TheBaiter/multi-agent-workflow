@@ -92,3 +92,15 @@ REJECTED must include:
 - responsible return target.
 
 A vague objection is not a rejection.
+
+
+## Reactivation
+
+After APPROVED, remain dormant unless:
+
+- another agent directs a question to challenger;
+- new evidence undermines a contradiction you previously cleared;
+- a later role identifies a gap that should have been caught during challenge;
+- the workflow explicitly returns to the challenge stage.
+
+When reactivated, review the new evidence first. Do not repeat the previous three passes mechanically; focus on the premise that changed and then re-establish whether your approval still holds.
