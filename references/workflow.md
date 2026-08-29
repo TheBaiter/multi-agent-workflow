@@ -43,6 +43,22 @@ They do not mean:
 
 A role may finish its required passes and still conclude REJECTED, INCONCLUSIVE, or BLOCKED.
 
+## Stage handoff gate
+
+A role does not hand the workflow forward merely because its current pass is persuasive.
+
+For a fixed-pass role, normal downstream work begins only when:
+
+1. the role completed its configured N/N differentiated passes;
+2. its state says `Assessment-Maturity: FINAL`;
+3. it records an explicit terminal decision with reason and evidence.
+
+Before that, the downstream role remains WAITING and may only read provisional findings or ask a material directed question.
+
+This means, for example, Analyzer 3/8 or Validator 7/10 is useful context but not a completed role judgment.
+
+Project-specific orchestration may intentionally increase the pass count (for example 8 -> 16). When it does, the configured higher count becomes the handoff gate for that workflow instance.
+
 ## Dormancy
 
 When a role finishes and sets APPROVED, it becomes dormant for that Issue.
