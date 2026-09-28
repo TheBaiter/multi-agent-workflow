@@ -10,6 +10,7 @@ Every non-trivial task should have one canonical orchestration state that lets a
 - what is fixed vs unresolved;
 - which departments/roles are active or queued;
 - which child agents exist and who owns them;
+- which procedural skills are required/active/blocked for each assignment;
 - which same-role A/B pairs belong to each decision;
 - which delegation batch is active and which work is queued;
 - what each child returned before termination;
@@ -50,6 +51,10 @@ Runtime-Capacity:
 
 Council-Mode: OFF | REQUESTED | ACTIVE
 Council-Session: <id or NONE>
+
+Task-Skill-Context:
+- Default-Required: agent-context-foundation
+- Conditional-Activations: <skill/status list>
 
 Constraints:
 - ...
@@ -103,6 +108,37 @@ Next-Action:
 ~~~
 
 The logical fields are the contract even when storage format differs.
+
+## Skill Activation Registry
+
+Use `references/skill-routing.md` as the canonical skill-routing policy.
+
+Every stable role inherits `agent-context-foundation`. Additional skills are task/assignment-specific.
+
+Record skill state compactly enough that a fresh child or later batch does not need conversational memory to know which procedure still applies.
+
+~~~text
+SKILL-ACTIVATION
+
+Skill: <stable skill name>
+Source: <canonical repository/entrypoint>
+Scope: <task | artifact | agent instance | department>
+Owner: <Morrison or role instance>
+Status: REQUIRED | ACTIVE | NOT_ACTIVE | BLOCKED | COMPLETE | STALE
+Activate-When: <condition>
+Started-From: <state revision/artifact>
+Coverage-Anchor: <receipt/artifact/question coverage>
+Blocked-Reason: <reason or NONE>
+~~~
+
+Rules:
+
+- stable agents default to `agent-context-foundation: REQUIRED`;
+- meaningful visible/perceptible frontend work records `intensive-ui-questioning` when activated;
+- a skill becoming active does not change role ownership or production-write authority;
+- if an upstream premise changes materially, mark dependent skill coverage `STALE` and reopen only the affected route;
+- if a required external skill source cannot be accessed, mark the dependent work `BLOCKED` or `PARTIAL` rather than reconstructing the skill from memory;
+- do not duplicate the external skill body into orchestration state.
 
 ## Pair Group Registry
 
@@ -190,6 +226,8 @@ Lifecycle-State: CREATED | WORKING | QUESTIONING | WAITING_PARENT | WAITING_CHIL
 Work-Phase: DISCOVER | PLAN | REVIEW | SYNTHESIZE | IMPLEMENT | VERIFY
 Production-Write-Authority: YES | NO
 Batch-ID: <id or NONE>
+Required-Skills: <skill names; includes agent-context-foundation>
+Conditional-Skills: <skill/status list>
 Objective: <one-line objective>
 Expected-Return: <artifact>
 Waiting-On: <question/agent/evidence or NONE>
@@ -224,6 +262,8 @@ Clean-Returns: <count>
 ~~~
 
 Each Thinker instance may contribute at most one Question-ID, or one `THINKER-CLEAN` return.
+
+Thinkers do not own durable skill/memory state. Their parent applies `agent-context-foundation` placement/promotion rules to any material finding.
 
 After termination, retain only the material question/evidence/result; never preserve thinker conversational memory as workflow state.
 
@@ -303,9 +343,10 @@ If a material premise changes:
 2. identify earliest owner that must re-evaluate;
 3. mark affected pair synthesis stale;
 4. invalidate relevant plan-reopening conclusions when necessary;
-5. revalidate queued backlog items;
-6. do not continue relying on stale approval because it existed earlier;
-7. rerun only affected portions when possible.
+5. mark affected skill coverage stale and reactivate only relevant routes;
+6. revalidate queued backlog items;
+7. do not continue relying on stale approval because it existed earlier;
+8. rerun only affected portions when possible.
 
 ## State update ownership
 
@@ -313,7 +354,7 @@ Morrison owns the overall orchestration record.
 
 Children own their return artifacts/status but do not rewrite unrelated agents' state or advance global gates.
 
-A delegated Work Owner managing children reports batch/pair/lifecycle status upward so Morrison can keep the organization reconstructable.
+A delegated Work Owner managing children reports batch/pair/lifecycle/skill status upward so Morrison can keep the organization reconstructable.
 
 ## Revision discipline
 
@@ -324,6 +365,7 @@ Increment state revision for material changes such as:
 - material question opened/resolved;
 - work owner change;
 - stable agent spawned/terminated;
+- required/conditional skill activated, blocked, completed or made stale;
 - delegation batch created/committed/terminated;
 - backlog item added/reclassified/dropped;
 - pair group changes state;
@@ -339,12 +381,13 @@ Do not create noisy revisions for inconsequential formatting.
 A fresh Morrison should recover by:
 
 1. reading canonical orchestration state;
-2. loading Orchestrator runtime plus pairing/batching/reopening contracts;
+2. loading Orchestrator runtime plus pairing/batching/reopening and `references/skill-routing.md`;
 3. reading only current artifacts and active role profiles;
-4. identifying active/incomplete batch and pair groups;
-5. terminating/recreating stale contexts as needed;
-6. revalidating queued backlog;
-7. continuing from `Next-Action`.
+4. restoring required/active skill procedures from their current canonical sources;
+5. identifying active/incomplete batch and pair groups;
+6. terminating/recreating stale contexts as needed;
+7. revalidating queued backlog;
+8. continuing from `Next-Action`.
 
 Do not reconstruct the task from raw chat history when canonical state already contains authoritative decisions.
 
@@ -356,6 +399,8 @@ Set `Current-Gate: COMPLETE` only when:
 - required gates passed;
 - required pair groups resolved or valid exceptions exist;
 - required plan reopening passed or valid exception exists;
+- required skills were applied or explicitly blocked/resolved;
+- applicable conditional skill routes are complete for current scope;
 - no material paired contradiction remains;
 - no open material question remains inside current scope;
 - no required agent/batch is blocked/waiting;
@@ -367,4 +412,4 @@ Set `Current-Gate: COMPLETE` only when:
 
 ## Core principle
 
-**The organization may forget conversations and terminate entire batches; it must not forget state, questions, evidence, alternatives, risk, independence or ownership.**
+**The organization may forget conversations and terminate entire batches; it must not forget state, questions, evidence, skill coverage, alternatives, risk, independence or ownership.**
