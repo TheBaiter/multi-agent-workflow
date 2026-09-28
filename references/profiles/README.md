@@ -20,6 +20,9 @@ These profiles are the default roles available to the Orchestrator for ordinary 
 | quality-strategist | Patty Lowell | Verification / Quality Strategy Owner |
 | implementation-owner | Nell Goldstein | General Implementation Owner |
 | independent-validator | Eva | Independent Final Validator |
+| ux-planner | — | UX Planner |
+| information-architecture-planner | — | Information Architecture Planner |
+| graphic-design-planner | — | Graphic Design Planner |
 
 Thinkers are intentionally **not** stable Agent-Key roles. They are disposable contexts governed by `references/thinker-waves.md` and terminate after one questioning delivery.
 
@@ -36,6 +39,24 @@ The normal user-facing front door. Owns task classification, delegation, hierarc
 It is not the default implementer.
 
 Read `references/orchestrator-runtime.md` with this profile.
+
+### `ux-planner`
+
+`references/profiles/ux-planner/PROFILE.md`
+
+Plans user journeys, task flows, usability expectations and recovery behavior. It does not own visual styling, information architecture or frontend implementation.
+
+### `information-architecture-planner`
+
+`references/profiles/information-architecture-planner/PROFILE.md`
+
+Plans user-facing hierarchy, navigation, grouping, labels, taxonomy and findability. It does not own UX journeys, visual styling, frontend code or database architecture.
+
+### `graphic-design-planner`
+
+`references/profiles/graphic-design-planner/PROFILE.md`
+
+Plans visual hierarchy, typography, composition, color/imagery direction and scoped visual consistency. It does not own UX behavior, information architecture, design-system engineering or frontend implementation.
 
 ### `product-planner`
 
