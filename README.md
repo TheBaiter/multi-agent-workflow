@@ -2,101 +2,117 @@
 
 [![skills.sh](https://skills.sh/b/TheBaiter/multi-agent-workflow)](https://skills.sh/TheBaiter/multi-agent-workflow)
 
-Skill experimental para organizar trabajo de producto y desarrollo como una **organización de agentes reales**, con un Orchestrator como interfaz normal con el usuario.
+Skill experimental para organizar trabajo de producto y software como una **organización de agentes especializados**, con Morrison/Orchestrator como interfaz normal con el usuario.
 
-La idea central:
+> El usuario administra intención y autoridad. Morrison administra la organización.
 
-> el usuario administra la intención; el Orchestrator administra la organización.
-
-El objetivo no es sumar agentes por sumar agentes. Es reducir retrabajo separando responsabilidades, descubriendo preguntas antes de que el código congele decisiones incompletas y evitando que el mismo contexto sea quien idea, implementa y aprueba todo.
+Morrison no es el programador por defecto. Clasifica, delega, enruta preguntas, controla gates, conserva estado canónico y sintetiza resultados.
 
 ## Modelo general
 
-~~~text
+```text
 USER
   ↓
-ORCHESTRATOR
-  ├─ Product Planner
-  ├─ Researcher
-  ├─ Technical Planner
-  ├─ UI / Frontend / Backend specialist planners
-  ├─ Review Challenger
-  ├─ Alternative Planner
-  ├─ Risk Reviewer
-  ├─ Quality Strategist
-  ├─ Implementation Owner
-  ├─ Independent Validator
-  └─ Ephemeral Thinker Waves
-~~~
+MORRISON / ORCHESTRATOR
+  ↓
+organizational backlog
+  ↓
+bounded delegation batches
+  ├─ one-question Thinkers
+  ├─ same-role A+B specialist pairs
+  ├─ researchers
+  ├─ implementation owners
+  └─ independent validators
+  ↓
+canonical artifacts/state
+  ↓
+MORRISON
+  ↓
+USER
+```
 
-No es un pipeline obligatorio. El Orchestrator levanta únicamente la organización necesaria para la tarea actual.
+La organización conceptual puede tener muchas especialidades aunque el runtime sólo permita pocos subagentes simultáneos. El trabajo se ejecuta por tandas: cada tanda persiste hallazgos/artefactos/backlog, termina contextos y libera slots para la siguiente.
 
-## El Orchestrator es la puerta de entrada
+## Principios centrales
 
-Normalmente el usuario habla sólo con el Orchestrator.
+### Un agente, un rol
 
-Su trabajo es:
+Cada personalidad estable tiene:
 
-- entender el objetivo;
-- separar decisiones del usuario de incógnitas que la organización puede resolver;
-- clasificar el tipo de tarea;
-- elegir el siguiente dueño del trabajo;
-- crear un contrato explícito para cada subagente;
-- decidir secuencia y paralelismo;
-- asignar capacidad/razonamiento según dificultad;
-- controlar qué puede tocar cada agente;
-- conocer el estado de cada contexto activo;
-- recibir resultados y objeciones;
-- escalar únicamente decisiones que requieren autoridad del usuario;
-- terminar contextos que ya cumplieron su función;
-- devolver una síntesis coherente.
+- un `Agent-Key`;
+- una responsabilidad profesional principal;
+- una asignación acotada;
+- un `Work-Phase`;
+- `Production-Write-Authority` explícita.
 
-El Orchestrator **no es el programador por defecto**.
+No se crean agentes compuestos como UX+Visual+Accessibility+Frontend o Backend+DB+Security.
 
-Contratos principales:
+### A+B del mismo rol
 
-- `references/profiles/orchestrator/PROFILE.md`
-- `references/orchestrator-runtime.md`
-- `references/organization-model.md`
-- `references/orchestration-state.md`
-- `references/installation-and-dependencies.md`
-- `references/skill-routing.md`
+Trabajo cognitivo no trivial usa normalmente dos instancias frescas e independientes del **mismo Agent-Key**.
 
-## El Orchestrator no improvisa agentes
+A y B trabajan aislados primero, luego comparan, hacen cross-review dentro de su especialidad y sintetizan sólo tras resolver/rutar/escalar diferencias materiales.
 
-Cada subagente estable nace con un `AGENT-MANIFEST`.
+Dos especialidades distintas no satisfacen ese par.
 
-El perfil define **qué clase de empleado es**.
+### Un Thinker = una pregunta = terminar
 
-El manifest define **qué trabajo concreto tiene permitido realizar esta instancia**.
+Los Thinkers son contextos descartables.
 
-El manifest también registra las skills requeridas/condicionales y su disponibilidad real. Una URL de GitHub no cuenta como prueba de que una dependencia esté instalada.
+Cada Thinker:
 
-## Clasificación de tareas
+1. recibe estado canónico actual;
+2. encuentra una sola pregunta material o devuelve `THINKER-CLEAN`;
+3. retorna;
+4. termina inmediatamente.
 
-El Orchestrator utiliza tipos explícitos:
+No planifica, implementa, valida ni mantiene memoria durable.
 
-- `IDEA_OR_PRODUCT`
-- `TECHNICAL_CHANGE`
-- `INVESTIGATION`
-- `IMPLEMENTATION`
-- `VALIDATION`
-- `FUNCTIONAL_BACKEND_DEFECT`
-- `TRIVIAL`
+### Planning != implementation != validation
 
-El tipo puede cambiar cuando aparece nueva evidencia.
+Los planners/reviewers normalmente no escriben producción.
 
-## Roles y departamentos generales
+Flujo general:
 
-Los roles generales están registrados en `references/profiles/README.md` y se descubren mediante contratos departamentales.
+```text
+planning
+  ↓
+plan reopening when required
+  ↓
+EXECUTION_READY
+  ↓
+Implementation Owner
+  ↓
+Independent Validator
+```
 
-Entre los roles actuales se incluyen:
+### Plan reopening
+
+Un plan `MATURE` no es automáticamente `EXECUTION_READY`.
+
+Para trabajo importante/caro de rehacer se reabre con responsabilidades distintas:
+
+- fresh Thinkers -> huecos;
+- `review-challenger` A+B -> falsificación;
+- `alternative-planner` A+B -> alternativa materialmente distinta;
+- `risk-reviewer` A+B -> riesgo/retrabajo/fricción cuando corresponde.
+
+## Departamentos / roles actuales
+
+El catálogo canónico está en `references/profiles/README.md`.
+
+Entre los roles generales actuales:
 
 - `orchestrator`;
 - `product-planner`;
 - `researcher`;
 - `technical-planner`;
-- planners especializados de UI;
+- `ux-planner`;
+- `information-architecture-planner`;
+- `graphic-design-planner`;
+- `interaction-design-planner`;
+- `design-system-planner`;
+- `accessibility-planner`;
 - `frontend-architect`;
 - `backend-architect`;
 - `ui-question-auditor`;
@@ -107,195 +123,188 @@ Entre los roles actuales se incluyen:
 - `implementation-owner`;
 - `independent-validator`.
 
-`backend-architect` se descubre a través de `references/departments/backend-planning.md` y posee únicamente arquitectura backend de dominio/servicios, workflows, invariantes, transacciones, concurrencia/idempotencia y semántica de fallos. API pública, datos/persistencia, auth, security, observability y performance siguen siendo responsabilidades separadas.
+### Backend Planning
 
-Los perfiles históricos `detective/analyzer/planner/challenger/test-strategist/executor/validator` pertenecen al departamento estricto de bugs backend y **no son aliases de estos roles generales**.
+`backend-architect` se descubre a través de `references/departments/backend-planning.md`.
 
-## Madurar ideas antes de programar
+Posee únicamente arquitectura backend de dominio/servicios, workflows, invariantes, transacciones, concurrencia/idempotencia y semántica de fallos.
 
-Uno de los problemas que esta skill intenta atacar ocurre antes de escribir código.
+No posee API pública, persistencia/data, authentication/authorization, security, observability, performance, implementación ni QA. Esas responsabilidades se enrutan a especialistas separados o se registran como capability gaps si todavía no existe contrato estable.
 
-La organización utiliza una etapa de **Idea Maturation / Product Discovery** antes de una implementación importante.
+### Historical functional backend defects
 
-Los hallazgos se clasifican como:
+El workflow histórico sigue existiendo como un departamento especializado y aislado:
 
-- `NOW`: entra ahora;
-- `FOUNDATION`: quizá no sea visible ahora, pero la base actual no debería bloquearlo;
-- `DEFERRED`: conocido y conscientemente pospuesto;
-- `OPTION`: posible dirección que requiere una decisión futura;
-- `REJECTED`: considerado y descartado.
+```text
+detective -> analyzer -> planner -> challenger -> test-strategist -> executor -> validator -> consensus
+```
 
-Contrato:
-
-`references/idea-maturation.md`
-
-## Thinker Waves
-
-Los **Thinkers** son contextos descartables cuya única función es encontrar preguntas y huecos.
-
-Regla central:
-
-> un Thinker = una pregunta material = terminar.
-
-La nueva Wave no hereda la conversación de la anterior. El proyecto recuerda decisiones y evidencia; el revisor no recuerda cómo razonó el revisor anterior.
-
-Contrato:
-
-`references/thinker-waves.md`
-
-## Pares y batching
-
-El trabajo cognitivo no trivial utiliza normalmente pares A+B frescos del **mismo Agent-Key**.
-
-La organización puede ser más grande que la cantidad de slots disponibles: trabaja por tandas, persiste resultados/backlog, termina contextos y reutiliza los slots con agentes nuevos.
-
-Contratos:
-
-- `references/paired-delegation.md`
-- `references/batched-delegation.md`
+Sus Agent-Keys no son aliases de los roles generales.
 
 ## Intensive UI Questioning
 
 Para trabajo UI/frontend visible o perceptible se activa `intensive-ui-questioning` cuando corresponde.
 
-En trabajo delegado no trivial, la integración usa `ui-question-auditor` con **4 rondas frescas por defecto** y **5** para casos amplios/de alto riesgo/costo de retrabajo o cuando la ronda 4 todavía cambia materialmente el artefacto.
+Para trabajo delegado no trivial, MAW usa el rol `ui-question-auditor` y `references/ui-questioning-rounds.md`:
 
-Cada ronda usa instancias/nombres nuevos; los hallazgos sobreviven mediante estado canónico, no reutilizando el contexto conversacional del auditor anterior.
+- 4 rondas frescas por defecto;
+- 5 para trabajo amplio/de alto riesgo/rework-prone o cuando ronda 4 todavía cambia materialmente el artefacto;
+- agentes nuevos en cada ronda;
+- runtime IDs/nombres nuevos;
+- preguntas procesadas una por una;
+- continuidad mediante estado canónico, no reutilizando el hidden context del auditor anterior.
 
-Contrato local:
+La skill UI puede descubrir preguntas de UX, IA, visual, accessibility, frontend, etc., pero no transfiere ownership: cada decisión se enruta al rol atómico correspondiente.
 
-`references/ui-questioning-rounds.md`
+## Estado canónico
 
-## Estado canónico de la organización
+La organización no depende del chat para recordar el proyecto.
 
-El chat del Orchestrator no debería ser la única memoria de quién está haciendo qué.
+`references/orchestration-state.md` conserva, entre otras cosas:
 
-`references/orchestration-state.md` define estado durable para reconstruir objetivo, gates, decisiones, preguntas, batches, pares, backlog, artefactos, skills/dependencias, implementación y validación.
+- objetivo/task type/riesgo/gate;
+- dependency availability;
+- plan maturity;
+- pair groups;
+- batch/slot state;
+- organizational backlog;
+- preguntas con owner;
+- artefactos canónicos;
+- plan reopening;
+- Council Session;
+- implementación;
+- validación;
+- siguiente acción.
 
 Principio:
 
-> la organización puede olvidar conversaciones; no puede olvidar estado.
-
-## Todos tienen voz, no todos tienen autoridad
-
-Los agentes pueden cuestionarse entre sí. Una pregunta se resuelve en el nivel más bajo que realmente posee esa decisión.
-
-Si evidencia, documentación, tests, código o un especialista pueden responderla, se resuelve internamente.
-
-El usuario recibe preguntas sólo cuando son realmente decisiones de producto, alcance, preferencia, información externa o aceptación de riesgo bajo su autoridad.
-
-## Delegación recursiva controlada
-
-Un dueño de trabajo puede levantar ayudantes únicamente si su manifest lo autoriza.
-
-Profundidad normal:
-
-~~~text
-User
-  -> Orchestrator
-       -> Work Owner
-            -> Specialist / Thinker
-~~~
-
-No se busca un swarm permanente. Los agentes terminan cuando su trabajo fue checkpointed.
-
-## Modelos y niveles de razonamiento
-
-Cuando el runtime lo permita:
-
-- `LIGHT`: coordinación, routing, estado, extracción mecánica;
-- `STANDARD`: implementación normal, investigación acotada, pruebas rutinarias;
-- `DEEP`: product discovery, arquitectura ambigua, root cause, security, challenge adversarial, migraciones, concurrencia, integridad y validación importante;
-- `MAX`: decisiones de impacto/ambigüedad extraordinarios donde un error sería muy caro.
-
-## Separar plan, ejecución y validación
-
-Para trabajo sustancial:
-
-~~~text
-Product/Objective maturity
-      ↓
-Specialist planning pairs
-      ↓
-Plan reopening / quality strategy
-      ↓
-Implementation Owner
-      ↓
-Independent Validator
-~~~
-
-El implementador puede devolver la planificación si descubre que no se puede implementar sin alterar una premisa.
-
-## Departamento especializado: backend functional defects
-
-El workflow original no desapareció. Funciona como un **departamento especializado** que el Orchestrator activa cuando existe un defecto funcional backend real.
-
-~~~text
-Detective
-  ↓
-Analyzer
-  ↓
-Planner
-  ↓
-Challenger
-  ↓
-Test Strategist
-  ↓
-Implementation
-  ↓
-Validator
-  ↓
-Consensus / Close
-~~~
-
-Estas restricciones no se aplican mecánicamente a cualquier trabajo general.
+> agentes pueden morir; el conocimiento canónico no.
 
 ## Dependencias de skills
 
-Para funcionamiento completo, esta skill usa:
+MAW usa skills externas como **procedimientos**, no como nuevos roles.
 
-1. `agent-context-foundation` — **requerida** como baseline para todos los roles estables;
-2. `intensive-ui-questioning` — **requerida cuando se activa trabajo UI/frontend visible o perceptible**;
-3. `multi-agent-workflow` — Orchestrator y organización.
+### Requerida para modo completo
 
-Morrison verifica la disponibilidad real antes de crear agentes afectados. Estados posibles: `AVAILABLE`, `MISSING`, `BLOCKED`, `NOT_REQUIRED`.
+`agent-context-foundation`
 
-Ver:
+Repositorio: `https://github.com/TheBaiter/agent-context-foundation`
 
-`references/installation-and-dependencies.md`
+Aplica progressive disclosure, ownership canónico, task traceability, promoción de conocimiento verificado, retiro de memoria obsoleta y handoffs resumibles.
 
-## Instalación completa recomendada
+### Requerida cuando hay UI visible/perceptible relevante
 
-~~~bash
+`intensive-ui-questioning`
+
+Repositorio: `https://github.com/TheBaiter/intensive-ui-questioning`
+
+### Dependency preflight
+
+Morrison no interpreta una URL como instalación.
+
+Antes de crear un agente estable registra cada dependencia como:
+
+- `AVAILABLE`;
+- `MISSING`;
+- `BLOCKED`;
+- `NOT_REQUIRED`.
+
+Y opera en:
+
+- `FULL`;
+- `REDUCED`;
+- `BLOCKED`.
+
+Ver `references/installation-and-dependencies.md` y `references/skill-routing.md`.
+
+## Instalación
+
+### Skill individual
+
+```bash
+npx skills add TheBaiter/multi-agent-workflow
+```
+
+### Instalación completa actual
+
+Mientras no exista un Pack publicado:
+
+```bash
 npx skills add TheBaiter/agent-context-foundation
 npx skills add TheBaiter/intensive-ui-questioning
 npx skills add TheBaiter/multi-agent-workflow
-~~~
+```
 
-Instalar sólo `multi-agent-workflow` sigue siendo válido como Skill standalone, pero **no autoriza a afirmar garantías completas** si una dependencia requerida para la tarea no está disponible.
+Instalar sólo MAW sigue siendo válido como Skill standalone, pero no autoriza a afirmar garantías `FULL` si falta una dependencia requerida para la tarea.
 
-`agent-context-foundation` es obligatoria para el modo completo de roles estables. `intensive-ui-questioning` puede quedar `NOT_REQUIRED` cuando no existe trabajo UI/perceptible.
+## Instalación única con skills.sh Pack
 
-### Instalación en una sola operación
+skills.sh soporta **Packs**, colecciones de varias skills instalables con un único comando.
 
-El formato actual permanece como Skill standalone con dependencias explícitas.
+Ése es el mecanismo recomendado para distribuir este conjunto como una sola instalación manteniendo cada skill en su repositorio canónico.
 
-Una distribución futura "install once" debe ser un **Agent Plugin real** que empaquete/exponga las tres skills bajo el formato oficial de plugins/skills. No se incluye un `plugin.json` cosmético mientras las skills dependientes sigan siendo repositorios externos, porque eso produciría un paquete que parece autocontenido pero no lo es.
+Pack objetivo:
 
-## Requisitos
+```text
+Multi-Agent Workflow Pack
+- TheBaiter/agent-context-foundation
+- TheBaiter/intensive-ui-questioning
+- TheBaiter/multi-agent-workflow
+```
 
-Para ejecutar el protocolo completo se necesita:
+Estado actual:
 
-- runtime capaz de levantar subagentes/contextos realmente aislados;
-- acceso al repositorio/evidencia necesaria;
-- acceso al estado durable que gobierna la tarea;
+`Pack-Status: NOT_PUBLISHED`
+
+No se publica ni documenta un ID ficticio.
+
+Cuando exista un Pack real, este README deberá contener su URL exacta. El formato de instalación será:
+
+```bash
+npx skills add https://skills.sh/p/<real-pack-id>
+```
+
+Un Agent Plugin puede ser útil en el futuro para empaquetar además tools/MCP/resources, pero **no es necesario** para conseguir instalación única de estas tres skills.
+
+## Requisitos de runtime
+
+Para garantías completas se necesita:
+
+- runtime capaz de crear subagentes/contextos realmente aislados;
+- acceso al repositorio/evidencia relevante;
+- estado durable/canónico;
 - disponibilidad real de las skills requeridas/activas;
-- idealmente, capacidad de elegir reasoning/model/tools por agente.
+- idealmente control de reasoning/tools/capabilities por hijo.
 
-Si no existen subagentes reales, puede utilizarse un modo degradado, pero no debería afirmarse que hubo independencia multi-agente.
+Si no hay subagentes reales, puede utilizarse modo degradado, pero no debe afirmarse que existió independencia multi-agente.
+
+## Council Session
+
+Normalmente el usuario habla sólo con Morrison.
+
+Si el usuario pide discutir directamente con especialistas, Morrison puede abrir una Council Session temporal cuando el host lo soporta. Morrison sigue siendo chair; cada participante conserva una sola especialidad.
+
+Si la UI/runtime no permite múltiples voces reales, Morrison retransmite outputs etiquetados y no finge participación directa.
+
+## Contratos principales
+
+- `SKILL.md`
+- `references/profiles/orchestrator/PROFILE.md`
+- `references/orchestrator-runtime.md`
+- `references/organization-model.md`
+- `references/role-purity.md`
+- `references/paired-delegation.md`
+- `references/batched-delegation.md`
+- `references/orchestration-state.md`
+- `references/plan-reopening.md`
+- `references/installation-and-dependencies.md`
+- `references/skill-routing.md`
+- `references/thinker-waves.md`
+- `references/ui-questioning-rounds.md`
+- `references/profiles/README.md`
 
 ## Estado
 
 **Experimental.**
 
-La meta es que el usuario pueda hablar con un manager, no administrar manualmente una colección de prompts; y que la organización invierta razonamiento barato antes de comprometerse con código caro de rehacer.
+La meta es que el usuario pueda hablar con un manager que organice especialistas, no administrar manualmente una colección de prompts; y que la organización invierta razonamiento/revisión antes de comprometerse con trabajo caro de rehacer.
