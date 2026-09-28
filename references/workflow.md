@@ -57,6 +57,27 @@ For a two-cycle configuration:
 
 The extra cycle adds value only if it can disagree with the first one.
 
+## Ephemeral Thinker Waves
+
+The orchestrator may insert temporary **Thinker Waves** before a stage handoff or after a material revision when the active workflow needs broader questioning rather than another implementation/review owner.
+
+A Thinker Wave is not a stable workflow role. It is a disposable set of isolated subagents whose only responsibility is to discover material unanswered questions, hidden assumptions, omitted branches, missing validation, and likely rework risks.
+
+Each wave:
+
+1. receives the current objective, canonical work product, and relevant current/primary evidence;
+2. independently generates questions and gaps;
+3. returns them to the orchestrator;
+4. terminates completely.
+
+The orchestrator deduplicates and routes material questions to the stable role that owns the premise. That owner must resolve the question with evidence or change its artifact/state. The thinker itself does not approve, implement, or own the answer.
+
+If another questioning round is useful, create a **new isolated wave** against the updated canonical state. Do not continue the old thinker context and do not preload the new wave with the previous thinker's conversational reasoning.
+
+The durable task remembers resolved evidence and decisions; the reviewer context does not remember how the previous reviewer thought.
+
+Read `references/thinker-waves.md` for the full lifecycle, output contract, insertion points, convergence gate, and anti-patterns.
+
 ## Stage handoff gate
 
 A role does not hand the workflow forward merely because its current pass is persuasive.
