@@ -1,96 +1,130 @@
 # Integration with agent-context-foundation
 
-This skill is intentionally organized using **$agent-context-foundation** principles.
+## Purpose
 
+`multi-agent-workflow` uses **`agent-context-foundation`** as its baseline context/memory discipline for every stable role.
 
-Companion project:
+Canonical companion project:
 
-https://github.com/TheBaiter/agent-context-foundation
+`https://github.com/TheBaiter/agent-context-foundation`
 
 Canonical skill name:
 
-$agent-context-foundation
+`agent-context-foundation`
 
-## Canonical reference
+This reference explains the responsibility boundary between the two skills. Runtime availability and installation semantics are owned by `references/installation-and-dependencies.md`; skill activation/injection semantics are owned by `references/skill-routing.md`.
 
-Repository:
-https://github.com/TheBaiter/agent-context-foundation
+## Current organizational scope
 
-Skill:
-$agent-context-foundation
+`multi-agent-workflow` is a **general manager-led multi-agent organization**, not only a functional-backend-defect workflow.
 
-## Applied organization
+Morrison/Orchestrator may route work through product, research, UI, frontend, backend, plan-reopening, implementation, verification and validation roles/departments according to the task.
 
-Use progressive disclosure and canonical ownership:
+The historical functional-backend-defect workflow remains a specialized department inside the larger organization and keeps its own Agent-Keys/protocols.
 
-- `SKILL.md` -> entrypoint and router only;
-- `references/profiles/<agent-key>/PROFILE.md` -> canonical owner of that role's mission, personality, knowledge boundary, limits, passes, and approval meaning;
-- `references/scope.md` -> canonical scope owner;
-- `references/workflow.md` -> canonical workflow/dormancy/return owner;
-- `references/issue-protocol.md` -> canonical Issue identity, state, events, traceability, and communication owner;
-- `references/evidence-policy.md` -> canonical owner of test execution vs documentation-backed validation and test-case evidence requirements;
-- `references/trust-boundary.md` -> canonical owner of instruction authority, evidence/data boundaries, prompt-injection resistance, and ambiguous-authority fail-safe behavior;
-- `references/state-machine.md` -> canonical state and transition owner;
-- `references/consensus.md` -> canonical closure owner;
-- GitHub Issue / repository task system -> current case chronology and execution state;
-- source code/config/schema/migrations -> implementation truth;
-- durable `Agent/` repository context -> only verified reusable knowledge, governed by $agent-context-foundation.
+## Canonical ownership
 
-Do not make `SKILL.md` a second copy of every profile or reference. Route to the owner instead.
+Use progressive disclosure and one canonical owner for each kind of durable knowledge:
+
+- `SKILL.md` -> top-level entrypoint/router;
+- `references/profiles/<agent-key>/PROFILE.md` -> canonical owner of each stable role's mission, authority, limits and return contract;
+- `references/orchestrator-runtime.md` -> operational routing/gates/lifecycle;
+- `references/orchestration-state.md` -> canonical organization state, dependencies, batches, pairs, backlog, questions and active gates;
+- `references/skill-routing.md` -> external skill routing and role-boundary interaction;
+- `references/installation-and-dependencies.md` -> actual dependency availability/install mode;
+- `references/departments/*` -> department-level progressive-disclosure routing;
+- authoritative task/Issue/project state -> current chronology and active execution decisions;
+- source/config/schema/migrations -> implementation truth;
+- repository durable context managed under `agent-context-foundation` -> only verified reusable knowledge.
+
+Do not make `SKILL.md`, child conversations or private agent notes competing sources of truth.
 
 ## Responsibility boundary
 
-agent-context-foundation owns repository context concerns such as:
+### `agent-context-foundation` owns
 
-- minimum viable agent context;
+Repository/project context discipline such as:
+
+- minimum viable context;
 - progressive disclosure;
-- canonical knowledge ownership;
-- Agent/ organization;
-- reusable project rules;
-- project maps;
-- error memory;
-- durable planning conventions;
-- temporary workspace conventions;
-- task traceability foundations.
+- canonical durable knowledge ownership;
+- task traceability foundations;
+- verified knowledge promotion;
+- stale/superseded memory retirement;
+- resumable handoff state;
+- exact source/test/owner anchors;
+- issue/task-first handling of meaningful discovered defects when a tracker exists;
+- durable repository planning/context conventions.
 
-multi-agent-workflow owns one functional backend defect case such as:
+### `multi-agent-workflow` owns
 
-- candidate detection;
-- adversarial investigation;
-- cause and scope;
-- repair planning;
-- challenge;
-- test strategy;
-- implementation;
-- final validation;
-- per-role Issue state;
-- cross-agent questions;
-- unanimous closure.
+Organization and execution coordination such as:
 
-## Use together
+- Morrison as user-facing manager;
+- task/authority/risk classification;
+- department and atomic-role routing;
+- same-role A+B pairing;
+- batched delegation under runtime slot limits;
+- one-question disposable Thinkers;
+- plan reopening via challengers/alternatives/risk review;
+- implementation ownership;
+- independent validation;
+- question escalation;
+- Council Sessions;
+- organizational backlog and gates;
+- the specialized historical functional-backend-defect department.
 
-When agent-context-foundation is installed or available:
+`agent-context-foundation` does not turn a specialist into another profession. `multi-agent-workflow` does not redefine the context/memory rules owned by the companion skill.
 
-1. use it to locate the repository's authoritative instructions and context;
-2. preserve its organization and canonical owners;
-3. use the repository's existing Issue/task system;
-4. keep this workflow's case chronology in that Issue;
-5. promote only verified reusable conclusions back into durable context.
+## Active memory/context duty
 
-## Do not duplicate
+When `agent-context-foundation` is `AVAILABLE`, every stable role must actively apply it during the assignment rather than treating it as background reading.
 
-Do not create parallel planning/history files under Agent/ merely to mirror the Issue.
+At minimum:
 
-Do not copy the full multi-agent conversation into error memory.
+1. load only context needed for the bounded assignment;
+2. keep active chronology in the authoritative task/state;
+3. preserve exact evidence/owner/handoff anchors needed downstream;
+4. distinguish hypotheses from verified reusable findings;
+5. promote durable knowledge only after verification;
+6. place promoted knowledge under one canonical owner;
+7. retire/supersede stale reusable knowledge instead of appending competing truth;
+8. checkpoint material findings before returning/termination.
 
-Do not turn temporary hypotheses into durable repository facts.
+A completed child must not remain alive merely as a memory store.
 
-## Knowledge promotion
+## Thinker boundary
 
-After closure, consider whether the case produced a reusable verified lesson.
+Disposable Thinkers are not stable personalities and do not maintain durable memory.
 
-If yes, use agent-context-foundation rules to promote only the durable conclusion to the appropriate canonical location.
+They receive the minimum current canonical context needed to ask exactly one material question (or return clean), then terminate.
 
-If no reusable knowledge exists, leave the history in the Issue.
+Their parent/Morrison decides whether the returned finding becomes:
 
-The correct result may be no durable context change.
+- an open task question;
+- evidence;
+- a candidate reusable lesson;
+- or nothing.
+
+Only verified reusable conclusions may later be promoted under `agent-context-foundation`.
+
+## Historical backend-defect department
+
+When Morrison routes a task to the strict functional-backend-defect department, its specialized Issue/state/evidence/consensus contracts still apply.
+
+That department is **one specialization**, not the scope definition of the whole `multi-agent-workflow` skill.
+
+Do not reuse its short Agent-Keys (`planner`, `executor`, `validator`, etc.) as aliases for general organization roles.
+
+## Missing dependency
+
+If `agent-context-foundation` is unavailable, follow `references/installation-and-dependencies.md`:
+
+- do not claim its guarantees were applied;
+- mark the organization/path `REDUCED` or `BLOCKED` according to risk;
+- preserve ordinary canonical task state where possible;
+- never reconstruct the current external procedure from memory and present it as equivalent.
+
+## Core principle
+
+**`agent-context-foundation` owns how durable context stays trustworthy; `multi-agent-workflow` owns how specialized agents are organized around that trustworthy context.**
