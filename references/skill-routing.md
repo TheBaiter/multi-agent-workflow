@@ -125,12 +125,37 @@ Canonical source:
 
 - Repository: `https://github.com/TheBaiter/intensive-ui-questioning`
 - Entrypoint: `SKILL.md`
+- Delegated audit procedure: external `references/subagent-question-audit.md`
+- Fresh-round procedure: external `references/fresh-questioning-rounds.md`
+- Organization integration: local `references/ui-questioning-rounds.md`
 
 Activate this skill for meaningful **visible or perceptible frontend/UI work**.
 
 It is an operating procedure for questioning and validating UI work before implementation/review, including outcome, user job, removal/reuse, ownership, pattern identity, state lifecycle, redundancy, responsiveness, accessibility, feedback, provenance/modes, visual evidence and routed specialized question packs.
 
 When activated, treat it as a live procedure, not remembered advice. Follow its entrypoint/router and every activated owner/pack to route closure using progressive disclosure.
+
+### Fresh questioning rounds are mandatory for non-trivial delegated UI work
+
+Do not attach `intensive-ui-questioning` to one planner and call that complete.
+
+When reliable subagents are available, read `references/ui-questioning-rounds.md` and create a dedicated `ui-question-auditor` workstream.
+
+Normal contract:
+
+- **4 fresh rounds by default**;
+- **5 fresh rounds** for broad/high-risk/rework-prone UI or when round 4 still changes the artifact materially;
+- every round uses new concrete agent instances and new instance names;
+- terminated auditors are never resumed or recreated under the same instance identity/name;
+- later rounds receive prior findings/dispositions through canonical state, not through reused hidden conversation context;
+- applicable questions are reviewed one by one;
+- each round persists findings, routes them to owners, updates the canonical artifact, terminates its auditors, and only then starts the next fresh round.
+
+For non-trivial multi-agent use, normally create `ui-question-auditor` A+B in each round. More auditors may partition large coverage. Slot limitations are handled by `references/batched-delegation.md` rather than by reusing old auditors.
+
+A fresh round is not a blank restart: it receives the latest plan/source/evidence plus persisted earlier findings and what was changed because of them. It independently re-evaluates that current state and can activate new routes caused by earlier revisions.
+
+Do not claim full delegated `intensive-ui-questioning` coverage when only one audit pass occurred.
 
 ### Roles that commonly activate it
 
@@ -148,7 +173,11 @@ The skill is normally required when these roles are assigned visible/perceptible
 - `independent-validator` when validating visible/perceptible frontend changes;
 - `review-challenger`, `alternative-planner`, or `risk-reviewer` when their assigned artifact is materially UI-facing.
 
-Do not activate it for purely backend/data work with no visible/perceptible consequence.
+The dedicated repeated-questioning role is:
+
+- `ui-question-auditor` — `references/profiles/ui-question-auditor/PROFILE.md`.
+
+Do not activate the skill for purely backend/data work with no visible/perceptible consequence.
 
 ### Role-purity interaction
 
@@ -161,6 +190,8 @@ Each agent:
 3. records/routes questions owned by another atomic role;
 4. does not silently decide another role's specialty;
 5. preserves one canonical owner for each decision.
+
+`ui-question-auditor` is different from a UI planner: it owns route/question coverage and evidence-boundary checks, not the product/design answer uncovered by those questions.
 
 Example: an `interaction-design-planner` may discover a keyboard/focus requirement while traversing the UI skill. It records and routes that requirement to `accessibility-planner`; discovery does not transfer ownership.
 
@@ -177,11 +208,14 @@ inherit agent-context-foundation
    ↓
 classify additional skill activations
    ↓
+if intensive UI is active and non-trivial:
+  queue fresh ui-question-auditor rounds
+   ↓
 resolve Context-Checkpoint-Target
    ↓
 build AGENT-MANIFEST with skill references
    ↓
-spawn child
+spawn child/batch
 ```
 
 Skills may also become active later when evidence changes task shape. When that occurs, update the manifest/task state and re-run only affected work as needed.
@@ -212,6 +246,9 @@ ALL STABLE PROFILES
 
 VISIBLE/PERCEPTIBLE UI ASSIGNMENT
   -> CONDITIONAL/ACTIVE: intensive-ui-questioning
+
+NON-TRIVIAL DELEGATED INTENSIVE UI
+  -> REQUIRED WORKSTREAM: fresh ui-question-auditor rounds (4 default / 5 when required)
 ```
 
 Profiles with strongly recurring specialized skill use should include a compact `Skill references` section pointing here, as the UI profiles do. The shared skill body remains canonical here/external; do not paste complete external procedures into every personality.
@@ -232,6 +269,16 @@ Before terminating a stable child, confirm:
 - exact source/test/owner/handoff anchors required by the next role were preserved;
 - no child context is being retained merely as memory.
 
+When `intensive-ui-questioning` is active for non-trivial delegated work, also confirm:
+
+- required fresh-round count is recorded;
+- every completed round used unique new auditor identities/names;
+- round receipts are persisted;
+- later auditors received current canonical context and prior persisted findings, not reused auditor conversations;
+- questions were processed individually;
+- owners dispositioned material findings before the next round;
+- final required round achieved route closure or the work remains blocked/open.
+
 ## Core principle
 
-**Roles decide who owns the work. Skills decide how that owner should operate. Every stable role inherits `agent-context-foundation`; visible/perceptible UI work additionally routes through `intensive-ui-questioning` without breaking role purity. Every completed child checkpoints material state before it dies.**
+**Roles decide who owns the work. Skills decide how that owner should operate. Every stable role inherits `agent-context-foundation`; visible/perceptible UI work additionally routes through `intensive-ui-questioning` without breaking role purity. Intensive UI questioning is iterative skepticism: ask with fresh agents, persist, terminate, revise, and ask again four or five times.**
