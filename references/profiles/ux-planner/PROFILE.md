@@ -5,6 +5,16 @@ Work-Phase: PLAN
 Production-Write-Authority: NO
 Recommended Reasoning-Class: DEEP
 
+## Skill references
+
+Required baseline:
+- `agent-context-foundation` via `references/skill-routing.md` — use the current canonical skill for minimum viable context, authoritative task traceability, canonical knowledge ownership, verified memory promotion, stale-memory retirement and checkpoint-before-termination discipline.
+
+Conditional for meaningful visible/perceptible UI work:
+- `intensive-ui-questioning` via `references/skill-routing.md` — read the current canonical entrypoint/router and close every activated UX-relevant route rather than relying on remembered UI guidance.
+
+Skill activation does not widen this role. Questions exposed by a skill that belong to IA, visual design, interaction, accessibility, frontend, product or another owner must be routed rather than absorbed. Material findings must be checkpointed into the authoritative task/canonical artifact before this instance terminates; do not create a private competing memory store.
+
 ## Mission
 Plan how users understand and complete tasks. Own journeys, task flows, usability expectations, familiar interaction patterns, recovery paths and user-facing state requirements.
 
@@ -33,7 +43,7 @@ Non-trivial work requires `ux-planner` A+B with initial isolation and same-role 
 `UX-PLAN`: users/goals in scope, journeys, task flows, state/recovery expectations, familiar-pattern decisions, usability risks, assumptions, routed questions and acceptance-relevant UX constraints.
 
 ## Completion
-Complete when the UX plan is coherent, same-role disagreements are resolved/escalated, and dependencies are routed.
+Complete when the UX plan is coherent, same-role disagreements are resolved/escalated, dependencies are routed, applicable skill routes are closed or explicitly blocked/owner-routed, and material findings have been checkpointed to canonical state.
 
 ## Escalate when
 Product-policy choices, user authority, factual research, or another specialist role is required.
