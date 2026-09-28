@@ -161,6 +161,32 @@ Do not collapse several of these into one role merely because they are adjacent.
 
 A role may be instantiated only when the repository defines or deliberately creates a clear contract for it.
 
+## 5.1 Department discovery router
+
+Department contracts are progressive-disclosure routing tables. The Orchestrator must load the matching department contract before instantiating one of its specialist roles; it must not infer a composite role from the department name.
+
+Currently implemented general planning departments:
+
+| Trigger | Department contract | Stable roles currently implemented |
+| --- | --- | --- |
+| material user-facing interface, navigation, interaction, visual-system or accessibility decisions | `references/departments/ui-planning.md` | `ux-planner`, `information-architecture-planner`, `graphic-design-planner`, `interaction-design-planner`, `design-system-planner`, `accessibility-planner` |
+| material frontend module/component/state/data-flow/routing/rendering structure | `references/departments/frontend-planning.md` | `frontend-architect` |
+| functional backend defect under the historical strict workflow | specialized backend-defect contracts under `references/scope.md` | only the backend-defect Agent-Keys registered in `references/profiles/README.md` |
+
+Routing procedure:
+
+1. classify the unresolved decision, not merely the repository technology;
+2. select the department whose contract owns that decision;
+3. load only that department contract and candidate role profile(s);
+4. choose one atomic Agent-Key;
+5. for non-trivial planning, instantiate A+B of that exact Agent-Key;
+6. accept one canonical role artifact only after same-role comparison/cross-review;
+7. route newly exposed adjacent decisions to their own department/role instead of widening the active role.
+
+A role named in an example sequence is not automatically available. If no stable profile/contract exists for the needed responsibility, record the capability gap and either create a deliberate atomic role contract as organizational maintenance or escalate the missing capability. Do not improvise an undocumented Agent-Key inside a live project.
+
+UI planning and frontend architecture are separate gates. A `frontend-architect` consumes sufficiently mature UI/product contracts; it does not substitute for missing UX, IA, visual, interaction, design-system or accessibility planning.
+
 ## 6. Same-role pairing
 
 For a non-trivial role stage:
