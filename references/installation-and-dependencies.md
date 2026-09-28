@@ -121,6 +121,10 @@ If the installation mechanism uses a different skill registry or local mount, th
 
 skills.sh currently supports **Packs**: collections of multiple skills that can be installed with one command.
 
+Current capability reference:
+
+`https://skills.sh/docs/packs`
+
 A Pack is the preferred install-once distribution mechanism for this three-skill set because the skills remain independently versioned/canonical while users can install them together.
 
 Target Pack contents:
@@ -135,8 +139,9 @@ Multi-Agent Workflow Pack
 Pack lifecycle:
 
 - `Pack-Status: NOT_PUBLISHED` until a real skills.sh Pack is created and a real pack URL exists;
-- once published, record the exact immutable/current pack URL here and in `README.md`;
+- once published, record the exact Pack URL here and in `README.md`;
 - never invent or guess a `<pack-id>`;
+- a Pack may later update its included skills while retaining its install URL;
 - installing the Pack does not remove spawn-time dependency preflight: Morrison still verifies that required skills are actually readable in the active runtime.
 
 Expected install form after publication:
