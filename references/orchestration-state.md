@@ -10,6 +10,7 @@ Every non-trivial multi-agent task should have one canonical orchestration state
 - what has already been decided;
 - which department/roles are active;
 - which child agents exist and who owns them;
+- which paired perspectives belong to the same decision/workstream;
 - what each child is doing and waiting for;
 - which artifacts are current;
 - which material questions remain open;
@@ -33,6 +34,8 @@ Task-Type: <IDEA_OR_PRODUCT | TECHNICAL_CHANGE | INVESTIGATION | IMPLEMENTATION 
 Risk-Level: <LOW | MEDIUM | HIGH>
 Current-Gate: <INTAKE | PRODUCT | PLAN | EXECUTION | VALIDATION | USER_DECISION | COMPLETE | BLOCKED>
 Current-Owner: <Agent-Key or USER>
+Pairing-Policy: REQUIRED | OPTIONAL | EXEMPT
+Pairing-Exception: <reason or NONE>
 
 Constraints:
 - ...
@@ -56,6 +59,9 @@ Canonical-Artifacts:
 - Implementation: <anchor/status>
 - Validation-Report: <anchor/status>
 
+Pair-Groups:
+- <PAIR-GROUP entries>
+
 Active-Agents:
 - <Agent Instance Registry entries>
 
@@ -74,6 +80,36 @@ Next-Action:
 
 Not every storage system must serialize exactly this text. The logical fields are the contract.
 
+## Pair Group Registry
+
+For every non-trivial cognitive workstream governed by `references/paired-delegation.md`, keep a compact record of its independent perspectives and synthesis.
+
+~~~text
+PAIR-GROUP
+
+Pair-Group: <stable id>
+Purpose: <planning / product / UX / research / security / QA / validation / other>
+Owner: <synthesis owner>
+State: CREATED | INDEPENDENT_WORK | CROSS_REVIEW | SYNTHESIS | RESOLVED | BLOCKED
+Started-From: <canonical state revision/artifact anchors>
+Member-A: <agent instance>
+Member-B: <agent instance>
+Independence-Requirement: INITIAL_ISOLATION | COMPLEMENTARY_REVIEW
+First-Return-A: <anchor/status>
+First-Return-B: <anchor/status>
+Agreements: <compact anchor/summary>
+Contradictions: <compact anchor/summary>
+Unique-Findings-A: <anchor/summary>
+Unique-Findings-B: <anchor/summary>
+Cross-Review: <anchor/status>
+Synthesis-Artifact: <anchor/status>
+Unresolved-Material-Disagreement: <NONE or question ids>
+~~~
+
+Do not mark a pair group `RESOLVED` merely because both members agree. It is resolved when differentiated findings were compared and material contradictions were handled according to the paired-delegation protocol.
+
+If pairing is skipped for non-trivial work, the canonical state must contain a valid `Pairing-Exception` rather than silently behaving as if one perspective were enough.
+
 ## Agent Instance Registry
 
 For every active stable child, keep a reconstructable entry:
@@ -91,6 +127,9 @@ Expected-Return: <artifact>
 Waiting-On: <question/agent/evidence or NONE>
 Spawn-Permission: NONE | THINKERS_ONLY | NAMED_SUPPORT_ROLES | DELEGATED_OWNER
 Started-From: <canonical state revision/artifact anchors>
+Pair-Group: <group id or NONE>
+Pair-Position: A | B | REVIEWER | SYNTHESIS | NONE
+Peer-Artifact-Visibility: NONE_UNTIL_FIRST_RETURN | AFTER_FIRST_RETURN | NOT_APPLICABLE
 Last-Checkpoint: <timestamp/revision when available>
 ~~~
 
@@ -100,6 +139,8 @@ The full child contract remains the Agent Manifest. The registry is the compact 
 
 Thinkers are temporary and should not become durable pseudo-employees.
 
+For non-trivial work, a Thinker Wave should normally contain at least two independently initialized thinkers under `references/paired-delegation.md`.
+
 While a wave is active, the orchestration state may record:
 
 ~~~text
@@ -108,6 +149,8 @@ Wave-ID: ...
 Parent: ...
 Objective: ...
 Started-From: <state revision>
+Thinker-Count: <integer>
+Independence: FRESH_ISOLATED
 State: WORKING | RETURNED
 Return-Anchor: ...
 ~~~
@@ -131,6 +174,8 @@ A material question should record:
 
 Duplicate questions should be merged, not counted as separate confidence.
 
+A disagreement between paired agents that can affect scope, architecture, behavior, quality, security, UX, performance, or likely rework should become a material question or explicit contradiction record until resolved.
+
 ## Artifact freshness
 
 Every canonical artifact should be understood relative to the decisions/evidence it depends on.
@@ -139,14 +184,16 @@ If a material upstream premise changes:
 
 1. mark dependent downstream artifacts/gates `STALE`;
 2. identify the earliest owner that must re-evaluate;
-3. do not continue relying on a stale approval merely because it existed earlier;
-4. re-run only the affected portions when possible.
+3. mark affected pair-group synthesis stale when its premise changed;
+4. do not continue relying on a stale approval merely because it existed earlier;
+5. re-run only the affected portions when possible.
 
 Examples:
 
 - Product Brief changes a required user role -> Technical Plan may become STALE;
 - Technical Plan changes authorization boundary -> Verification Contract and implementation may become STALE;
-- implementation diverges from plan -> Validation target must use the real implementation and plan question returns upstream.
+- implementation diverges from plan -> Validation target must use the real implementation and plan question returns upstream;
+- paired technical synthesis depended on a contract that changed -> that pair group must be reconsidered before execution continues.
 
 ## State update ownership
 
@@ -154,7 +201,7 @@ The Orchestrator owns the overall orchestration record.
 
 Children own their return artifacts and may report their own status, but they do not rewrite other agents' state or silently advance global gates.
 
-When a delegated Work Owner manages permitted children, it reports child lifecycle/status upward so the Orchestrator can keep the canonical organization reconstructable.
+When a delegated Work Owner manages permitted children, it reports child lifecycle/status and pair-group membership upward so the Orchestrator can keep the canonical organization reconstructable.
 
 ## Revision discipline
 
@@ -165,6 +212,8 @@ Increment state revision for material organizational change, such as:
 - material question opened/resolved;
 - work owner changes;
 - stable agent spawned/terminated;
+- pair group created, enters cross-review, resolves, blocks, or becomes stale;
+- material paired contradiction opened/resolved;
 - gate passes/fails/becomes stale;
 - canonical artifact replaced by a new authoritative version.
 
@@ -175,9 +224,9 @@ Do not create noisy revisions for inconsequential formatting.
 A fresh Orchestrator should be able to recover by:
 
 1. reading the canonical orchestration state;
-2. loading the Orchestrator profile/runtime;
+2. loading the Orchestrator profile/runtime and `references/paired-delegation.md`;
 3. reading only current canonical artifacts and active role profiles;
-4. identifying stale/active child contexts;
+4. identifying stale/active child contexts and incomplete pair groups;
 5. terminating or recreating contexts as needed;
 6. continuing from `Next-Action`.
 
@@ -189,6 +238,8 @@ Set `Current-Gate: COMPLETE` only when:
 
 - current objective is satisfied;
 - required gates are passed;
+- required non-trivial pair groups are resolved or a valid pairing exception exists;
+- no material paired contradiction remains unresolved inside current scope;
 - no open material question remains inside current scope;
 - no required agent remains BLOCKED/QUESTIONING/WAITING;
 - validation is passed when required;
@@ -197,6 +248,6 @@ Set `Current-Gate: COMPLETE` only when:
 
 ## Core principle
 
-**The organization may forget conversations; it must not forget state.**
+**The organization may forget conversations; it must not forget state, independence, or disagreement.**
 
-Agent contexts are disposable. Canonical decisions, questions, artifacts, ownership and evidence are durable.
+Agent contexts are disposable. Canonical decisions, questions, artifacts, pair relationships, ownership and evidence are durable.
