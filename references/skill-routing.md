@@ -8,6 +8,8 @@ A **role** defines ownership and authority. A **skill** defines an applicable op
 
 Morrison is responsible for attaching the correct skill references to each child manifest and for preserving progressive disclosure.
 
+Read `references/installation-and-dependencies.md` first for installation/availability semantics. A repository URL is provenance, not proof that a dependency is installed or readable in the current runtime.
+
 ## Skill reference contract
 
 Every stable agent manifest must expose:
@@ -15,13 +17,14 @@ Every stable agent manifest must expose:
 ```text
 Required-Skills:
 - Skill: <skill name>
-  Source: <canonical repository/entrypoint>
+  Source: <installed/mounted/current canonical source>
+  Status: AVAILABLE | MISSING | BLOCKED
   Coverage: <FULL_ENTRYPOINT | ROUTED_SUBSET | assignment-specific rule>
 
 Conditional-Skills:
 - Skill: <skill name>
-  Source: <canonical repository/entrypoint>
-  Status: ACTIVE | NOT_ACTIVE | BLOCKED
+  Source: <canonical source>
+  Status: ACTIVE | NOT_ACTIVE | MISSING | BLOCKED
   Activate-When: <condition>
   Coverage-Anchor: <receipt/artifact or NONE>
 
@@ -29,13 +32,19 @@ Context-Checkpoint-Target:
 - <authoritative task / canonical artifact / repository context owner>
 ```
 
+At task level, also preserve:
+
+```text
+Skill-Dependency-Mode: FULL | REDUCED | BLOCKED
+```
+
 A skill reference identifies at minimum:
 
 - stable skill name;
-- canonical repository/source;
-- canonical entrypoint;
+- actual current source/availability;
+- canonical repository/source and entrypoint;
 - activation condition;
-- whether the current agent must read it completely or only its routed subset;
+- required coverage;
 - any role-boundary constraint.
 
 Do not duplicate the external skill's full policy text into role profiles. Point to the canonical source.
@@ -49,15 +58,16 @@ Before Morrison spawns any stable child:
 1. select the atomic role and bounded assignment;
 2. resolve inherited required skills;
 3. evaluate conditional skills against the actual task/artifact surface;
-4. write `Required-Skills`, `Conditional-Skills` and `Context-Checkpoint-Target` into the concrete `AGENT-MANIFEST`;
-5. ensure the child can access the current canonical skill source;
-6. only then start the child.
+4. verify actual runtime availability of every required/active skill;
+5. record `AVAILABLE`, `MISSING`, `BLOCKED` or `NOT_REQUIRED` semantics under `references/installation-and-dependencies.md`;
+6. write `Required-Skills`, `Conditional-Skills` and `Context-Checkpoint-Target` into the concrete `AGENT-MANIFEST`;
+7. only then start the child.
 
 If an older generic manifest template omits skill fields, this contract still requires Morrison to append them before spawn. The omission is a template gap, not permission to create a skill-less agent.
 
 A child must not claim a required skill was applied merely because its profile or parent mentions the skill. The concrete assignment must resolve the current skill source and applicable coverage.
 
-If a required skill source cannot be accessed, mark the assignment skill state `BLOCKED` or explicitly reduced according to the owning workflow. Do not reconstruct a required current procedure from memory.
+If a required skill source cannot be accessed, mark the dependency `MISSING`/`BLOCKED` and the assignment/organization `REDUCED` or `BLOCKED` according to the owning workflow. Do not reconstruct a required current procedure from memory.
 
 ## Default skill for the entire organization
 
@@ -117,6 +127,8 @@ Disposable Thinkers are not stable personalities. They receive the minimum canon
 
 Agents must consult the current canonical skill source when the skill applies. Prior familiarity or a remembered summary is not proof that the current procedure was followed.
 
+If `agent-context-foundation` is unavailable, do not claim full stable-role memory/context guarantees. Apply the explicit reduced/blocked behavior from `references/installation-and-dependencies.md`.
+
 ## UI / perceptible-work skill
 
 ### `intensive-ui-questioning`
@@ -134,6 +146,8 @@ Activate this skill for meaningful **visible or perceptible frontend/UI work**.
 It is an operating procedure for questioning and validating UI work before implementation/review, including outcome, user job, removal/reuse, ownership, pattern identity, state lifecycle, redundancy, responsiveness, accessibility, feedback, provenance/modes, visual evidence and routed specialized question packs.
 
 When activated, treat it as a live procedure, not remembered advice. Follow its entrypoint/router and every activated owner/pack to route closure using progressive disclosure.
+
+If the task activates this skill but its current canonical source cannot actually be read, the affected UI path is `MISSING`/`BLOCKED` and cannot claim intensive-UI closure.
 
 ### Fresh questioning rounds are mandatory for non-trivial delegated UI work
 
@@ -204,16 +218,18 @@ Task / artifact
    ↓
 select atomic role
    ↓
-inherit agent-context-foundation
+resolve required skill dependency availability
    ↓
-classify additional skill activations
+classify conditional skill activations
+   ↓
+verify active skill sources are AVAILABLE
    ↓
 if intensive UI is active and non-trivial:
   queue fresh ui-question-auditor rounds
    ↓
 resolve Context-Checkpoint-Target
    ↓
-build AGENT-MANIFEST with skill references
+build AGENT-MANIFEST with skill references/states
    ↓
 spawn child/batch
 ```
@@ -242,10 +258,10 @@ Profiles do not need to duplicate every inherited skill. The canonical inheritan
 
 ```text
 ALL STABLE PROFILES
-  -> REQUIRED: agent-context-foundation
+  -> REQUIRED: agent-context-foundation (must resolve AVAILABLE for full mode)
 
 VISIBLE/PERCEPTIBLE UI ASSIGNMENT
-  -> CONDITIONAL/ACTIVE: intensive-ui-questioning
+  -> CONDITIONAL/ACTIVE: intensive-ui-questioning (must resolve AVAILABLE when active)
 
 NON-TRIVIAL DELEGATED INTENSIVE UI
   -> REQUIRED WORKSTREAM: fresh ui-question-auditor rounds (4 default / 5 when required)
@@ -259,8 +275,9 @@ A profile may declare additional specialized skills later. Those additions must 
 
 Before terminating a stable child, confirm:
 
-- required skills were actually loaded/applied or explicitly blocked;
-- applicable conditional skills were activated;
+- required dependency states were actually resolved;
+- required skills were actually loaded/applied or the path is explicitly reduced/blocked;
+- applicable conditional skills were activated and available;
 - skill-derived questions outside the role were routed rather than absorbed;
 - material findings were persisted in the authoritative task/canonical artifact named by `Context-Checkpoint-Target`;
 - verified reusable knowledge was promoted only to its canonical owner;
@@ -281,4 +298,4 @@ When `intensive-ui-questioning` is active for non-trivial delegated work, also c
 
 ## Core principle
 
-**Roles decide who owns the work. Skills decide how that owner should operate. Every stable role inherits `agent-context-foundation`; visible/perceptible UI work additionally routes through `intensive-ui-questioning` without breaking role purity. Intensive UI questioning is iterative skepticism: ask with fresh agents, persist, terminate, revise, and ask again four or five times.**
+**Roles decide who owns the work. Skills decide how that owner should operate. A skill reference is not an installation. Every stable role requires an actually available `agent-context-foundation` for full mode; visible/perceptible UI work additionally requires the current `intensive-ui-questioning` when active, without breaking role purity. Intensive UI questioning is iterative skepticism: ask with fresh agents, persist, terminate, revise, and ask again four or five times.**
