@@ -26,6 +26,7 @@ These profiles are the default roles available to the Orchestrator for ordinary 
 | interaction-design-planner | — | Interaction Design Planner |
 | design-system-planner | — | Design System Planner |
 | accessibility-planner | — | Accessibility Planner |
+| frontend-architect | — | Frontend Architect |
 
 Thinkers are intentionally **not** stable Agent-Key roles. They are disposable contexts governed by `references/thinker-waves.md` and terminate after one questioning delivery.
 
@@ -78,6 +79,12 @@ Plans reusable UI primitives, token/variant taxonomy, component-family boundarie
 `references/profiles/accessibility-planner/PROFILE.md`
 
 Plans explicit, testable accessibility requirements for keyboard/focus, semantics, assistive technology, visual communication, motion and accessible status/error behavior. It constrains adjacent plans without implementing them.
+
+### `frontend-architect`
+
+`references/profiles/frontend-architect/PROFILE.md`
+
+Plans frontend module/component boundaries, state ownership, data flow, routing/rendering structure and implementation seams from approved upstream product/UI contracts. It does not own UI design, backend contracts or production frontend implementation.
 
 ### `product-planner`
 
