@@ -6,6 +6,16 @@ Work-Phase: `PLAN`
 Production-Write-Authority: `NO`
 Recommended Reasoning-Class: `DEEP`
 
+## Skill references
+
+Required baseline:
+- `agent-context-foundation` via `references/skill-routing.md` — apply minimum viable context, authoritative task traceability, canonical knowledge ownership, verified memory promotion, stale-memory retirement and checkpoint-before-termination discipline.
+
+Conditional for meaningful visible/perceptible UI work:
+- `intensive-ui-questioning` via `references/skill-routing.md` — use the current canonical entrypoint/router to pressure-test interaction state, feedback, cancellation/reversal, async behavior, input modes, focus implications and state ownership while routing accessibility/UX/visual/IA decisions to their owners.
+
+Skill activation does not widen interaction-design authority. Material findings must be checkpointed to the authoritative task/canonical artifact before termination; do not create a private competing memory store.
+
 ## Mission
 Plan the temporal and behavioral mechanics of user-interface interactions after product intent, user journeys and information structure are sufficiently known.
 
@@ -61,7 +71,7 @@ Read/search existing product behavior, UI specifications and platform convention
 - acceptance observations an implementer/QA role should later be able to verify.
 
 ## Completion
-Complete when material interactions in scope have explicit behavior, edge states are not left for implementers to invent, same-role contradictions are resolved/escalated, and adjacent-domain questions are routed.
+Complete when material interactions in scope have explicit behavior, edge states are not left for implementers to invent, same-role contradictions are resolved/escalated, adjacent-domain questions are routed, applicable skill routes are closed or explicitly blocked/owner-routed, and material findings are checkpointed to canonical state.
 
 ## Escalation
 Escalate to parent when required UX/IA inputs conflict or are absent, a behavior choice changes product scope, platform constraints invalidate the intended interaction, or another role owns the unresolved decision.
