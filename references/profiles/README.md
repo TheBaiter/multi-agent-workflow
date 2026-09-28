@@ -6,6 +6,28 @@ The profile filename is always `PROFILE.md`.
 
 Protocol behavior depends on stable `Agent-Key` values. Display identities may change without redefining role authority.
 
+## Skill references inherited by profiles
+
+Profiles may reference reusable skills in addition to their role contract.
+
+Read `references/skill-routing.md` for the canonical rules.
+
+Every stable profile inherits:
+
+- `agent-context-foundation` — `https://github.com/TheBaiter/agent-context-foundation` / `SKILL.md`.
+
+This default gives every stable role the same baseline for minimum viable context, authoritative task traceability, canonical knowledge ownership, verified memory promotion, stale-memory retirement and resumable handoffs.
+
+A profile may also activate additional specialized skills when its assignment requires them. Skill activation never changes role ownership or production-write authority.
+
+For meaningful visible/perceptible frontend work, the organization conditionally activates:
+
+- `intensive-ui-questioning` — `https://github.com/TheBaiter/intensive-ui-questioning` / `SKILL.md`.
+
+This is commonly active for UI planners and may also apply to frontend architecture, quality, implementation, review and validation when their assigned artifact is materially visible/perceptible.
+
+Do not copy external skill text into every profile. Profiles inherit/register skill references through `references/skill-routing.md`, while the current canonical external skill remains the procedure source.
+
 ## General organization
 
 | Agent-Key | Display identity | Role |
@@ -30,6 +52,8 @@ Protocol behavior depends on stable `Agent-Key` values. Display identities may c
 
 Thinkers are intentionally **not** stable Agent-Key roles. They are disposable one-question contexts governed by `references/thinker-waves.md`: one material question (or clean return), then termination.
 
+Thinkers do not maintain independent durable memory. Their parent applies `agent-context-foundation` placement/promotion rules to material findings.
+
 Do not reuse an Agent-Key for a different role.
 
 ## General role routing
@@ -38,7 +62,7 @@ Do not reuse an Agent-Key for a different role.
 
 `references/profiles/orchestrator/PROFILE.md`
 
-Normal user-facing front door. Owns classification, delegation, batches/slot scheduling, hierarchy, lifecycle, question routing, plan reopening, convergence, optional Council Sessions and user-facing synthesis.
+Normal user-facing front door. Owns classification, delegation, batches/slot scheduling, hierarchy, lifecycle, question routing, skill routing, plan reopening, convergence, optional Council Sessions and user-facing synthesis.
 
 It is not the default implementer.
 
@@ -102,11 +126,15 @@ Fresh independent final judge for substantial general work. Validates actual del
 
 Plans user journeys, task flows, usability expectations and recovery behavior. Does not own visual styling, information architecture or frontend implementation.
 
+For meaningful visible/perceptible UI work, activate `intensive-ui-questioning` while preserving UX ownership boundaries.
+
 ### `information-architecture-planner`
 
 `references/profiles/information-architecture-planner/PROFILE.md`
 
 Plans hierarchy, navigation, grouping, labels, taxonomy and findability. Does not own UX journeys, visual styling, frontend code or database architecture.
+
+For meaningful visible/perceptible UI work, activate `intensive-ui-questioning` and route non-IA findings to their owning role.
 
 ### `graphic-design-planner`
 
@@ -114,11 +142,15 @@ Plans hierarchy, navigation, grouping, labels, taxonomy and findability. Does no
 
 Plans visual hierarchy, typography, composition, color/imagery direction and scoped visual consistency. Does not own UX behavior, IA, design-system engineering or frontend implementation.
 
+For meaningful visible/perceptible UI work, activate `intensive-ui-questioning` and route non-visual findings rather than absorbing them.
+
 ### `interaction-design-planner`
 
 `references/profiles/interaction-design-planner/PROFILE.md`
 
 Plans control behavior, state transitions, feedback, reversal/cancellation and input-mode interaction mechanics. Does not own journeys, visual styling, accessibility policy or frontend implementation.
+
+For meaningful visible/perceptible UI work, activate `intensive-ui-questioning`; accessibility, IA, visual or product decisions discovered through it remain routed dependencies.
 
 ### `design-system-planner`
 
@@ -126,17 +158,23 @@ Plans control behavior, state transitions, feedback, reversal/cancellation and i
 
 Plans reusable UI primitives, token/variant taxonomy, component-family boundaries and design-system governance. Does not create production components or absorb page-level visual design.
 
+For meaningful visible/perceptible UI work, activate `intensive-ui-questioning` to inspect reuse/primitive/ownership questions without broadening the role.
+
 ### `accessibility-planner`
 
 `references/profiles/accessibility-planner/PROFILE.md`
 
 Plans explicit, testable accessibility requirements. Constrains adjacent plans without implementing them.
 
+For meaningful visible/perceptible UI work, activate `intensive-ui-questioning` and own only accessibility decisions exposed by its routed checks.
+
 ### `frontend-architect`
 
 `references/profiles/frontend-architect/PROFILE.md`
 
 Plans frontend module/component boundaries, state ownership, data flow, routing/rendering structure and implementation seams. Does not own UI design, backend contracts or production implementation.
+
+Activate `intensive-ui-questioning` when the architecture materially affects visible/perceptible frontend behavior; discovered UI-specialty decisions must be routed to their planners.
 
 ## Shared protocols roles must respect
 
@@ -150,10 +188,11 @@ Before using profiles, the organization may need these shared contracts:
 - `references/plan-reopening.md` — challenge/alternative/risk gate for mature plans;
 - `references/thinker-waves.md` — one Thinker / one question / terminate;
 - `references/orchestration-state.md` — durable state/backlog/batches/questions;
+- `references/skill-routing.md` — inherited/conditional external skills and role-boundary rules;
 - `references/idea-maturation.md` — broad product discovery;
 - `references/trust-boundary.md` — evidence vs authority.
 
-Use progressive disclosure: load only contracts/profiles relevant to current routing.
+Use progressive disclosure: load only contracts/profiles/skills relevant to current routing.
 
 ## Functional backend defect specialization
 
@@ -168,6 +207,8 @@ Historical profiles below belong to the strict functional-backend-defect departm
 | test-strategist | Nico Goldstein | Backend Defect Test Strategist |
 | executor | Nero | Backend Repair Executor / Reducer |
 | validator | Trish | Backend Defect Final Validator |
+
+These stable specialized profiles also inherit `agent-context-foundation` through the global skill-reference rule. Their historical backend workflow remains authoritative for backend-defect-specific ownership/gates.
 
 Specialized sequence:
 
@@ -187,6 +228,12 @@ A manifest defines **what this concrete instance is doing now**.
 
 For non-trivial paired work the manifest also records Pair-Group/Position and current Batch-ID.
 
+The manifest must also resolve skill references for the assignment:
+
+- `Required-Skills` always includes inherited `agent-context-foundation` for stable roles;
+- `Conditional-Skills` records task-specific skills such as `intensive-ui-questioning` when activated;
+- skill activation must never silently expand `Owned-Decisions`, `Can-Spawn` or `Production-Write-Authority`.
+
 ## Lifecycle
 
 Stable general agents:
@@ -205,7 +252,7 @@ Completed stable agents should also terminate after their result is committed to
 
 ## Profile contract
 
-Each stable profile should define:
+Each stable profile should define or inherit:
 
 - Agent-Key and one professional mission;
 - `Work-Phase`;
@@ -221,7 +268,10 @@ Each stable profile should define:
 - states/completion meaning;
 - escalation conditions;
 - reactivation/termination behavior;
-- neighboring roles/departments where useful.
+- neighboring roles/departments where useful;
+- `Skill-References`, either explicitly in the profile or through `references/skill-routing.md` inheritance.
+
+At minimum, every stable profile inherits `agent-context-foundation`. Additional skills require explicit activation conditions.
 
 If a profile becomes saturated with multiple professional responsibilities, subdivide it deliberately rather than continuing to append duties.
 
@@ -231,4 +281,4 @@ General organization profiles optimize for flexible product/software work.
 
 Backend-defect profiles optimize for a strict auditable bug-resolution protocol.
 
-Morrison chooses department/protocol first, then atomic role. It must not blur both contracts into one ambiguous agent.
+Morrison chooses department/protocol first, then atomic role, then applicable skills. It must not blur contracts into one ambiguous agent.
