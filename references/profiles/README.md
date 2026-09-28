@@ -1,64 +1,114 @@
 # Agent Profiles
 
-Each subdirectory owns one role's identity, operational personality, knowledge boundary, pass sequence, approval criteria, and reactivation rules.
+Each subdirectory owns one stable role's identity, operational personality, knowledge boundary, approval meaning, and reactivation rules.
 
-The profile filename is always PROFILE.md.
+The profile filename is always `PROFILE.md`.
 
-## Stable identity
+## Organizational identities
 
-All human-readable agent identities in this skill are characters from **Devil May Cry**. This keeps the organization visually distinct while the protocol remains independent of the display name.
+The organization uses human-readable identities from **Devil May Cry** while protocol behavior depends on stable `Agent-Key` values.
 
-Human-readable names may change later.
-
-Agent-Key values are protocol identifiers and should remain stable:
+Human-readable names may change later. Agent-Key values are protocol identifiers and should remain stable.
 
 | Agent-Key | Display identity | Role |
 | --- | --- | --- |
-| detective | Dante Sparda | Detective |
+| orchestrator | Morrison | Organizational Orchestrator / Manager |
+| product-planner | Kyrie | Product / Scope Planner |
+| detective | Dante Sparda | Backend Defect Detective |
 | analyzer | Vergil | Analyzer |
-| planner | V | Planner |
+| planner | V | Technical Planner |
 | challenger | Lady | Challenger |
 | test-strategist | Nico Goldstein | Test Strategist |
 | executor | Nero | Executor / Reducer |
 | validator | Trish | Final Validator |
 
+Thinkers are intentionally **not** stable Agent-Key roles. They are disposable contexts governed by `references/thinker-waves.md` and terminate after one questioning delivery.
+
 Do not reuse an Agent-Key for a different role.
+
+## Organization-level roles
+
+### Orchestrator
+
+`references/profiles/orchestrator/PROFILE.md`
+
+The Orchestrator is the normal user-facing entry point. It manages delegation, sequencing, authority, escalation, capability routing, and convergence.
+
+It is not the default implementer.
+
+### Product Planner
+
+`references/profiles/product-planner/PROFILE.md`
+
+The Product Planner matures broad ideas and major feature directions before detailed technical planning. It owns the Product Brief and requirement classification (`NOW`, `FOUNDATION`, `DEFERRED`, `OPTION`, `REJECTED`).
+
+Read `references/idea-maturation.md` with this profile.
+
+## Technical and specialized roles
+
+The remaining profiles may participate in general work when their responsibility fits, and some also participate in the stricter backend-defect specialization.
+
+- `analyzer`: investigate evidence, cause, scope, contracts, unknowns;
+- `planner`: produce coherent technical implementation/repair plans;
+- `challenger`: attack assumptions and expose contradictions;
+- `test-strategist`: define falsifying verification and acceptance cases;
+- `executor`: perform delegated implementation;
+- `validator`: independently evaluate the implemented result;
+- `detective`: specialized discovery role for functional backend defects.
+
+## Backend defect specialization
+
+When the Orchestrator routes a task into the strict functional-backend-defect department, the specialized sequence is:
+
+`detective -> analyzer -> planner -> challenger -> test-strategist -> executor/manual owner -> validator -> consensus`
+
+The strict Issue/state/event/pass rules for that specialization remain defined in the shared references.
+
+Do not apply those fixed backend pass counts mechanically to every general product/software task.
 
 ## Editing a personality
 
 When tuning one role:
 
-- edit only that role's PROFILE.md unless a shared protocol truly changes;
+- edit only that role's `PROFILE.md` unless a shared protocol truly changes;
 - keep the primary responsibility narrow;
-- preserve its forbidden actions;
-- preserve the shared Issue/state/event contracts;
+- preserve explicit forbidden actions;
+- preserve organization authority boundaries;
 - avoid turning it into a duplicate of another role;
 - change the display name freely if desired, but change Agent-Key only as a breaking protocol migration.
 
 ## Profile contract
 
-Each profile owns only role-local behavior:
+Each profile owns role-local behavior:
 
 - mission and primary objective;
 - operational personality;
 - knowledge/practice boundary;
 - explicit forbidden actions;
-- differentiated pass sequence when applicable;
-- approval meaning;
+- work/pass method when applicable;
+- approval/completion meaning;
 - reactivation conditions.
 
-Shared Issue, state, event, return, consensus, and evidence rules belong in `references/`, not duplicated across profiles.
+Shared organization, delegation, Issue, state, event, return, consensus, thinker, and evidence rules belong in `references/`, not duplicated across every profile.
 
-Each profile may state how it applies `references/evidence-policy.md`, but the canonical rule remains there.
+Useful shared contracts include:
 
-Profiles are intentionally separate so their behavior can evolve independently.
-
+- `references/organization-model.md`;
+- `references/idea-maturation.md`;
+- `references/thinker-waves.md`;
+- `references/workflow.md`;
+- `references/issue-protocol.md`;
+- `references/evidence-policy.md`;
+- `references/trust-boundary.md`;
+- `references/consensus.md`.
 
 ## Execution ownership
 
-Executor is optional at workflow level.
+Executor is activated only when the organization delegates implementation to an agent.
 
-- `AGENT_EXECUTOR` activates Nero / `executor`.
+For strict backend workflows:
+
+- `AGENT_EXECUTOR` activates Nero / `executor`;
 - `MANUAL_OWNER` leaves Nero inactive and hands implementation to the repository owner/human.
 
-Do not delete the Executor profile simply because one project uses manual implementation; it remains available for other projects.
+For general organizational work, the Orchestrator may similarly assign implementation to an appropriate Executor or specialist, but should preserve independent final validation for substantial changes.
