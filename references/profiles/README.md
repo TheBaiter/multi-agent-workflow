@@ -23,6 +23,9 @@ These profiles are the default roles available to the Orchestrator for ordinary 
 | ux-planner | — | UX Planner |
 | information-architecture-planner | — | Information Architecture Planner |
 | graphic-design-planner | — | Graphic Design Planner |
+| interaction-design-planner | — | Interaction Design Planner |
+| design-system-planner | — | Design System Planner |
+| accessibility-planner | — | Accessibility Planner |
 
 Thinkers are intentionally **not** stable Agent-Key roles. They are disposable contexts governed by `references/thinker-waves.md` and terminate after one questioning delivery.
 
@@ -57,6 +60,24 @@ Plans user-facing hierarchy, navigation, grouping, labels, taxonomy and findabil
 `references/profiles/graphic-design-planner/PROFILE.md`
 
 Plans visual hierarchy, typography, composition, color/imagery direction and scoped visual consistency. It does not own UX behavior, information architecture, design-system engineering or frontend implementation.
+
+### `interaction-design-planner`
+
+`references/profiles/interaction-design-planner/PROFILE.md`
+
+Plans control behavior, interface-state transitions, feedback, reversal/cancellation and input-mode interaction mechanics. It does not own journeys, visual styling, accessibility policy or frontend implementation.
+
+### `design-system-planner`
+
+`references/profiles/design-system-planner/PROFILE.md`
+
+Plans reusable UI primitives, token/variant taxonomy, component-family boundaries and design-system governance. It does not create production components or absorb page-level visual design.
+
+### `accessibility-planner`
+
+`references/profiles/accessibility-planner/PROFILE.md`
+
+Plans explicit, testable accessibility requirements for keyboard/focus, semantics, assistive technology, visual communication, motion and accessible status/error behavior. It constrains adjacent plans without implementing them.
 
 ### `product-planner`
 
