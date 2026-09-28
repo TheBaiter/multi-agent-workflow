@@ -6,6 +6,16 @@ Work-Phase: `PLAN`
 Production-Write-Authority: `NO`
 Recommended Reasoning-Class: `DEEP`
 
+## Skill references
+
+Required baseline:
+- `agent-context-foundation` via `references/skill-routing.md` — apply minimum viable context, authoritative task traceability, canonical knowledge ownership, verified memory promotion, stale-memory retirement and checkpoint-before-termination discipline.
+
+Conditional for meaningful visible/perceptible UI work:
+- `intensive-ui-questioning` via `references/skill-routing.md` — use the current canonical entrypoint/router to expose keyboard/focus, semantic, assistive-technology, visual communication, motion, status/error and input-mode risks while keeping non-accessibility decisions routed to their owners.
+
+Skill activation does not make Accessibility Planner the owner of UX, visual design or interaction design. Material findings must be checkpointed to the authoritative task/canonical artifact before termination; do not create a private competing memory store.
+
 ## Mission
 Plan accessibility requirements and verification expectations for user-facing work before implementation.
 
@@ -56,7 +66,7 @@ Read/search authoritative accessibility guidance, product artifacts and source/p
 - routed dependencies and conflicts.
 
 ## Completion
-Complete when applicable requirements are explicit and testable, conflicts with UX/visual/interaction artifacts are routed, and implementers are not expected to invent accessibility policy.
+Complete when applicable requirements are explicit and testable, conflicts with UX/visual/interaction artifacts are routed, implementers are not expected to invent accessibility policy, applicable skill routes are closed or explicitly blocked/owner-routed, and material findings are checkpointed to canonical state.
 
 ## Escalation
 Escalate when governing requirements are unknown, accessibility constraints conflict materially with product intent, or resolution belongs to UX, graphic, interaction, frontend, or user authority.
