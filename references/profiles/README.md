@@ -10,7 +10,7 @@ Protocol behavior depends on stable `Agent-Key` values. Display identities may c
 
 Profiles may reference reusable skills in addition to their role contract.
 
-Read `references/skill-routing.md` for the canonical rules.
+Read `references/installation-and-dependencies.md` and `references/skill-routing.md` for the canonical dependency/activation rules.
 
 Every stable profile inherits:
 
@@ -26,9 +26,11 @@ For meaningful visible/perceptible frontend work, the organization conditionally
 
 This is commonly active for UI planners and may also apply to frontend architecture, quality, implementation, review and validation when their assigned artifact is materially visible/perceptible.
 
-For non-trivial delegated intensive-UI work, use `references/ui-questioning-rounds.md` and the dedicated `ui-question-auditor` role. The external skill now requires four fresh questioning rounds by default and five for broad/high-risk/rework-prone cases. Every round uses new concrete auditor identities/names and receives continuity only through canonical persisted state.
+For non-trivial delegated intensive-UI work, use `references/ui-questioning-rounds.md` and the dedicated `ui-question-auditor` role. The external skill requires four fresh questioning rounds by default and five for broad/high-risk/rework-prone cases. Every round uses new concrete auditor identities/names and receives continuity only through canonical persisted state.
 
 Do not copy external skill text into every profile. Profiles inherit/register skill references through `references/skill-routing.md`, while the current canonical external skill remains the procedure source.
+
+A profile reference or GitHub URL is not proof that an external skill is installed. Morrison resolves actual dependency availability before spawn.
 
 ## General organization
 
@@ -51,6 +53,7 @@ Do not copy external skill text into every profile. Profiles inherit/register sk
 | design-system-planner | — | Design System Planner |
 | accessibility-planner | — | Accessibility Planner |
 | frontend-architect | — | Frontend Architect |
+| backend-architect | — | Backend Domain / Service Architect |
 | ui-question-auditor | — | Intensive UI Question / Route Auditor |
 
 Thinkers are intentionally **not** stable Agent-Key roles. They are disposable one-question contexts governed by `references/thinker-waves.md`: one material question (or clean return), then termination.
@@ -179,6 +182,16 @@ Plans frontend module/component boundaries, state ownership, data flow, routing/
 
 Activate `intensive-ui-questioning` when the architecture materially affects visible/perceptible frontend behavior; discovered UI-specialty decisions must be routed to their planners.
 
+### `backend-architect`
+
+`references/profiles/backend-architect/PROFILE.md`
+
+Plans backend domain/service responsibility boundaries, business workflows, invariants, transaction boundaries, concurrency/idempotency requirements, failure/recovery semantics and backend dependency direction.
+
+Route through `references/departments/backend-planning.md`.
+
+It does **not** own public API/transport shape, persistence/data architecture, authentication, authorization, security/threat modeling, observability, performance, production implementation, QA/final validation or the historical functional-backend-defect workflow. Those remain separately contracted specialties or explicit capability gaps.
+
 ### `ui-question-auditor`
 
 `references/profiles/ui-question-auditor/PROFILE.md`
@@ -201,6 +214,7 @@ Before using profiles, the organization may need these shared contracts:
 - `references/plan-reopening.md` — challenge/alternative/risk gate for mature plans;
 - `references/thinker-waves.md` — one Thinker / one question / terminate;
 - `references/orchestration-state.md` — durable state/backlog/batches/questions;
+- `references/installation-and-dependencies.md` — actual skill availability/install-mode contract;
 - `references/skill-routing.md` — inherited/conditional external skills and role-boundary rules;
 - `references/ui-questioning-rounds.md` — fresh 4/5-round intensive-UI questioning integration;
 - `references/idea-maturation.md` — broad product discovery;
@@ -246,6 +260,8 @@ The manifest must also resolve skill references for the assignment:
 
 - `Required-Skills` always includes inherited `agent-context-foundation` for stable roles;
 - `Conditional-Skills` records task-specific skills such as `intensive-ui-questioning` when activated;
+- `Context-Checkpoint-Target` names the authoritative persistence target;
+- dependency state must be verified as actual runtime availability, not inferred from a URL;
 - skill activation must never silently expand `Owned-Decisions`, `Can-Spawn` or `Production-Write-Authority`.
 
 For `ui-question-auditor`, the concrete manifest must additionally record the current questioning round and a unique instance name/identity that has not been used by a terminated auditor.
@@ -289,7 +305,7 @@ Each stable profile should define or inherit:
 - neighboring roles/departments where useful;
 - `Skill-References`, either explicitly in the profile or through `references/skill-routing.md` inheritance.
 
-At minimum, every stable profile inherits `agent-context-foundation`. Additional skills require explicit activation conditions.
+At minimum, every stable profile inherits `agent-context-foundation`. Additional skills require explicit activation conditions and actual availability under `references/installation-and-dependencies.md`.
 
 If a profile becomes saturated with multiple professional responsibilities, subdivide it deliberately rather than continuing to append duties.
 

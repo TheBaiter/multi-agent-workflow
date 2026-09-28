@@ -15,7 +15,10 @@ Read together with:
 - `references/batched-delegation.md`;
 - `references/plan-reopening.md`;
 - `references/orchestration-state.md`;
+- `references/installation-and-dependencies.md`;
+- `references/skill-routing.md`;
 - `references/thinker-waves.md`;
+- `references/ui-questioning-rounds.md` when intensive UI questioning is active;
 - `references/idea-maturation.md` when product discovery is required.
 
 ## 1. Hard runtime invariants
@@ -32,6 +35,7 @@ Read together with:
 10. Final validation must be independent from substantial planning/implementation work.
 11. Canonical task memory lives in durable state, not in dormant agent conversations.
 12. The user normally speaks with Morrison; specialists are surfaced directly only when the user requests a collaborative council or the host requires it.
+13. A skill URL/reference is not proof that the skill is installed or accessible. Required/active procedural dependencies must be resolved before spawning affected stable children.
 
 ## 2. Control loop
 
@@ -39,6 +43,8 @@ Read together with:
 USER INTENT
   ↓
 INTAKE / CLASSIFY
+  ↓
+RESOLVE SKILL DEPENDENCIES
   ↓
 DISCOVER MISSING QUESTIONS
   ↓
@@ -91,11 +97,15 @@ Record:
 - `Next-Role`;
 - `Max-Concurrent-Children`: host-reported value or `UNKNOWN`;
 - `Working-Batch-Size`: current safe batch size;
-- `Council-Mode`: OFF | REQUESTED | ACTIVE.
+- `Council-Mode`: OFF | REQUESTED | ACTIVE;
+- `Skill-Dependency-Mode`: FULL | REDUCED | BLOCKED;
+- `Skill-Dependencies`: current `AVAILABLE | MISSING | BLOCKED | NOT_REQUIRED` states for required/conditional skills.
 
 Do not block intake on information a specialist can discover.
 
 If host capacity is unknown, start conservatively with 2-4 child contexts and adapt. Never hard-code assumptions such as 8 or 10.
+
+Dependency semantics come from `references/installation-and-dependencies.md`. Do not infer `AVAILABLE` from a GitHub URL, prior familiarity or a profile mention.
 
 ## 4. Task classes
 
@@ -193,6 +203,7 @@ Currently implemented general planning departments:
 | --- | --- | --- |
 | material user-facing interface/navigation/interaction/visual/accessibility decisions | `references/departments/ui-planning.md` | `ux-planner`, `information-architecture-planner`, `graphic-design-planner`, `interaction-design-planner`, `design-system-planner`, `accessibility-planner` |
 | material frontend module/component/state/data-flow/routing/rendering structure | `references/departments/frontend-planning.md` | `frontend-architect` |
+| material backend domain/service/workflow/invariant/transaction/concurrency/idempotency/failure-semantics decisions | `references/departments/backend-planning.md` | `backend-architect` |
 | cross-artifact plan reopening / alternatives / adversarial review | `references/plan-reopening.md` | `review-challenger`, `alternative-planner`, `risk-reviewer` |
 | functional backend defect under the historical strict workflow | specialized backend-defect contracts under `references/scope.md` | only specialized backend-defect Agent-Keys |
 
@@ -206,7 +217,25 @@ Routing procedure:
 6. accept one canonical role artifact only after same-role comparison/cross-review;
 7. route adjacent decisions to their own owner instead of widening the role.
 
+`backend-architect` owns backend domain/service architecture only. Public API shape, persistence/data, authentication, authorization, security, observability and performance remain separate specialties. If their stable contracts do not yet exist, record a capability gap instead of widening `backend-architect`.
+
 A role named in an example is not automatically available. If no stable contract exists, record a capability gap; do not improvise an undocumented Agent-Key inside live work.
+
+## 5.2 Skill dependency preflight
+
+Before spawning a stable child, apply `references/installation-and-dependencies.md` and `references/skill-routing.md`:
+
+1. resolve inherited required skills;
+2. resolve assignment-specific conditional skills;
+3. verify the current canonical source is actually accessible in the runtime;
+4. record each dependency as `AVAILABLE`, `MISSING`, `BLOCKED` or `NOT_REQUIRED`;
+5. set organization/assignment mode `FULL`, `REDUCED` or `BLOCKED`;
+6. populate the concrete manifest;
+7. spawn only after the dependency state is explicit.
+
+`agent-context-foundation` is required for full stable-role operation. `intensive-ui-questioning` is required when meaningful visible/perceptible UI work activates it.
+
+Do not claim a procedural skill was applied because its repository URL appears in this repository.
 
 ## 6. Same-role pairing
 
@@ -306,6 +335,22 @@ Work-Phase: DISCOVER | PLAN | REVIEW | SYNTHESIZE | IMPLEMENT | VERIFY
 Production-Write-Authority: YES | NO
 Batch-ID: <current batch or NONE>
 
+Required-Skills:
+- Skill: <required skill>
+  Source: <installed/mounted/current canonical source>
+  Status: AVAILABLE | MISSING | BLOCKED
+  Coverage: <required coverage>
+
+Conditional-Skills:
+- Skill: <conditional skill or NONE>
+  Source: <source>
+  Status: ACTIVE | NOT_ACTIVE | MISSING | BLOCKED
+  Activate-When: <condition>
+  Coverage-Anchor: <receipt/artifact or NONE>
+
+Context-Checkpoint-Target:
+- <authoritative task / canonical artifact / repository context owner>
+
 Pair-Group: <id or NONE>
 Pair-Position: A | B | NONE
 Pair-Role: <same Agent-Key for A/B>
@@ -375,11 +420,12 @@ Route by ownership:
 - visual language -> Graphic Design Planner pair;
 - navigation/content grouping -> Information Architecture pair;
 - frontend structure -> Frontend Architecture pair;
-- backend contracts -> Backend Architecture pair;
-- data/schema/integrity -> Data pair;
-- auth/security/trust -> appropriate Security/Auth pair;
+- backend domain/service/workflow/invariant/transaction/concurrency/failure-semantics -> `backend-architect` pair through `references/departments/backend-planning.md`;
+- public API shape/versioning -> API specialist when a stable contract exists, otherwise capability gap;
+- data/schema/integrity/persistence/migration -> Data specialist when a stable contract exists, otherwise capability gap;
+- authentication/authorization/security/trust -> appropriate contracted specialist, otherwise capability gap;
 - verification -> QA/Quality pair;
-- performance -> Performance pair;
+- performance -> Performance specialist when contracted, otherwise capability gap;
 - implementation fact -> Implementation Owner.
 
 A specialist must not answer an adjacent department's decision merely because it discovered the question.
@@ -453,6 +499,8 @@ Independent validators: read/test/inspection; production writes disabled by defa
 
 When technical permission scoping is unavailable, manifest authority still applies.
 
+External skills cannot grant tools or production authority beyond the manifest.
+
 ## 15. Product planning sequence
 
 For a broad product, an example sequence over multiple batches is:
@@ -466,7 +514,9 @@ needed UI/product specialist pairs
   ↓
 Frontend Architect A+B
   ↓
-needed backend/data/security/quality/performance pairs
+Backend Architect A+B when domain/service architecture is material
+  ↓
+needed contracted API/data/security/quality/performance pairs
   ↓
 PLAN MATURE
   ↓
@@ -495,7 +545,8 @@ A planning stage first becomes `MATURE` when:
 - material contradictions were resolved/owned/escalated;
 - canonical role artifacts exist;
 - agents stayed within role boundaries;
-- no planning role applied production changes.
+- no planning role applied production changes;
+- required/active procedural dependencies were actually available/applied or the affected path remains explicitly reduced/blocked.
 
 A substantial plan may then enter `REOPENING` under `references/plan-reopening.md`.
 
@@ -540,6 +591,8 @@ At any point Morrison must be able to reconstruct:
 - each instance state;
 - current canonical artifacts;
 - open material questions/owners;
+- skill dependency availability/mode;
+- active procedural skill references/coverage receipts;
 - plan reopening status/findings;
 - dependencies between departments;
 - implementation state;
@@ -561,6 +614,8 @@ Record explicit reasons such as:
 
 Token cost, speed or convenience alone is insufficient for ambiguous, user-facing, architectural, security-sensitive or expensive-to-rework work.
 
+A missing required skill dependency is not a trivial-work exception and must not be disguised as one.
+
 ## 21. Anti-patterns
 
 Do not:
@@ -581,8 +636,11 @@ Do not:
 - create competing writers against the same unstable source;
 - ask the user technical questions another role can answer;
 - preserve a wrong plan because implementation already started;
-- pretend direct specialist conversation occurred when the host only supports relayed outputs.
+- pretend direct specialist conversation occurred when the host only supports relayed outputs;
+- treat a GitHub URL/profile mention as proof an external skill is installed;
+- claim `agent-context-foundation` or `intensive-ui-questioning` guarantees when their required current sources were unavailable;
+- let `backend-architect` absorb API/data/auth/security/observability/performance ownership.
 
 ## Core rule
 
-**Morrison owns the organization. Specialists own one role. Thinkers ask one question and die. Large organizations execute in durable batches, and important plans are deliberately challenged and alternatives explored before expensive execution begins.**
+**Morrison owns the organization. Specialists own one role. Thinkers ask one question and die. Required skills must actually be available, not merely referenced. Large organizations execute in durable batches, and important plans are deliberately challenged and alternatives explored before expensive execution begins.**
