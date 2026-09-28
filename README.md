@@ -2,13 +2,13 @@
 
 [![skills.sh](https://skills.sh/b/TheBaiter/multi-agent-workflow)](https://skills.sh/TheBaiter/multi-agent-workflow)
 
-Skill experimental para organizar trabajo de producto y desarrollo como una **organización de agentes reales**, con un Orchestrator como única interfaz normal con el usuario.
+Skill experimental para organizar trabajo de producto y desarrollo como una **organización de agentes reales**, con un Orchestrator como interfaz normal con el usuario.
 
-La idea central es sencilla:
+La idea central:
 
 > el usuario administra la intención; el Orchestrator administra la organización.
 
-El objetivo no es sumar agentes por sumar agentes. Es reducir retrabajo separando responsabilidades, haciendo preguntas antes de que el código congele decisiones incompletas y evitando que el mismo contexto sea quien idea, implementa y aprueba todo.
+El objetivo no es sumar agentes por sumar agentes. Es reducir retrabajo separando responsabilidades, descubriendo preguntas antes de que el código congele decisiones incompletas y evitando que el mismo contexto sea quien idea, implementa y aprueba todo.
 
 ## Modelo general
 
@@ -16,15 +16,13 @@ El objetivo no es sumar agentes por sumar agentes. Es reducir retrabajo separand
 USER
   ↓
 ORCHESTRATOR
-  ↓
-DELEGATED WORK OWNER
   ├─ Product Planner
-  ├─ Analyzer / Researcher
+  ├─ Researcher
   ├─ Technical Planner
-  ├─ Challenger
-  ├─ Test Strategist
-  ├─ Executor
-  ├─ Validator
+  ├─ Review Challenger
+  ├─ Quality Strategist
+  ├─ Implementation Owner
+  ├─ Independent Validator
   └─ Ephemeral Thinker Waves
 ~~~
 
@@ -37,27 +35,126 @@ Normalmente el usuario habla sólo con el Orchestrator.
 Su trabajo es:
 
 - entender el objetivo;
-- detectar qué información realmente falta;
-- evitar preguntarle al usuario cosas que el propio proyecto puede responder;
-- elegir quién debe trabajar;
-- delegar;
+- separar decisiones del usuario de incógnitas que la organización puede resolver;
+- clasificar el tipo de tarea;
+- elegir el siguiente dueño del trabajo;
+- crear un contrato explícito para cada subagente;
 - decidir secuencia y paralelismo;
-- asignar capacidad/razonamiento según dificultad cuando el runtime lo permita;
+- asignar capacidad/razonamiento según dificultad;
+- controlar qué puede tocar cada agente;
+- conocer el estado de cada contexto activo;
 - recibir resultados y objeciones;
 - escalar únicamente decisiones que requieren autoridad del usuario;
+- terminar contextos que ya cumplieron su función;
 - devolver una síntesis coherente.
 
 El Orchestrator **no es el programador por defecto**.
 
-No debería hacer todo el análisis, escribir el plan, implementar y luego validarse a sí mismo cuando existen subagentes reales disponibles.
+Contratos principales:
 
-Su perfil está en:
+- `references/profiles/orchestrator/PROFILE.md`
+- `references/orchestrator-runtime.md`
+- `references/organization-model.md`
+- `references/orchestration-state.md`
 
-`references/profiles/orchestrator/PROFILE.md`
+## El Orchestrator no improvisa agentes
 
-El modelo organizacional completo está en:
+Cada subagente estable nace con un `AGENT-MANIFEST`.
 
-`references/organization-model.md`
+Conceptualmente:
+
+~~~text
+AGENT-MANIFEST
+
+Agent-Key: technical-planner
+Parent: orchestrator
+Task-Type: TECHNICAL_CHANGE
+Reasoning-Class: DEEP
+Lifecycle-State: CREATED
+
+Objective:
+Diseñar el cambio X sin implementar.
+
+Inputs:
+- Product Brief actual
+- repositorio/contratos relevantes
+
+Owned-Decisions:
+- arquitectura y estrategia técnica dentro del scope aprobado
+
+Must-Not:
+- cambiar producto
+- escribir producción
+- aprobar su propio plan como validación final
+
+Can-Spawn:
+- THINKERS_ONLY
+- researcher
+
+Expected-Return:
+- TECHNICAL-PLAN
+
+Completion-Criteria:
+- plan implementable + acceptance explícita + sin huecos materiales abiertos
+
+Escalate-When:
+- falta decisión de producto
+- evidencia técnica insuficiente
+~~~
+
+El perfil define **qué clase de empleado es**.
+
+El manifest define **qué trabajo concreto tiene permitido realizar esta instancia**.
+
+## Clasificación de tareas
+
+El Orchestrator utiliza tipos explícitos:
+
+- `IDEA_OR_PRODUCT`
+- `TECHNICAL_CHANGE`
+- `INVESTIGATION`
+- `IMPLEMENTATION`
+- `VALIDATION`
+- `FUNCTIONAL_BACKEND_DEFECT`
+- `TRIVIAL`
+
+Ejemplos:
+
+- una idea nueva -> Product Planner;
+- una duda técnica/repo/documentación -> Researcher;
+- comportamiento claro pero diseño pendiente -> Technical Planner;
+- plan aprobado -> Implementation Owner;
+- resultado terminado -> Independent Validator;
+- bug funcional backend que cumple el scope estricto -> departamento especializado.
+
+El tipo puede cambiar cuando aparece nueva evidencia.
+
+## Perfiles generales
+
+~~~text
+references/profiles/
+  orchestrator/
+  product-planner/
+  researcher/
+  technical-planner/
+  review-challenger/
+  quality-strategist/
+  implementation-owner/
+  independent-validator/
+~~~
+
+Responsabilidades:
+
+- `orchestrator`: organización, routing, autoridad, lifecycle y convergencia;
+- `product-planner`: producto, alcance y Product Brief;
+- `researcher`: hechos, evidencia, comportamiento actual, documentación y factibilidad;
+- `technical-planner`: diseño técnico y contrato de implementación;
+- `review-challenger`: ataque adversarial a artefactos maduros;
+- `quality-strategist`: criterios falsables y estrategia de verificación;
+- `implementation-owner`: implementación fiel del plan;
+- `independent-validator`: evaluación final fresca e independiente.
+
+Los perfiles históricos `detective/analyzer/planner/challenger/test-strategist/executor/validator` pertenecen al departamento estricto de bugs backend y **no son aliases de estos roles generales**.
 
 ## Madurar ideas antes de programar
 
@@ -133,6 +230,54 @@ Contrato:
 
 `references/thinker-waves.md`
 
+## Estados de los agentes
+
+Los subagentes estables utilizan un lifecycle común:
+
+- `CREATED`
+- `WORKING`
+- `QUESTIONING`
+- `WAITING_PARENT`
+- `WAITING_CHILD`
+- `BLOCKED`
+- `RETURNED_COMPLETE`
+- `RETURNED_INCONCLUSIVE`
+- `RETURNED_REJECTED`
+- `TERMINATED`
+
+Thinkers:
+
+`CREATED -> WORKING -> RETURNED -> TERMINATED`
+
+Un `RETURNED_COMPLETE` significa que ese agente terminó **su encargo**, no que todo el proyecto esté aprobado.
+
+## Estado canónico de la organización
+
+El chat del Orchestrator no debería ser la única memoria de quién está haciendo qué.
+
+`references/orchestration-state.md` define un estado durable con:
+
+- objetivo;
+- Task-Type;
+- riesgo;
+- gate actual;
+- decisiones fijas;
+- preguntas materiales abiertas y su dueño;
+- artefactos canónicos;
+- agentes activos;
+- parent de cada agente;
+- Reasoning-Class;
+- lifecycle;
+- qué espera cada uno;
+- gates pasados/stale;
+- siguiente acción.
+
+Principio:
+
+> la organización puede olvidar conversaciones; no puede olvidar estado.
+
+Esto permite matar y recrear contextos sin depender de memoria conversacional.
+
 ## Todos tienen voz, no todos tienen autoridad
 
 Los agentes pueden cuestionarse entre sí.
@@ -146,9 +291,9 @@ User
   ↓
 Orchestrator
   ↓
-Delegated owner
+Delegated Work Owner
   ↓
-Specialists
+Supporting Specialist / Thinker
 ~~~
 
 Una pregunta se resuelve en el nivel más bajo que realmente posee esa decisión.
@@ -157,92 +302,104 @@ Si evidencia, documentación, tests, código o un especialista pueden responderl
 
 El usuario recibe preguntas sólo cuando son realmente decisiones de producto, alcance, preferencia, información externa o aceptación de riesgo bajo su autoridad.
 
-## Delegación recursiva
+## Delegación recursiva controlada
 
-Un Planner o dueño de trabajo puede levantar sus propios ayudantes.
+Un dueño de trabajo puede levantar ayudantes únicamente si su manifest lo autoriza.
 
-Por ejemplo:
+Profundidad normal:
 
 ~~~text
-Orchestrator
-  ↓
-Planner
-  ├─ Thinker A
-  ├─ Thinker B
-  ├─ Security specialist
-  └─ Test strategist
+User
+  -> Orchestrator
+       -> Work Owner
+            -> Specialist / Thinker
 ~~~
 
-Pero cada agente debe tener:
+No se busca un swarm.
 
-- un objetivo concreto;
-- un padre al que retornar;
-- autoridad explícita;
-- contexto canónico;
-- un resultado esperado;
-- una condición de escalamiento.
+El Orchestrator siempre debería poder responder:
 
-La intención es construir una organización, no un swarm sin dueño.
+- qué agentes están activos;
+- quién es el parent de cada uno;
+- qué posee cada uno;
+- qué estado tiene;
+- qué artefacto debe devolver;
+- qué está esperando;
+- cuáles pueden morir ahora.
+
+Si no puede reconstruir eso, debe reparar el estado organizacional antes de seguir creando agentes.
 
 ## Modelos y niveles de razonamiento
 
 La jerarquía organizacional no implica que el manager deba ser el modelo más costoso.
 
-Cuando el runtime lo permita, el Orchestrator puede enrutar capacidad por necesidad:
+Cuando el runtime lo permita:
 
-- `LIGHT`: coordinación, routing, estado, chequeos mecánicos;
+- `LIGHT`: coordinación, routing, estado, extracción mecánica;
 - `STANDARD`: implementación normal, investigación acotada, pruebas rutinarias;
-- `DEEP`: arquitectura ambigua, planificación costosa, debugging complejo, challenge adversarial, migraciones, concurrencia, integridad y validación crítica;
-- `SPECIALIST`: capacidades/herramientas específicas.
+- `DEEP`: product discovery, arquitectura ambigua, root cause, security, challenge adversarial, migraciones, concurrencia, integridad y validación importante;
+- `MAX`: decisiones de impacto/ambigüedad extraordinarios donde un error sería muy caro.
+
+Las herramientas especialistas son otra dimensión distinta al Reasoning-Class.
 
 Es válido usar un Orchestrator relativamente liviano si sabe detectar incertidumbre, delegar y escalar correctamente.
 
-No es válido ahorrar capacidad asignando deliberadamente un agente insuficiente a una decisión cara o irreversible.
-
 ## Separar plan, ejecución y validación
 
-Para trabajo sustancial se prefiere:
+Para trabajo sustancial general:
 
 ~~~text
-Planner / Owner
+Product/Objective maturity
       ↓
-Executor
+Technical Planner
+      ↓
+Review Challenger / Quality Strategist
+      ↓
+Implementation Owner
       ↓
 Independent Validator
 ~~~
 
-El Executor puede devolver una planificación si descubre que no se puede implementar sin alterar una premisa.
+El Implementation Owner puede devolver la planificación si descubre que no se puede implementar sin alterar una premisa.
 
 No debería rediseñar silenciosamente el contrato.
 
-El Validator recibe requisitos y evidencia actuales, no una orden de "confirmar que el Executor está bien".
+El Validator recibe requisitos y evidencia actuales, no una orden de "confirmar que el implementador está bien".
 
-## Estado canónico
+## Tool boundaries
 
-La conversación de un agente no debería ser la única memoria del proyecto.
+Cuando el runtime permita limitar herramientas:
 
-La organización necesita un artefacto canónico apropiado al entorno: Issue, documento de tarea, Product Brief, plan técnico u otro estado durable.
+- Researcher -> lectura/search/docs/repositorio;
+- Product Planner -> lectura, sin writes de producción;
+- Technical Planner -> lectura/análisis, sin writes de producción;
+- Thinker -> read-only;
+- Review Challenger -> read/inspect;
+- Quality Strategist -> diseño/ejecución de verificación cuando aplique;
+- Implementation Owner -> write/build/test según plan;
+- Independent Validator -> read/inspect/test, production writes desactivados por defecto.
 
-Como mínimo debería permitir reconstruir:
+Si el runtime no puede restringir técnicamente las herramientas, el manifest sigue siendo la frontera de autoridad.
 
-- objetivo;
-- scope;
-- decisiones fijas;
-- preguntas abiertas;
-- evidencia;
-- dueño/etapa actual;
-- plan vigente;
-- estado de implementación;
-- estado de validación;
-- siguiente acción.
+## Gates
 
-Esto permite matar/recrear agentes sin perder el proyecto.
+El Orchestrator no avanza por confianza verbal.
+
+Los gates principales son:
+
+- Product Gate;
+- Plan Gate;
+- Execution Gate;
+- Validation Gate;
+- User Decision Gate.
+
+Un cambio material upstream puede marcar downstream como `STALE` y obligar a reevaluar solamente las partes afectadas.
 
 ## Departamento especializado: backend functional defects
 
 El workflow original no desapareció.
 
-Ahora funciona como un **departamento especializado** que el Orchestrator puede activar cuando existe un defecto funcional backend real.
+Funciona como un **departamento especializado** que el Orchestrator activa cuando existe un defecto funcional backend real.
 
 ~~~text
 Detective
@@ -262,7 +419,7 @@ Validator
 Consensus / Close
 ~~~
 
-Ese protocolo mantiene sus reglas estrictas:
+Ese protocolo conserva sus reglas estrictas:
 
 - scope funcional backend;
 - pases diferenciados;
@@ -274,23 +431,10 @@ Ese protocolo mantiene sus reglas estrictas:
 - evidencia;
 - aprobación unánime para cierre.
 
-Contratos relacionados:
-
-- `references/scope.md`
-- `references/workflow.md`
-- `references/state-machine.md`
-- `references/issue-protocol.md`
-- `references/evidence-policy.md`
-- `references/consensus.md`
-
-Estas restricciones no se aplican mecánicamente a cualquier trabajo general.
-
-## Perfiles
+Perfiles especializados:
 
 ~~~text
 references/profiles/
-  orchestrator/
-  product-planner/
   detective/
   analyzer/
   planner/
@@ -300,7 +444,7 @@ references/profiles/
   validator/
 ~~~
 
-Los Thinkers no tienen perfil persistente: son contextos efímeros.
+Estas restricciones no se aplican mecánicamente a cualquier trabajo general.
 
 ## Companion: agent-context-foundation
 
@@ -319,7 +463,8 @@ Para ejecutar el protocolo completo se necesita:
 
 - runtime capaz de levantar subagentes/contextos realmente aislados;
 - acceso al repositorio/evidencia necesaria;
-- acceso al estado durable que gobierna la tarea.
+- acceso al estado durable que gobierna la tarea;
+- idealmente, capacidad de elegir reasoning/model/tools por agente.
 
 Si no existen subagentes reales, puede utilizarse un modo degradado, pero no debería afirmarse que hubo independencia multi-agente.
 
