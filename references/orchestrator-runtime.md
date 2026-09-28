@@ -4,502 +4,460 @@
 
 This document is the operational manual for the user-facing Orchestrator.
 
-The Orchestrator must not invent a new organization from scratch every time it receives a task. It should classify the work, choose the smallest useful set of roles, create bounded child-agent contracts, track their lifecycle, resolve or route questions, and converge on a validated result.
+The Orchestrator must not invent a new organization from scratch for every task. It classifies the work, selects narrowly defined roles, creates **same-role A/B pairs** for non-trivial planning/reasoning, tracks lifecycle and canonical state, routes questions to the correct specialist, and only then advances into execution and independent validation.
 
-Read this document together with:
+Read together with:
 
 - `references/profiles/orchestrator/PROFILE.md`;
 - `references/organization-model.md`;
+- `references/role-purity.md`;
+- `references/paired-delegation.md`;
+- `references/orchestration-state.md`;
 - `references/thinker-waves.md`;
 - `references/idea-maturation.md` when product discovery is required.
 
-## 1. Orchestrator control loop
+## 1. Hard runtime invariants
 
-For every non-trivial user request, run this control loop:
+1. One agent instance has one stable professional role.
+2. Non-trivial cognitive/planning work normally uses at least two isolated instances of the same role.
+3. Different specialties do not satisfy the same-role pair requirement.
+4. Planning/design/research/Thinker roles normally have no production-write authority.
+5. Thinkers only discover gaps/questions and terminate after one return.
+6. Implementation is a later, separate responsibility.
+7. Final validation must be independent from substantial planning/implementation work.
+8. Canonical task memory lives in durable state, not in dormant agent conversations.
+
+## 2. Control loop
 
 ~~~text
 INTAKE
   ↓
 CLASSIFY
   ↓
-SELECT WORK OWNER
+DISCOVER MISSING QUESTIONS
   ↓
-SPAWN / DELEGATE
+SELECT NEXT ATOMIC ROLE
   ↓
-COLLECT RESULT
+SPAWN ROLE A + ROLE B
   ↓
-QUESTION / CHALLENGE / ROUTE
+INDEPENDENT WORK
   ↓
-CONVERGENCE CHECK
-  ├─ unresolved material gap -> delegate again
-  ├─ user-authority decision -> escalate to user
-  ├─ plan mature -> execute
-  ├─ implementation complete -> validate
-  └─ validated -> report / close
+COMPARE / SAME-ROLE CROSS-REVIEW
+  ↓
+RESOLVE CONTRADICTIONS
+  ↓
+CANONICAL ROLE ARTIFACT
+  ↓
+NEXT ROLE NEEDED?
+  ├─ yes -> repeat with next same-role pair
+  └─ no  -> next gate
+  ↓
+IMPLEMENT
+  ↓
+INDEPENDENTLY VALIDATE
+  ↓
+REPORT / CLOSE
 ~~~
 
-The Orchestrator repeats the loop. It does not replace the agents inside it.
+The Orchestrator repeats the loop; it does not replace the agents inside it.
 
-## 2. Intake contract
+## 3. Intake contract
 
-Before spawning work, record the minimum canonical intake:
+Record:
 
-- `Objective`: what outcome the user wants;
-- `Task-Type`: current classification;
-- `Known-Context`: facts already supplied or authoritative project state;
-- `Constraints`: explicit limits, technologies, deadlines, compatibility requirements, forbidden changes, or user preferences;
-- `Current-Artifact`: Issue, Product Brief, plan, code state, PR, document, or other canonical work product;
-- `Authority-Gaps`: decisions that only the user can make;
-- `Technical-Unknowns`: questions the organization should answer internally;
+- `Objective`;
+- `Task-Type`;
+- `Known-Context`;
+- `Constraints`;
+- `Current-Artifact`;
+- `Authority-Gaps`;
+- `Technical-Unknowns`;
 - `Risk-Level`: LOW | MEDIUM | HIGH;
-- `Next-Owner`: role that owns the next substantive result.
+- `Current-Gate`;
+- `Next-Role`.
 
-Do not block intake on information that a specialist can discover.
+Do not block intake on information a specialist can discover.
 
-## 3. Task classification
-
-Choose the closest current class. Reclassify if evidence changes the nature of the task.
+## 4. Task classes
 
 ### IDEA_OR_PRODUCT
 
-Use when the user has an idea, new product, major feature family, platform direction, or redesign whose boundaries are not mature.
+Use for a new product, broad idea, feature family, platform direction or major redesign whose product frame is not mature.
 
-Default owner: `product-planner`.
+Typical start:
 
-Typical supporting work:
-
-- Thinker Waves;
-- `researcher` for market/domain/technical facts;
-- later `technical-planner`.
-
-Do not begin substantial implementation until the Product Brief is mature enough for the current risk level.
+- recurrent paired Thinker Waves;
+- `product-planner` A+B;
+- additional specialist planning pairs as required.
 
 ### TECHNICAL_CHANGE
 
-Use when desired behavior is sufficiently known but implementation strategy is not.
+Desired behavior is sufficiently known, but technical realization is not mature.
 
-Default owner: `technical-planner`.
+Typical start:
 
-Typical supporting work:
-
-- `researcher`;
-- Thinker Wave;
-- quality/test specialist;
-- implementation owner;
-- independent validator.
+- `researcher` A+B when facts remain uncertain;
+- `technical-planner` A+B;
+- downstream specialist pairs for frontend/backend/data/security/quality where required.
 
 ### INVESTIGATION
 
-Use when the main problem is uncertainty: how something works, why it fails, what a repository currently does, feasibility, compatibility, external documentation, or competing technical explanations.
+Main problem is uncertainty about current behavior, cause, feasibility, compatibility or evidence.
 
-Default owner: `researcher` or a specialized analyzer.
-
-Do not ask an Executor to discover the requirements by coding.
+Default: `researcher` A+B for non-trivial ambiguity.
 
 ### IMPLEMENTATION
 
-Use when a sufficiently mature approved plan already exists.
+A sufficiently mature approved plan already exists.
 
-Default owner: `implementation-owner` for general work or specialized `executor` for the strict backend-defect workflow.
+Default: implementation role with explicit write authority.
 
-Implementation must return to planning when a material plan assumption fails.
+Do not use implementation to discover unresolved product/design requirements.
 
 ### VALIDATION
 
-Use when an artifact or implementation already exists and needs independent evaluation.
+An artifact/implementation exists and needs independent evaluation.
 
-Default owner: `independent-validator` for general work or specialized `validator` in the backend-defect workflow.
+Default: fresh validation role(s), separate from authorship.
 
 ### FUNCTIONAL_BACKEND_DEFECT
 
-Use when the strict defect criteria in `references/scope.md` are met.
-
-Route into the existing specialized department and its stricter state/Issue/pass/consensus rules.
-
-Do not force unrelated general work into the backend-defect pipeline.
+Route to the strict historical backend-defect department and its specialized contracts.
 
 ### TRIVIAL
 
-Use for tiny, low-risk, fully specified actions where delegation would cost more than the separation provides.
+Tiny, low-risk, fully specified action. Pairing may be skipped only with an explicit `Pairing-Exception`.
 
-The Orchestrator may handle coordination/bookkeeping directly. Substantive code changes should still be delegated when practical.
+## 5. Atomic role selection
 
-## 4. Role selection matrix
+The Orchestrator selects the **next one responsibility**, not a composite expert.
 
-| Need | Preferred role/context | Why |
-| --- | --- | --- |
-| mature a broad idea | `product-planner` | owns user/product frame and Product Brief |
-| discover facts / repository behavior / docs | `researcher` | evidence gathering without implementation ownership |
-| design a general technical solution | `technical-planner` | owns architecture/change plan, not code |
-| expose missing questions | fresh Thinker Wave | disposable independent questioning |
-| adversarially attack a mature artifact | challenger/reviewer appropriate to department | tries to disprove assumptions |
-| define acceptance/tests | quality/test strategist appropriate to department | owns verification contract |
-| implement an approved plan | `implementation-owner` or specialized executor | edits/executes without redefining scope |
-| independently judge final result | `independent-validator` or specialized validator | separate author from final judge |
-| functional backend bug | strict backend department | uses existing evidence/pass/Issue protocol |
+Examples of atomic planning responsibilities:
 
-Do not spawn a role merely because it exists. Spawn it because it owns a distinct decision or artifact.
+- product planning;
+- UX planning;
+- information architecture;
+- graphic/visual design planning;
+- interaction design planning;
+- design-system planning;
+- accessibility planning;
+- frontend architecture;
+- backend architecture;
+- API design;
+- data architecture;
+- authentication planning;
+- authorization planning;
+- security/threat planning;
+- QA strategy;
+- test automation planning;
+- performance planning;
+- observability planning;
+- deployment/DevOps planning;
+- maintainability/refactoring planning;
+- redundancy/duplication analysis;
+- documentation planning.
 
-## 5. Reasoning / capability classes
+Do not collapse several of these into one role merely because they are adjacent.
 
-When the runtime supports model or reasoning selection, route by cognitive need, not hierarchy.
+A role may be instantiated only when the repository defines or deliberately creates a clear contract for it.
 
-### LIGHT
+## 6. Same-role pairing
 
-Use for:
+For a non-trivial role stage:
 
-- coordination;
-- state routing;
-- simple extraction;
-- formatting;
-- deterministic bookkeeping;
-- narrow low-risk lookup.
+~~~text
+Role A + Role B
+same Agent-Key
+same role contract
+same objective class
+same canonical inputs
+same authority boundary
+initially isolated
+~~~
 
-Expected behavior: fast, bounded, no speculative architecture.
+Both independently produce the same artifact class.
 
-### STANDARD
+Then:
 
-Use for:
+1. compare agreements;
+2. compare contradictions;
+3. capture unique findings;
+4. capture assumptions only one made;
+5. perform same-role cross-review;
+6. route external questions to other roles;
+7. resolve/integrate/reject/escalate material differences;
+8. write one canonical role artifact.
 
-- straightforward implementation from a mature plan;
-- ordinary repository inspection;
-- routine tests;
-- narrow technical analysis with clear contracts.
+Never substitute a different specialty for B.
 
-### DEEP
+## 7. Thinker Wave runtime
 
-Use for:
+A non-trivial Thinker Wave normally contains at least two fresh Thinkers.
 
-- product maturation;
-- ambiguous technical planning;
-- root-cause analysis;
-- architecture with several interacting constraints;
-- security/permissions reasoning;
-- migrations/data integrity;
-- adversarial challenge;
-- final validation of substantial changes.
+~~~text
+Wave N
+  Thinker A -> questions/gaps -> terminate
+  Thinker B -> questions/gaps -> terminate
+  parent deduplicates/routes
+  owners answer/update canonical state
 
-### MAX / HIGHEST AVAILABLE
+Wave N+1
+  entirely new Thinker A+B
+~~~
 
-Use only when impact and ambiguity justify it, for example:
+Thinkers do not plan the solution and never receive production-write authority.
 
-- irreversible/high-risk migrations;
-- security-sensitive architecture;
-- large cross-system redesign;
-- unresolved contradictions after normal DEEP review;
-- tasks where a wrong foundation would cause extensive rework.
+Continue waves until no new material gap appears under the configured convergence threshold, or until unresolved uncertainty must be escalated.
 
-A task may use different classes for different agents.
+## 8. Agent Manifest
 
-The Orchestrator itself can remain LIGHT or STANDARD if it reliably recognizes uncertainty and delegates it.
-
-## 6. Child Agent Manifest
-
-Every stable child agent must be created from an explicit manifest. Do not spawn with only a role name and vague instruction.
-
-Minimum contract:
+Every stable child requires:
 
 ~~~text
 AGENT-MANIFEST
 
-Agent-Instance: <unique runtime id/name>
-Agent-Key: <stable role key>
-Role: <role>
-Parent: <orchestrator or delegated owner>
+Agent-Instance: <unique runtime id>
+Agent-Key: <one stable role key>
+Role: <one professional responsibility>
+Parent: <parent instance/key>
 Task-Type: <classification>
 Reasoning-Class: LIGHT | STANDARD | DEEP | MAX
 Lifecycle-State: CREATED
+Work-Phase: DISCOVER | PLAN | REVIEW | SYNTHESIZE | IMPLEMENT | VERIFY
+Production-Write-Authority: YES | NO
+
+Pair-Group: <id or NONE>
+Pair-Position: A | B | NONE
+Pair-Role: <same Agent-Key for A/B>
+Independence-Requirement: INITIAL_ISOLATION | NONE
+Peer-Artifact-Visibility: NONE_UNTIL_FIRST_RETURN | AFTER_FIRST_RETURN | N/A
 
 Objective:
-<one concrete result this agent owns>
+<one bounded result>
 
 Inputs:
 - <canonical artifact/evidence anchors>
 
 Owned-Decisions:
-- <decisions this agent may make>
+- <decisions belonging to this role>
 
 Must-Not:
-- <explicit forbidden actions>
+- <adjacent responsibilities and forbidden actions>
 
 Can-Spawn:
-- <NONE | THINKERS_ONLY | NAMED_SUPPORT_ROLES | DELEGATED_OWNER>
+- <NONE | THINKERS_ONLY | NAMED_SUPPORT_REQUESTS>
 
 Expected-Return:
-- <artifact / decision / evidence report>
+- <role-specific artifact/report>
 
 Completion-Criteria:
-- <observable condition for RETURNED_COMPLETE>
+- <observable condition>
 
 Escalate-When:
-- <conditions requiring parent/user/other owner>
-
-Freshness:
-- <whether prior reviewer reasoning may be seen; reviewers/thinkers default NO>
+- <conditions requiring parent/another role/user>
 ~~~
 
-If a field materially affects authority and is unknown, the parent must decide it before the child acts.
+Reject a manifest that assigns several professional roles to one child.
 
-## 7. Lifecycle states
+For planning/design/research roles, default `Production-Write-Authority: NO`.
 
-Stable delegated agents use the following organizational states:
+For Thinkers, use `Work-Phase: DISCOVER`, no stable long-lived ownership and `Production-Write-Authority: NO`.
 
-### CREATED
+## 9. Lifecycle states
 
-Manifest exists but work has not begun.
+Stable agents:
 
-### WORKING
+- `CREATED`;
+- `WORKING`;
+- `QUESTIONING`;
+- `WAITING_PARENT`;
+- `WAITING_CHILD`;
+- `BLOCKED`;
+- `RETURNED_COMPLETE`;
+- `RETURNED_INCONCLUSIVE`;
+- `RETURNED_REJECTED`;
+- `TERMINATED`.
 
-Agent is performing its owned task.
+Thinkers:
 
-### QUESTIONING
+`CREATED -> WORKING -> RETURNED -> TERMINATED`.
 
-Agent found a material question whose answer affects its result. It must route the question rather than invent the answer outside its authority.
+Only the parent creates/terminates stable children. Children control their working/waiting/questioning/returned state.
 
-### WAITING_PARENT
+## 10. Question routing
 
-Needs a decision or clarification from its parent.
+Route by ownership:
 
-### WAITING_CHILD
+- user preference/business direction -> User via Orchestrator;
+- product scope/value -> Product Planner pair;
+- factual uncertainty -> Researcher pair;
+- UX/user journey -> UX Planner pair;
+- visual language -> Graphic Design Planner pair;
+- navigation/content grouping -> Information Architecture pair;
+- frontend structure -> Frontend Architecture pair;
+- backend contracts -> Backend Architecture pair;
+- data/schema/integrity -> Data pair;
+- auth/security/trust -> appropriate Security/Auth pair;
+- verification -> QA/Quality pair;
+- performance -> Performance pair;
+- implementation fact -> Implementation Owner.
 
-Delegated owner is waiting for an authorized child result.
+A specialist must not answer an adjacent department's decision merely because it discovered the question.
 
-### BLOCKED
+## 11. Reasoning classes
 
-Cannot proceed because required evidence, tool access, dependency, or authority is unavailable.
+### LIGHT
 
-### RETURNED_COMPLETE
+Coordination, routing, state maintenance, deterministic checks.
 
-Returned the expected artifact and claims its completion criteria are satisfied.
+### STANDARD
 
-This is not automatically global approval.
+Bounded research, routine planning, ordinary implementation, conventional testing.
 
-### RETURNED_INCONCLUSIVE
+### DEEP
 
-Completed useful investigation but cannot justify a complete conclusion.
+Ambiguous product/design/architecture/security work, complex investigation, adversarial review, expensive-to-rework planning.
 
-### RETURNED_REJECTED
+### MAX
 
-Determined the current premise/plan/artifact should not proceed as given.
+High-impact, cross-system, irreversible or unusually unresolved work.
 
-### TERMINATED
+Members A/B of the same role pair should normally have comparable capability.
 
-Context is no longer active. It may be re-created later from canonical state if needed.
+Do not make B deliberately weak and call it independent validation.
 
-Thinkers use a shorter lifecycle: `CREATED -> WORKING -> RETURNED -> TERMINATED`. They are never resumed.
+## 12. Tool authority
 
-## 8. State transition rules
+Orchestrator normally uses tools to:
 
-- Only the parent controls creation and final termination of its stable children.
-- A child controls its own WORKING/QUESTIONING/WAITING/BLOCKED/RETURNED status.
-- `RETURNED_COMPLETE` means the child's assignment is complete, not that downstream work is automatically allowed.
-- The parent evaluates whether the returned artifact satisfies the next gate.
-- A material revision can invalidate previously returned downstream work.
-- Do not keep dormant child contexts alive merely for memory. Durable state belongs in canonical artifacts.
-
-## 9. Spawn permissions and hierarchy
-
-Default delegation depth is intentionally shallow.
-
-### Orchestrator
-
-May spawn any approved organizational role and Thinker Waves.
-
-### Delegated work owner
-
-May spawn supporting agents only when its manifest grants `Can-Spawn`.
-
-Typical permitted children:
-
-- Thinkers;
-- Researcher;
-- Challenger/reviewer;
-- test/quality specialist;
-- narrow implementation helper.
-
-### Specialist
-
-Does not recursively spawn arbitrary teams by default.
-
-It may request another role from its parent. It may spawn Thinkers only when explicitly permitted.
-
-This prevents hidden organizations whose authority the Orchestrator cannot reconstruct.
-
-Recommended normal depth:
-
-`User -> Orchestrator -> Work Owner -> Supporting Specialist/Thinker`
-
-Go deeper only when a real workstream requires a sub-manager and the parent records why.
-
-## 10. Tool authority
-
-The Orchestrator should use tools primarily to:
-
-- inspect canonical project/task state enough to route work;
-- create/delegate agent contexts;
+- inspect canonical state enough to route;
+- create/delegate contexts;
 - read returned artifacts;
-- update organizational/task state;
-- communicate/escalate decisions;
+- route questions;
+- update orchestration state;
 - terminate stale contexts.
 
-The Orchestrator should not normally use source-editing tools to implement the task itself.
+It should not normally edit production source.
 
-A child receives only the tools needed for its objective when the runtime permits tool scoping.
+Planning/design/research roles: read/search/analysis + planning-artifact output, production writes disabled.
 
-Examples:
+Implementation roles: source-edit/build/test tools as required.
 
-- Researcher: repository/documentation/search/read tools; write disabled unless explicitly required for its report.
-- Technical Planner: read/search/analysis tools; source writes disabled.
-- Thinker: read-only current canonical state; no implementation writes.
-- Implementation Owner: source-edit/build/test tools; product-scope authority disabled.
-- Independent Validator: read/test/inspection tools; production writes disabled by default.
+Independent validators: read/test/inspection, production writes disabled by default.
 
-If tool permissions cannot be technically restricted, the manifest restriction still applies as protocol authority.
+When technical permission scoping is unavailable, manifest authority still applies.
 
-## 11. Question routing
+## 13. Product planning sequence
 
-When an agent asks a material question, route by ownership:
-
-- user preference/business objective -> Orchestrator -> User;
-- product requirement/scope -> Product Planner;
-- factual/technical uncertainty -> Researcher;
-- architecture/implementation strategy -> Technical Planner;
-- verification expectation -> Quality/Test Strategist;
-- implementation fact -> Implementation Owner;
-- backend-defect premise -> owner in specialized backend workflow.
-
-Never let the Orchestrator answer a domain question only because routing it is inconvenient.
-
-## 12. Thinker insertion rules
-
-Spawn fresh Thinkers when one of these triggers is true:
-
-- initial idea is narrow relative to likely product implications;
-- a plan is about to become expensive to change;
-- an owner says "I think this is complete" on broad/high-risk work;
-- the same team has looped on one framing;
-- a material revision occurred;
-- prior implementation caused avoidable rework;
-- the Orchestrator cannot identify what it may be missing.
-
-Thinkers do not own fixes. Their questions return to the premise owner.
-
-## 13. Convergence gates
-
-### Product Gate
-
-Pass when the Product Brief is mature under `references/idea-maturation.md` and no material product/foundation question remains unresolved.
-
-### Plan Gate
-
-Pass when:
-
-- desired behavior/scope is sufficiently defined;
-- technical plan has explicit boundaries and acceptance conditions;
-- material unknowns are resolved or explicitly deferred;
-- fresh challenge reveals no unresolved redesign-level gap.
-
-### Execution Gate
-
-Begin implementation only after the current plan gate passes for the work being implemented.
-
-### Validation Gate
-
-A substantial implementation is not complete until an independent context checks it against current objectives, plan, tests, and relevant risks.
-
-### User Decision Gate
-
-Stop and ask the user only when an unresolved decision actually belongs to user authority.
-
-## 14. Handling returned work
-
-When a child returns:
-
-1. verify it returned the expected artifact;
-2. check whether it stayed within authority;
-3. identify unresolved questions or assumptions;
-4. decide whether a fresh challenger/thinker is required;
-5. route any material objections;
-6. update canonical state;
-7. terminate the child if its context is no longer needed;
-8. choose the next owner.
-
-Do not keep a child alive merely because it may be useful later. Recreate it from canonical state if needed.
-
-## 15. Orphan prevention
-
-The Orchestrator must be able to answer at any moment:
-
-- Which agents are active?
-- Who is each parent?
-- What does each own?
-- What state is each in?
-- What artifact is each expected to return?
-- What are they waiting for?
-- Which agents can be terminated now?
-
-If these cannot be reconstructed, stop spawning and repair organizational state first.
-
-## 16. Minimal organization patterns
-
-### New product / broad feature
+For a broad product, an example sequence is:
 
 ~~~text
-Orchestrator
-  -> Product Planner [DEEP]
-       -> fresh Thinkers [DEEP]
-       -> Researcher [STANDARD/DEEP] when facts are missing
-  -> Technical Planner [DEEP]
-       -> fresh Thinker/Challenger [DEEP]
-       -> Quality Strategist [STANDARD/DEEP]
-  -> Implementation Owner [STANDARD]
-  -> Independent Validator [DEEP]
+paired recurrent Thinker Waves
+  ↓
+Product Planner A+B
+  ↓
+UX Planner A+B
+  ↓
+Information Architecture A+B
+  ↓
+Graphic Design Planner A+B
+  ↓
+Interaction Design Planner A+B
+  ↓
+Design-System Planner A+B
+  ↓
+Accessibility Planner A+B
+  ↓
+Frontend Architect A+B
+  ↓
+Backend Architect A+B
+  ↓
+Data Architect A+B
+  ↓
+Security Planner A+B
+  ↓
+QA Strategist A+B
+  ↓
+Performance Planner A+B
+  ↓
+implementation
+  ↓
+independent validation
 ~~~
 
-### Existing well-defined feature
+This is not a mandatory pipeline. The Orchestrator selects only materially relevant roles and may reorder stages when dependencies require it.
 
-~~~text
-Orchestrator
-  -> Technical Planner [STANDARD/DEEP]
-  -> Implementation Owner [STANDARD]
-  -> Independent Validator [STANDARD/DEEP]
-~~~
+## 14. Planning gate
 
-### Investigation only
+A planning stage passes only when:
 
-~~~text
-Orchestrator
-  -> Researcher [STANDARD/DEEP]
-       -> Thinker when competing explanations remain
-  -> Orchestrator synthesis
-~~~
+- both same-role perspectives returned, unless a justified exception exists;
+- their initial work was isolated;
+- unique findings were considered;
+- material contradictions were resolved/owned/escalated;
+- one canonical role artifact exists;
+- the artifact stayed within that role's responsibility;
+- no planning agent silently implemented production changes.
 
-### Functional backend defect
+## 15. Execution gate
 
-~~~text
-Orchestrator
-  -> strict backend-defect department
-     detective -> analyzer -> planner -> challenger
-     -> test-strategist -> executor/manual -> validator -> consensus
-~~~
+Begin production implementation only when the relevant planning artifacts are mature enough that the implementer is not expected to invent unresolved product/design/architecture decisions.
 
-## 17. Anti-patterns
+Implementation normally uses one explicit owner per workstream.
+
+Parallel implementers require non-overlapping ownership plus explicit integration responsibility.
+
+If implementation exposes a missing premise, return it to the appropriate planning pair.
+
+## 16. Validation gate
+
+A substantial implementation is not complete until a fresh independent validation context checks the delivered state against current objective, planning artifacts and verification requirements.
+
+High-risk work may use multiple validators, but each validator still owns one defined role.
+
+## 17. Canonical state requirements
+
+At any point Morrison must be able to reconstruct:
+
+- objective;
+- task type/risk/current gate;
+- current role/department;
+- active A/B pair and Pair-Group;
+- each instance state;
+- current canonical role artifacts;
+- open material questions and owners;
+- dependencies between departments;
+- implementation state;
+- validation state;
+- next required role/gate.
+
+Do not keep old agents alive merely as memory stores.
+
+## 18. Pairing exception
+
+Only genuinely trivial, low-risk, fully specified work may skip same-role pairing.
+
+Record:
+
+`Pairing-Exception: <specific reason>`
+
+Token cost, speed or convenience alone is insufficient for ambiguous, user-facing, architectural, security-sensitive or expensive-to-rework work.
+
+## 19. Anti-patterns
 
 Do not:
 
-- spawn every role for every task;
-- create children without a return contract;
-- select reasoning level solely from organizational rank;
-- let Executors discover product requirements by modifying code;
-- keep agents alive as memory stores;
-- let specialists silently promote themselves to managers;
-- ask the user technical questions that internal evidence can answer;
-- treat a child saying "done" as validated completion;
-- route general work into backend-specific profiles merely because their names sound generic;
-- let recursive delegation become invisible to the Orchestrator.
+- create composite multi-profession agents;
+- count two different specialties as one A/B pair;
+- ask B to confirm A instead of thinking independently;
+- allow a Planner/Designer to apply production changes;
+- let a Thinker become a planner or executor;
+- use voting as evidence resolution;
+- create two competing writers against the same unstable source;
+- ask the user technical questions another role can answer;
+- preserve a wrong plan because implementation already started;
+- route general work into backend-defect roles merely because names sound similar.
 
 ## Core rule
 
-**The Orchestrator owns the organization, not the specialist work.**
-
-Its competence is measured by whether the right isolated context receives the right problem, authority, tools, reasoning budget and exit condition at the right time.
+**Morrison owns the organization. Each child owns exactly one role. Important planning is normally performed by two fresh independent instances of that same role before the organization commits to downstream execution.**
