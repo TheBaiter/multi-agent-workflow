@@ -4,100 +4,138 @@
 
 A normal agent can plan a task well and still stop questioning its own frame once it has a plausible path forward.
 
-Ephemeral Thinker Waves exist to repeatedly search for missing questions, hidden assumptions, uncovered branches, validation gaps, and unexamined failure modes before the workflow treats a stage as mature.
+Ephemeral Thinker Waves repeatedly search for missing questions, hidden assumptions, uncovered branches, validation gaps, unnatural user flows, avoidable rework and unexamined failure modes before a stage is treated as mature.
 
-They are not another implementation team and they are not another approval panel. Their only job is to make the active workflow ask better questions.
+They are not an implementation team, another planner or an approval panel. Their only job is to make the active workflow ask better questions.
 
-## Core model
+## Core rule: one thinker, one question, then terminate
 
-The host/orchestrator owns the durable workflow.
+A Thinker instance is intentionally tiny and disposable.
 
-A Thinker Wave is a temporary set of isolated subagents created for one questioning round. Each thinker receives the current objective and enough primary/current evidence to inspect the problem, but does not inherit the conversational memory, chain of reasoning, or conclusions of previous thinker waves.
+Each Thinker receives the current objective and canonical evidence, independently discovers the **single strongest material unanswered question** it can find, returns exactly one `THINKER-QUESTION`, and terminates.
 
-Each wave lives for one delivery only:
+Do not ask one Thinker to produce a long checklist. If more coverage is needed, create more fresh Thinkers, potentially across several batches/waves.
 
-1. inspect the current objective and work product;
-2. generate material unanswered questions and gaps;
-3. return them to the orchestrator;
-4. terminate.
+This keeps each context narrow, reduces cognitive accumulation and prevents a questioning agent from gradually becoming a planner or long-lived reviewer.
 
-After the workflow owners answer or incorporate those questions, the orchestrator may create a completely new wave against the newly updated state.
+Lifecycle:
 
-The new wave must start fresh. It must not be asked to continue the previous thinker's reasoning.
+~~~text
+CREATED
+  ↓
+WORKING
+  ↓
+ONE MATERIAL QUESTION
+  ↓
+RETURNED
+  ↓
+TERMINATED
+~~~
+
+## Wave model
+
+A Thinker Wave is a temporary batch of isolated one-question Thinkers created for one questioning round.
+
+For non-trivial work, use at least two fresh Thinkers when capacity permits. When more coverage is valuable, use additional Thinkers in the same or later batches under `references/batched-delegation.md`.
+
+Each thinker:
+
+1. inspects the same current objective and canonical work product;
+2. chooses one strongest material gap/question independently;
+3. returns one question record;
+4. terminates immediately.
+
+After owners answer/incorporate those questions, create a completely fresh wave against the updated state when another round is useful.
+
+The new wave must not continue the previous Thinker's reasoning.
 
 ## Why the contexts are disposable
 
-The point is not merely parallelism. The point is to reduce self-confirmation.
+The point is not merely parallelism. The point is to reduce self-confirmation and context saturation.
 
-An agent that remembers how the previous review was framed can unconsciously keep searching inside the same boundaries. A fresh thinker should be able to rediscover the task from the current evidence and ask questions that the previous wave did not consider.
+A reviewer that remembers all previous questioning can unconsciously keep searching inside the same frame. A fresh Thinker should be able to rediscover the task from current evidence and ask something the previous context did not.
 
 Therefore:
 
-- do not reuse a thinker context for the next questioning round;
-- do not give a new thinker the previous thinker's hidden reasoning or conversational transcript;
-- do not tell the new thinker what it is expected to agree with;
-- do not make the thinker defend previous questions;
-- do not treat previous thinker output as authority.
+- do not reuse a Thinker context for another question;
+- do not ask a Thinker to answer its own question;
+- do not keep it waiting while an owner resolves the question;
+- do not preload a new Thinker with previous hidden reasoning;
+- do not make a Thinker defend an earlier Thinker's question;
+- do not turn previous Thinker output into authority;
+- do not let Thinkers plan, implement or validate as owners.
 
-Fresh context does not mean blind context. A thinker may read the current canonical Issue, current plan, current implementation state, current contracts, and current evidence required to understand the task. What must not be inherited is the previous thinker's reasoning history.
+Fresh context does not mean blind context. A Thinker may read current canonical state, plans, implementation evidence, contracts and decisions required to understand the task. What it must not inherit is reviewer reasoning history.
 
 ## Orchestrator responsibilities
 
-The orchestrator is responsible for turning raw questioning into useful workflow pressure.
+For each wave, the Orchestrator or delegated owner must:
 
-For each wave it must:
+1. define the stage/artifact being questioned;
+2. provide current canonical evidence anchors;
+3. choose an appropriate number of Thinker slots without exceeding runtime capacity;
+4. create fresh isolated one-question Thinkers;
+5. collect their questions independently;
+6. deduplicate equivalent questions;
+7. reject cosmetic, already-answered, out-of-scope or non-material questions;
+8. assign a stable Question-ID to every surviving material question;
+9. route each question to the lowest role that owns the premise;
+10. require an evidence-backed answer/change/explicit unresolved state;
+11. update canonical artifacts/state;
+12. ensure all Thinkers from the wave are terminated;
+13. create a fresh wave if another questioning round is warranted.
 
-1. define the current objective or stage being questioned;
-2. provide the current canonical work product and relevant evidence anchors;
-3. spawn one or more isolated thinkers;
-4. collect their questions independently;
-5. deduplicate equivalent questions;
-6. reject questions that are cosmetic, out of scope, already answered by current evidence, or non-material;
-7. route each material question to the role that owns the premise;
-8. require an evidence-backed answer, change, or explicit unresolved state;
-9. update the canonical artifact/Issue state;
-10. terminate the entire thinker wave;
-11. spawn a fresh wave when another questioning round is required.
-
-Thinkers never own the durable resolution. The existing workflow role that owns the questioned premise must answer it.
+Thinkers never own durable resolution.
 
 ## Thinker contract
 
-A thinker should optimize for coverage, not for producing a solution.
+A Thinker optimizes for discovering **one high-value blind spot**.
 
-Its output should focus on questions such as:
+Good question families include:
 
 - What are we assuming without evidence?
 - What has to be true for this plan to work?
-- What branch, state, caller, migration path, rollback path, concurrency path, or failure path is not represented?
-- What happens before, during, and after the proposed change?
+- What normal user behavior or familiar flow does this plan ignore?
+- What step would feel awkward, surprising or unnecessarily difficult to a user?
+- What obvious adjacent requirement is likely to force immediate rework?
+- What branch, state, caller, migration path, rollback path, concurrency path or failure path is missing?
+- What happens before, during and after the proposed change?
 - What must be validated before implementation?
-- What must be validated after implementation?
 - Which contract defines the expected behavior?
-- Which edge cases would force us to redesign this later?
+- Which edge case would force redesign later?
 - What evidence would falsify the current explanation?
-- What dependency or side effect has not been modeled?
-- Are we solving the observed symptom or the owning cause?
-- What could make this plan technically correct but operationally incomplete?
-- What would a future maintainer or caller need that the current design does not expose?
+- What dependency or side effect is not modeled?
+- Are we solving the symptom instead of the owning cause?
+- What could make this technically correct but operationally incomplete?
+- What would a future maintainer/caller need that the design does not expose?
+- Could the same objective be achieved much more simply or naturally?
+- What are we not considering because the artifact already looks finished?
 
-A thinker may also identify contradictions directly, but should express them as a question or gap that can be routed to an owner and resolved with evidence.
+The Thinker should select only the most material question it can justify from its assigned context.
 
 ## Output format
 
-Prefer compact, independently actionable records:
+Every instance returns exactly one record:
 
 ~~~text
 THINKER-QUESTION
 
-Question: <material question>
-Why-It-Matters: <failure/rework risk if unanswered>
-Premise-Owner: <agent-key or workflow owner when identifiable>
-Evidence-Needed: <what would resolve the question>
-Affected-Area: <plan | scope | contract | implementation | test | validation | other>
+Question: <one material question>
+Why-It-Matters: <failure/rework/user-cost if unanswered>
+Premise-Owner: <agent-key/authority when identifiable>
+Evidence-Needed: <what would resolve it>
+Affected-Area: <product | plan | UX | architecture | contract | implementation | test | validation | risk | other>
+Novelty: NOVEL | POSSIBLE_DUPLICATE
 ~~~
 
-Do not pad the wave with generic brainstorming. A long list of weak questions is worse than a small set of material ones.
+If the Thinker cannot find a material question, return:
+
+~~~text
+THINKER-CLEAN
+No-Material-Novel-Question: YES
+~~~
+
+and terminate.
 
 ## Relationship to stable roles
 
@@ -105,85 +143,98 @@ Thinkers are not stable `Agent-Key` roles and do not participate directly in con
 
 They do not replace:
 
-- Analyzer, which owns cause/scope analysis;
-- Planner, which owns the repair design;
-- Challenger, which adversarially attacks the proposed repair;
-- Test Strategist, which owns falsifying verification cases;
-- Validator, which independently evaluates the implemented result.
+- Product/technical/domain planners, which own plans;
+- `review-challenger`, which tries to falsify a mature artifact;
+- `alternative-planner`, which constructs a materially different viable plan;
+- `risk-reviewer`, which maps downside/rework risk;
+- QA/quality roles, which own verification strategy;
+- validators, which evaluate delivered state.
 
-Instead, Thinker Waves can be inserted before a stage handoff or after a material revision to expose questions those roles must answer.
-
-A thinker question has no authority by itself. Authority comes from the owning role's evidence-backed resolution and the normal workflow gates.
+A Thinker only exposes one question. The owning role must resolve it.
 
 ## Recommended insertion points
 
-Use a fresh Thinker Wave when it materially reduces rework, especially:
+Use fresh one-question waves when they materially reduce rework, especially:
 
-1. after Analyzer believes cause and scope are complete, before Planner relies on them;
-2. after Planner has a coherent repair, before Challenger/Test Strategist treat it as mature;
-3. after a material plan or implementation revision;
-4. before final consensus/closure when the change is broad, high-risk, or has already looped backward;
-5. whenever the orchestrator detects that active agents are repeatedly refining the same frame without generating new questions.
+1. during idea/product maturation;
+2. after a planning pair thinks its artifact is coherent;
+3. before the `plan-reopening` gate;
+4. after a material plan revision;
+5. when multiple agents keep refining the same frame without discovering new branches;
+6. before final execution readiness for broad/high-risk work;
+7. after implementation reveals a premise that planning missed.
 
-Do not invoke waves as ritual after every tiny action. They are a coverage mechanism, not token-count theater.
+Do not invoke Thinkers as ritual after every tiny action.
 
 ## Re-questioning loop
-
-The intended loop is:
 
 ~~~text
 current canonical state
         ↓
-spawn fresh Thinker Wave A
+Wave N: fresh one-question Thinkers
         ↓
 collect + deduplicate material questions
+        ↓
+terminate every Thinker immediately
         ↓
 owners answer/change with evidence
         ↓
 update canonical state
         ↓
-destroy Wave A contexts
-        ↓
-spawn fresh Thinker Wave B
-        ↓
-search again from the updated state
+Wave N+1: entirely new Thinkers
         ↓
 ...
 ~~~
 
-Each wave must be capable of disagreeing with the assumptions exposed by the previous result without having inherited the previous wave's conversation.
+The task remembers resolved state. Thinkers do not.
+
+## Batched execution under slot limits
+
+When the host cannot run all desired Thinkers and specialist pairs simultaneously, use `references/batched-delegation.md`.
+
+Example:
+
+~~~text
+Batch 1
+  Thinker-1 -> Q-1 -> terminate
+  Thinker-2 -> Q-2 -> terminate
+  Product Planner A+B -> Product Brief -> terminate
+
+persist questions + Product Brief + backlog
+
+Batch 2
+  new Thinker-3 -> Q-3 -> terminate
+  new Thinker-4 -> CLEAN -> terminate
+  UX Planner A+B -> UX Plan -> terminate
+~~~
+
+Do not keep completed Thinkers alive waiting for later batches.
 
 ## Convergence gate
 
-Do not loop forever merely because another question can always be invented.
+A questioning cycle converges when:
 
-A questioning cycle is converged when:
+- no material Thinker question remains unresolved; and
+- a fresh wave produces no novel material question that would change scope, plan, UX, verification, implementation or risk handling.
 
-- no material thinker question remains unresolved; and
-- a fresh wave produces no novel material gap that changes scope, design, verification, implementation, or risk handling.
+For higher-risk work, require two consecutive fresh waves/batches with no novel material question if capacity/time allows.
 
-For higher-risk work, the orchestrator may require two consecutive fresh waves with no novel material questions.
-
-If fresh waves continue producing material new gaps beyond the configured review budget, do not force convergence. Keep the stage non-final and report it as QUESTIONING, INCONCLUSIVE, or BLOCKED as appropriate.
+If fresh Thinkers keep finding material new gaps beyond the configured review budget, do not manufacture consensus. Keep the stage `QUESTIONING`, `INCONCLUSIVE` or `BLOCKED` and route/escalate appropriately.
 
 ## Anti-patterns
 
 Do not:
 
-- reuse the same thinker for every round;
-- ask the thinker to validate its own previous answer;
-- preload the next wave with the previous wave's full reasoning;
-- turn thinker questions into automatic requirements without owner review;
-- count duplicate questions as additional confidence;
-- ask thinkers to implement fixes while they are in questioning mode;
-- let the orchestrator silently answer material questions that belong to another role;
-- create permanent thinker state comments for disposable contexts;
-- keep spawning waves after convergence only to increase pass counts.
+- let one Thinker produce many questions;
+- reuse one Thinker for multiple questions or rounds;
+- ask a Thinker to answer or validate its own question;
+- keep a Thinker alive as task memory;
+- preload a new Thinker with prior hidden reviewer reasoning;
+- turn a Thinker into planner/executor/validator;
+- treat Thinker questions as automatic requirements;
+- count duplicate questions as confidence;
+- keep spawning waves after convergence only to inflate pass counts.
 
 ## Design principle
 
-The durable workflow should remember the resolved state.
-
-The questioning agents should not remember how the previous questioning agent thought.
-
-This intentionally separates **task memory** from **reviewer memory**: the project keeps the evidence and decisions it needs, while every new questioning wave receives a fresh opportunity to challenge the current result.
+**One Thinker discovers one material question and dies. The durable workflow remembers the question, evidence and resolution; the questioning context does not.**
