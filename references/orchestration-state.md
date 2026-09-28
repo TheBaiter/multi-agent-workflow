@@ -10,7 +10,7 @@ Every non-trivial task should have one canonical orchestration state that lets a
 - what is fixed vs unresolved;
 - which departments/roles are active or queued;
 - which child agents exist and who owns them;
-- which procedural skills are required/active/blocked for each assignment;
+- which procedural skills are required/active and whether their current sources are actually available;
 - which same-role A/B pairs belong to each decision;
 - which delegation batch is active and which work is queued;
 - what each child returned before termination;
@@ -52,8 +52,11 @@ Runtime-Capacity:
 Council-Mode: OFF | REQUESTED | ACTIVE
 Council-Session: <id or NONE>
 
+Skill-Dependency-Mode: FULL | REDUCED | BLOCKED
 Task-Skill-Context:
-- Default-Required: agent-context-foundation
+- agent-context-foundation: AVAILABLE | MISSING | BLOCKED
+- intensive-ui-questioning: AVAILABLE | MISSING | BLOCKED | NOT_REQUIRED
+- Dependency-Evidence: <installed/mounted/current source anchors>
 - Conditional-Activations: <skill/status list>
 
 Constraints:
@@ -109,22 +112,26 @@ Next-Action:
 
 The logical fields are the contract even when storage format differs.
 
-## Skill Activation Registry
+## Skill Dependency and Activation Registry
 
-Use `references/skill-routing.md` as the canonical skill-routing policy.
+Use `references/installation-and-dependencies.md` for availability semantics and `references/skill-routing.md` for activation/role-boundary policy.
 
-Every stable role inherits `agent-context-foundation`. Additional skills are task/assignment-specific.
+Every stable role requires `agent-context-foundation` for full-mode operation. Additional skills are task/assignment-specific.
 
-Record skill state compactly enough that a fresh child or later batch does not need conversational memory to know which procedure still applies.
+Do not record a skill as available merely because a profile contains its repository URL. Availability requires an actual current source that the runtime/child can load.
+
+Record dependency/activation state compactly enough that a fresh child or later batch does not need conversational memory to know which procedure still applies.
 
 ~~~text
 SKILL-ACTIVATION
 
 Skill: <stable skill name>
-Source: <canonical repository/entrypoint>
+Canonical-Source: <repository/entrypoint>
+Resolved-Source: <installed/mounted/current source anchor or NONE>
+Availability: AVAILABLE | MISSING | BLOCKED | NOT_REQUIRED
 Scope: <task | artifact | agent instance | department>
 Owner: <Morrison or role instance>
-Status: REQUIRED | ACTIVE | NOT_ACTIVE | BLOCKED | COMPLETE | STALE
+Activation-Status: REQUIRED | ACTIVE | NOT_ACTIVE | COMPLETE | STALE | BLOCKED
 Activate-When: <condition>
 Started-From: <state revision/artifact>
 Coverage-Anchor: <receipt/artifact/question coverage>
@@ -133,11 +140,11 @@ Blocked-Reason: <reason or NONE>
 
 Rules:
 
-- stable agents default to `agent-context-foundation: REQUIRED`;
-- meaningful visible/perceptible frontend work records `intensive-ui-questioning` when activated;
+- stable agents default to `agent-context-foundation: REQUIRED`; full mode requires `Availability: AVAILABLE`;
+- meaningful visible/perceptible frontend work records `intensive-ui-questioning` when activated; active use requires `Availability: AVAILABLE`;
 - a skill becoming active does not change role ownership or production-write authority;
 - if an upstream premise changes materially, mark dependent skill coverage `STALE` and reopen only the affected route;
-- if a required external skill source cannot be accessed, mark the dependent work `BLOCKED` or `PARTIAL` rather than reconstructing the skill from memory;
+- if a required external skill source cannot be accessed, mark availability `MISSING`/`BLOCKED` and the dependent work `REDUCED`, `PARTIAL` or `BLOCKED` according to the owning contract rather than reconstructing the skill from memory;
 - do not duplicate the external skill body into orchestration state.
 
 ## Pair Group Registry
@@ -226,8 +233,11 @@ Lifecycle-State: CREATED | WORKING | QUESTIONING | WAITING_PARENT | WAITING_CHIL
 Work-Phase: DISCOVER | PLAN | REVIEW | SYNTHESIZE | IMPLEMENT | VERIFY
 Production-Write-Authority: YES | NO
 Batch-ID: <id or NONE>
-Required-Skills: <skill names; includes agent-context-foundation>
-Conditional-Skills: <skill/status list>
+Required-Skills:
+- <skill + availability/source/coverage>
+Conditional-Skills:
+- <skill + activation/availability/status>
+Context-Checkpoint-Target: <anchor>
 Objective: <one-line objective>
 Expected-Return: <artifact>
 Waiting-On: <question/agent/evidence or NONE>
@@ -263,7 +273,7 @@ Clean-Returns: <count>
 
 Each Thinker instance may contribute at most one Question-ID, or one `THINKER-CLEAN` return.
 
-Thinkers do not own durable skill/memory state. Their parent applies `agent-context-foundation` placement/promotion rules to any material finding.
+Thinkers do not own durable skill/memory state. Their parent applies `agent-context-foundation` placement/promotion rules to any material finding only when that skill is actually available; otherwise the parent persists ordinary canonical task state without claiming the missing skill's guarantees.
 
 After termination, retain only the material question/evidence/result; never preserve thinker conversational memory as workflow state.
 
@@ -365,6 +375,7 @@ Increment state revision for material changes such as:
 - material question opened/resolved;
 - work owner change;
 - stable agent spawned/terminated;
+- dependency availability changes;
 - required/conditional skill activated, blocked, completed or made stale;
 - delegation batch created/committed/terminated;
 - backlog item added/reclassified/dropped;
@@ -381,9 +392,9 @@ Do not create noisy revisions for inconsequential formatting.
 A fresh Morrison should recover by:
 
 1. reading canonical orchestration state;
-2. loading Orchestrator runtime plus pairing/batching/reopening and `references/skill-routing.md`;
+2. loading Orchestrator runtime plus pairing/batching/reopening, `references/installation-and-dependencies.md` and `references/skill-routing.md`;
 3. reading only current artifacts and active role profiles;
-4. restoring required/active skill procedures from their current canonical sources;
+4. re-resolving actual availability of required/active procedural skills and loading their current canonical sources;
 5. identifying active/incomplete batch and pair groups;
 6. terminating/recreating stale contexts as needed;
 7. revalidating queued backlog;
@@ -399,7 +410,7 @@ Set `Current-Gate: COMPLETE` only when:
 - required gates passed;
 - required pair groups resolved or valid exceptions exist;
 - required plan reopening passed or valid exception exists;
-- required skills were applied or explicitly blocked/resolved;
+- required dependency states are resolved and required skills were actually applied, or the affected path is explicitly outside/full-mode guarantees rather than falsely passed;
 - applicable conditional skill routes are complete for current scope;
 - no material paired contradiction remains;
 - no open material question remains inside current scope;
@@ -412,4 +423,4 @@ Set `Current-Gate: COMPLETE` only when:
 
 ## Core principle
 
-**The organization may forget conversations and terminate entire batches; it must not forget state, questions, evidence, skill coverage, alternatives, risk, independence or ownership.**
+**The organization may forget conversations and terminate entire batches; it must not forget state, dependency availability, questions, evidence, skill coverage, alternatives, risk, independence or ownership.**
