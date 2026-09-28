@@ -1,8 +1,16 @@
-# Scope
+# Backend Defect Specialization Scope
+
+## Boundary
+
+This file defines the scope of the **strict functional-backend-defect specialization** inside the broader multi-agent organization.
+
+It is not the global scope of the whole skill.
+
+The Orchestrator should load this contract only when it routes work into the backend-defect department.
 
 ## Primary target
 
-This skill is for **functional backend defects**.
+This specialization is for **functional backend defects**.
 
 A candidate must involve an incorrect backend outcome, violated invariant, invalid state, broken contract, incorrect persistence behavior, or equivalent functional consequence.
 
@@ -24,7 +32,7 @@ Typical examples:
 
 ## Conditionally in scope
 
-The following are relevant only when tied to a demonstrated functional defect:
+The following are relevant to this specialization only when tied to a demonstrated functional defect:
 
 - architecture;
 - structural design;
@@ -38,13 +46,15 @@ The following are relevant only when tied to a demonstrated functional defect:
 
 Example:
 
-"Service X has too many responsibilities" is not a defect.
+"Service X has too many responsibilities" is not a backend functional defect.
 
 "Because Service X commits state before required validation, callers can persist an impossible state" is a functional defect. The architecture may be part of the cause, but the Issue remains anchored to the functional failure.
 
-## Out of scope
+Generic architecture, product discovery, feature planning, frontend work, and broad refactoring may still be valid work for the **general organization**; they simply do not enter this stricter department unless a functional backend defect is the governing problem.
 
-Do not use this workflow merely for:
+## Out of specialization scope
+
+Do not route into this strict workflow merely for:
 
 - frontend/UI/CSS;
 - visual regressions;
@@ -60,6 +70,8 @@ Do not use this workflow merely for:
 - speculative redesign;
 - optimization without a demonstrated correctness failure.
 
+These may be handled by other general roles/workflows when they are legitimate project objectives.
+
 ## Detective boundary
 
 The Detective must not create a functional bug Issue simply because code looks suspicious.
@@ -74,11 +86,13 @@ If those cannot be established, mark the candidate DISCARDED, INCONCLUSIVE, or O
 
 ## Scope expansion
 
-If a later role discovers that the problem is broader than the current Issue:
+If a later role discovers that the backend defect is broader than the current Issue:
 
 - record the evidence;
 - return the scope question to Analyzer;
 - avoid silently expanding implementation;
 - decide whether the same Issue remains coherent or a linked candidate Issue is needed according to repository policy.
 
-The workflow protects correctness, not Issue size for its own sake.
+If the work has actually become a broader product/architecture initiative rather than one coherent functional defect, return control to the Orchestrator so it can leave the specialization and choose the appropriate general workflow.
+
+The backend specialization protects correctness; it does not define the limits of the overall organization.
