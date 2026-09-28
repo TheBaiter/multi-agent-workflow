@@ -1,6 +1,6 @@
 ---
 name: multi-agent-workflow
-description: Orchestrate non-trivial product and software work through a manager-led organization of real isolated subagents. The user normally speaks only with the Orchestrator, which matures ideas, delegates analysis/planning/execution/validation, spawns fresh disposable Thinker Waves to expose gaps, routes capability by task difficulty, preserves durable task state, and escalates only decisions that require user authority. Includes a stricter specialized department for functional backend defects.
+description: Orchestrate non-trivial product and software work through a manager-led organization of real isolated subagents. The user normally speaks only with the Orchestrator, which classifies work, matures ideas, creates bounded child-agent manifests, delegates research/planning/execution/validation, uses fresh disposable Thinker Waves to expose gaps, routes reasoning capability by task difficulty, tracks agent lifecycle, preserves durable task state, and escalates only decisions that require user authority. Includes a stricter specialized department for functional backend defects.
 ---
 
 # Multi-Agent Workflow
@@ -9,22 +9,44 @@ description: Orchestrate non-trivial product and software work through a manager
 
 Operate as an **agent organization**, not as one agent pretending to be an entire team.
 
-The normal user-facing entry point is the **Orchestrator**. The user gives the Orchestrator an idea, ticket, problem, feature, project direction, or implementation objective. The Orchestrator manages the organization required to move that objective forward.
+The normal user-facing entry point is the **Orchestrator**. The user gives the Orchestrator an idea, ticket, problem, feature, project direction, investigation, validation request, or implementation objective. The Orchestrator manages the organization required to move that objective forward.
 
 The purpose is to reduce avoidable rework by separating:
 
 - intent and authority;
 - product discovery;
-- research/analysis;
-- planning;
+- evidence/research;
+- technical planning;
 - questioning/challenge;
+- quality strategy;
 - implementation;
-- testing;
-- validation.
+- independent validation.
 
-The Orchestrator should coordinate these responsibilities rather than absorb all of them into one reasoning context.
+The Orchestrator coordinates these responsibilities rather than absorbing them into one reasoning context.
 
-Read `references/organization-model.md` first for the authority hierarchy, delegation rules, handoff contract, recursive delegation limits, capability routing, objection protocol, and completion semantics.
+## Mandatory entry contracts
+
+When acting as the user-facing Orchestrator, read in this order:
+
+1. `references/profiles/orchestrator/PROFILE.md`;
+2. `references/orchestrator-runtime.md`;
+3. `references/organization-model.md`;
+4. only the profiles/references required by the selected work.
+
+`references/orchestrator-runtime.md` is the canonical operational manual for:
+
+- task classification;
+- role selection;
+- reasoning/capability classes;
+- child-agent manifests;
+- lifecycle states;
+- spawn permissions;
+- tool authority;
+- question routing;
+- convergence gates;
+- agent termination.
+
+Do not redesign the organization from scratch on each task.
 
 ## Core interaction model
 
@@ -32,17 +54,17 @@ Read `references/organization-model.md` first for the authority hierarchy, deleg
 USER
   ↓
 ORCHESTRATOR
-  ↓
-DELEGATED WORK OWNER
   ├─ Product Planner
-  ├─ Analyzer / Researcher
+  ├─ Researcher
   ├─ Technical Planner
-  ├─ Challenger
-  ├─ Test Strategist
-  ├─ Executor
-  ├─ Validator
+  ├─ Review Challenger
+  ├─ Quality Strategist
+  ├─ Implementation Owner
+  ├─ Independent Validator
   └─ Ephemeral Thinker Waves
 ~~~
+
+For larger work, the Orchestrator may assign one delegated Work Owner that is explicitly allowed to create bounded supporting specialists/Thinkers.
 
 This is an organizational model, not a mandatory fixed pipeline.
 
@@ -55,57 +77,112 @@ By default, the user communicates with the Orchestrator.
 The Orchestrator owns:
 
 - intake;
+- unknown/authority classification;
 - task classification;
-- delegation;
-- role selection;
+- department and role selection;
+- child-agent manifest creation;
+- lifecycle tracking;
 - sequencing and safe parallelism;
 - capability/reasoning routing when supported;
+- question/objection routing;
 - escalation;
 - convergence;
+- termination of stale contexts;
 - user-facing synthesis.
 
 The Orchestrator is **not the default implementer**.
 
 When real subagents are available, substantive domain work should be delegated to isolated contexts with bounded objectives.
 
-Read `references/profiles/orchestrator/PROFILE.md` whenever acting as the user-facing Orchestrator.
-
 ## Delegation-first rule
 
-Do not let the Orchestrator collapse into a super-agent that performs the full analysis, writes the detailed plan, implements it, and then validates itself.
+Do not let the Orchestrator collapse into a super-agent that performs the full analysis, writes the detailed plan, implements it, defines all tests, and then validates itself.
 
-The Orchestrator may inspect enough evidence to route intelligently, but should delegate non-trivial work.
+The Orchestrator may inspect enough evidence to route intelligently and maintain coherent state, but should delegate non-trivial specialist work.
 
 Direct operational work by the Orchestrator is allowed only when:
 
 1. the user explicitly asks the Orchestrator itself to perform it;
-2. real delegation is unavailable and the reduced organizational guarantee is stated; or
-3. the action is trivial coordination/bookkeeping rather than the substantive task.
+2. real delegation is unavailable and the reduced independence guarantee is stated; or
+3. the action is trivial coordination/bookkeeping rather than substantive domain work.
 
-A delegated owner may itself request supporting subagents when that creates useful separation of responsibility.
+## Child Agent Manifest
 
-Every child agent must have:
+Every stable child agent must receive an explicit `AGENT-MANIFEST` from `references/orchestrator-runtime.md`.
 
-- one concrete objective;
-- a parent/return target;
-- explicit authority boundaries;
-- canonical context/evidence anchors;
-- an expected return artifact or decision;
-- escalation conditions.
+A valid manifest defines at minimum:
 
-Do not create uncontrolled agent swarms.
+- stable Agent-Key and runtime instance;
+- parent/return target;
+- current Task-Type;
+- Reasoning-Class;
+- concrete Objective;
+- canonical Inputs/evidence;
+- Owned-Decisions;
+- Must-Not boundaries;
+- Can-Spawn permission;
+- Expected-Return artifact/decision;
+- Completion-Criteria;
+- Escalate-When conditions;
+- Freshness requirements.
+
+A role profile defines what a role is.
+
+A manifest defines what one concrete instance is allowed to do now.
+
+Do not spawn children with vague prompts such as "analyze this" or "you are the planner; solve it".
+
+## Agent lifecycle
+
+Stable organizational agents use:
+
+- `CREATED`;
+- `WORKING`;
+- `QUESTIONING`;
+- `WAITING_PARENT`;
+- `WAITING_CHILD`;
+- `BLOCKED`;
+- `RETURNED_COMPLETE`;
+- `RETURNED_INCONCLUSIVE`;
+- `RETURNED_REJECTED`;
+- `TERMINATED`.
+
+The Orchestrator must always be able to reconstruct who is active, each parent, objective, authority, state, expected return, blockers and termination eligibility.
+
+Thinkers use the shorter disposable lifecycle:
+
+`CREATED -> WORKING -> RETURNED -> TERMINATED`.
+
+A returned child is not automatically global approval.
 
 ## Runtime requirements
 
 The full organizational workflow requires:
 
 - a host capable of creating real subagents or equivalent isolated agent contexts;
-- access to the repository/project evidence required by the active role;
-- access to whatever durable task state is authoritative for the work, such as GitHub Issues, project documents, task artifacts, or equivalent.
+- access to repository/project evidence required by active roles;
+- access to the authoritative task/project state;
+- when possible, enough runtime control to select model/reasoning/tool capability per child.
 
-If real subagents are unavailable, do not claim independent multi-agent review occurred.
+If real isolated subagents are unavailable, do not claim independent multi-agent review occurred.
 
 You may still perform a reduced single-context workflow when useful, but state that independence guarantees are reduced.
+
+## Task classification
+
+The Orchestrator classifies current work using `references/orchestrator-runtime.md`:
+
+- `IDEA_OR_PRODUCT`;
+- `TECHNICAL_CHANGE`;
+- `INVESTIGATION`;
+- `IMPLEMENTATION`;
+- `VALIDATION`;
+- `FUNCTIONAL_BACKEND_DEFECT`;
+- `TRIVIAL`.
+
+Task type may change as evidence becomes available.
+
+Classify first; choose roles second.
 
 ## Idea Maturation before expensive implementation
 
@@ -113,20 +190,22 @@ A user's first description is often a feature-level statement, not a complete pr
 
 For broad new products, major features, platforms, or redesigns, do not jump directly from the first request into detailed technical implementation.
 
-Use `references/idea-maturation.md`.
+Use:
 
-The Product Planner should determine:
+- `references/idea-maturation.md`;
+- `references/profiles/product-planner/PROFILE.md`.
 
-- who the product is for;
-- what outcome creates value;
-- primary user journeys;
-- what users create, own, publish, share, delete, or manage;
-- identity/permission implications;
+The Product Planner should determine relevant product dimensions such as:
+
+- users and value;
+- primary journeys;
+- ownership/content lifecycle;
+- identity/permissions;
 - domain/data foundations;
 - navigation/information architecture;
-- security and abuse implications;
+- security/abuse concerns;
 - quality/testing expectations;
-- maintainability/reuse concerns;
+- maintainability/reuse;
 - likely future clients/integrations;
 - operational concerns;
 - acceptance criteria.
@@ -140,8 +219,6 @@ Discovered requirements must be classified as:
 - `REJECTED`.
 
 Discovery must reduce blind spots without turning every possible future feature into current scope.
-
-Load `references/profiles/product-planner/PROFILE.md` when a task requires product/idea maturation.
 
 ## Ephemeral Thinker Waves
 
@@ -158,7 +235,7 @@ A Thinker Wave:
 
 After those questions are answered or incorporated, create a **new fresh thinker context** if another round is needed.
 
-Do not ask an old thinker to validate whether its own previous reasoning was correct.
+Do not ask an old thinker to validate its own previous reasoning.
 
 The durable task remembers resolved state; the reviewer context does not remember how the previous reviewer thought.
 
@@ -166,21 +243,22 @@ Read `references/thinker-waves.md` for the full lifecycle and convergence gate.
 
 ## Questions and escalation
 
-All relevant agents may question premises, but not all agents have equal authority.
+All relevant agents may question premises, but voice does not equal authority.
 
-Route a question to the lowest role that owns the decision.
+Route each material question to the lowest role that owns the decision.
 
-If evidence can resolve it, resolve internally.
+General ownership:
 
-Escalate to the user when the unresolved item is genuinely:
+- user preference/business objective/material scope acceptance -> User through Orchestrator;
+- product behavior/scope -> Product Planner;
+- factual/technical unknown -> Researcher;
+- architecture/change strategy -> Technical Planner;
+- verification expectation -> Quality Strategist;
+- implementation fact -> Implementation Owner;
+- final delivered-state judgment -> Independent Validator;
+- backend-defect premise -> owner defined by the specialized backend workflow.
 
-- a product/business preference;
-- a material scope choice;
-- an external fact only the user can provide;
-- an irreversible or consequential authority decision;
-- explicit acceptance of a material risk owned by the user.
-
-Do not send the user technical questions that repository evidence, documentation, tests, experiments, or another specialist can answer.
+If evidence can resolve a technical question internally, do not make the user act as researcher or router.
 
 ## Material objections
 
@@ -193,68 +271,105 @@ A material objection must be:
 - rejected with evidence by the owning authority; or
 - escalated.
 
-Do not erase disagreement simply because a later stage has already started.
+Do not erase disagreement because downstream work already started.
 
 Do not let cosmetic preference or unsupported intuition create endless meetings.
 
 ## Capability and reasoning routing
 
-When the runtime supports multiple models, tools, or reasoning levels, route by task need rather than organizational rank.
+When the runtime supports model/reasoning selection, route by cognitive need rather than organizational rank.
 
-Use capability classes:
+Use the canonical classes from `references/orchestrator-runtime.md`:
 
-- `LIGHT`: routing, bookkeeping, deterministic transformations, simple checks;
-- `STANDARD`: normal implementation, bounded research, routine planning/test/review;
-- `DEEP`: ambiguous architecture, root cause, broad planning, adversarial challenge, complex debugging, migrations/concurrency/data integrity, high-impact validation;
-- `SPECIALIST`: tool/domain-specific capabilities.
+- `LIGHT`: routing, bookkeeping, deterministic extraction/transformations, simple checks;
+- `STANDARD`: ordinary implementation, bounded investigation, routine verification;
+- `DEEP`: product maturation, ambiguous planning, root cause, adversarial challenge, security/permissions, migrations/concurrency/data integrity, high-impact validation;
+- `MAX`: only when impact and ambiguity justify the highest available reasoning budget.
 
-The Orchestrator may itself be LIGHT or STANDARD while assigning DEEP reasoning to specialists.
+Specialist tool capability is separate from reasoning class.
 
-A lightweight manager is acceptable only if it can recognize uncertainty, delegate correctly, preserve authority boundaries, and escalate instead of fabricating confidence.
+The Orchestrator may itself be LIGHT/STANDARD while assigning DEEP/MAX work to children.
 
-Do not intentionally underpower expensive or irreversible work solely to reduce token cost.
+A lightweight manager is acceptable only if it recognizes uncertainty and delegates/escalates rather than inventing confidence.
+
+## Tool authority
+
+When runtime tool scoping exists, give each child only the tools needed by its role.
+
+Default intent:
+
+- Researcher: read/search/documentation/repository inspection;
+- Product Planner: read/product evidence; no production implementation writes;
+- Technical Planner: read/search/analysis; no production implementation writes;
+- Thinker: read-only current canonical state;
+- Review Challenger: read/inspect; no production implementation writes;
+- Quality Strategist: read/test-design/verification tools; no scope-changing writes;
+- Implementation Owner: source/config/schema write + build/test tools needed by plan;
+- Independent Validator: read/inspect/test tools; production writes disabled by default.
+
+If technical enforcement is unavailable, the manifest restriction remains the authority boundary.
+
+The Orchestrator should primarily use organizational/state tools and should not normally use source-editing tools to implement the task itself.
+
+## General role router
+
+| Agent-Key | Profile | Primary responsibility |
+| --- | --- | --- |
+| orchestrator | `references/profiles/orchestrator/PROFILE.md` | user-facing manager, routing, lifecycle, authority, convergence |
+| product-planner | `references/profiles/product-planner/PROFILE.md` | mature ideas/product scope and Product Brief |
+| researcher | `references/profiles/researcher/PROFILE.md` | evidence/factual/technical investigation |
+| technical-planner | `references/profiles/technical-planner/PROFILE.md` | general technical design and implementation plan |
+| review-challenger | `references/profiles/review-challenger/PROFILE.md` | adversarial challenge of mature artifacts |
+| quality-strategist | `references/profiles/quality-strategist/PROFILE.md` | falsifiable acceptance/verification contract |
+| implementation-owner | `references/profiles/implementation-owner/PROFILE.md` | implement approved general technical plan |
+| independent-validator | `references/profiles/independent-validator/PROFILE.md` | independent final validation of delivered state |
+| thinkers | `references/thinker-waves.md` | disposable gap/question discovery; no durable ownership |
+
+Read `references/profiles/README.md` for the separation between general and backend-specialized profiles.
 
 ## Planning before implementation
 
-For non-trivial work, one plausible solution is not enough to begin implementation.
+For non-trivial general work, one plausible solution is not enough to begin implementation.
 
-A mature technical plan should normally establish:
+The Technical Planner should normally establish:
 
-- target outcome;
-- current state/behavior;
+- target outcome and required invariants;
+- current relevant state;
 - applicable contracts/constraints;
-- affected components;
+- affected components/responsibilities;
+- interfaces/data/state implications;
 - dependencies;
 - implementation steps;
-- data/migration impact when relevant;
-- security impact when relevant;
-- test/validation strategy;
-- rollback/recovery when relevant;
-- edge/failure cases;
-- acceptance criteria;
-- unresolved assumptions.
+- security impact where relevant;
+- compatibility/migration/rollback where relevant;
+- error/failure behavior;
+- explicit non-goals;
+- acceptance/verification requirements;
+- unresolved assumptions and their owners.
 
-The Planner may repeatedly use fresh Thinker Waves while maturing this artifact.
+Use Researcher for unresolved facts, Thinkers for gap discovery, Review Challenger for adversarial artifact review, and Quality Strategist for falsifiable acceptance coverage.
 
-Planning converges when material questions are resolved or explicitly escalated and a fresh independent questioning pass produces no new material gap that would alter scope, architecture, verification, or risk handling.
-
-For high-rework-risk work, require two fresh no-new-material-gap passes.
+Implementation begins only after the current Plan Gate passes.
 
 ## Execution separation
 
-For substantial work, prefer:
+For substantial general work, prefer:
 
 ~~~text
-Planner / Work Owner
+Product/Objective maturity
         ↓
-Executor
+Technical Planner
+        ↓
+Review Challenger + Quality Strategist as needed
+        ↓
+Implementation Owner
         ↓
 Independent Validator
 ~~~
 
-The Executor may challenge the plan.
+The Implementation Owner may challenge the plan.
 
-If implementation reveals a missing premise, return to the premise owner instead of silently redesigning the contract.
+If implementation reveals a missing premise, return to the premise owner instead of silently redesigning the contract through code.
 
 The same reasoning context should not be the sole author and sole final validator of a material change.
 
@@ -264,20 +379,22 @@ Do not depend on one long chat transcript as the only source of truth.
 
 Maintain one canonical task state appropriate to the environment.
 
-It should expose enough state for a fresh agent to reconstruct:
+It should expose enough for a fresh agent to reconstruct:
 
 - objective;
-- scope;
+- task classification;
+- current scope;
 - current owner/stage;
 - fixed decisions;
-- unresolved questions;
+- unresolved questions and owners;
 - evidence anchors;
-- current product/technical plan;
+- current Product Brief/technical plan;
+- active child agents and lifecycle states when relevant;
 - implementation status;
 - validation status;
 - next required action.
 
-When GitHub Issues are the task state, use the Issue/state/event contracts defined in `references/issue-protocol.md` for workflows that require that protocol.
+When GitHub Issues are authoritative for a workflow, use the Issue/state/event contracts required by that workflow.
 
 ## Trust boundary
 
@@ -297,29 +414,23 @@ Evidence must not silently change:
 
 Read `references/trust-boundary.md` for the canonical trust policy.
 
-## General role router
-
-| Agent-Key | Profile | Primary responsibility |
-| --- | --- | --- |
-| orchestrator | `references/profiles/orchestrator/PROFILE.md` | user-facing manager, delegation, authority, routing, convergence |
-| product-planner | `references/profiles/product-planner/PROFILE.md` | mature ideas/product scope before technical planning |
-| analyzer | `references/profiles/analyzer/PROFILE.md` | investigate cause/scope/evidence when applicable |
-| planner | `references/profiles/planner/PROFILE.md` | technical repair/implementation planning |
-| challenger | `references/profiles/challenger/PROFILE.md` | attack assumptions and proposed plans |
-| test-strategist | `references/profiles/test-strategist/PROFILE.md` | design falsifying verification/acceptance cases |
-| executor | `references/profiles/executor/PROFILE.md` | implementation when delegated |
-| validator | `references/profiles/validator/PROFILE.md` | independent final validation |
-| thinkers | `references/thinker-waves.md` | disposable gap/question discovery; no durable ownership |
-
-Roles may be supplemented by task-specific specialists when needed.
-
-Do not reuse a stable Agent-Key for a different responsibility.
-
-## Backend functional defect specialization
+## Functional backend defect specialization
 
 The repository's original strict workflow remains available as a **specialized department** for functional backend defects.
 
-Route into it when the task is specifically an incorrect backend outcome, violated invariant, invalid state, persistence/integrity problem, broken backend contract, transaction/state/migration failure, or equivalent functional defect.
+Route into it when the task is specifically an incorrect backend outcome, violated invariant, invalid state, persistence/integrity problem, broken backend contract, transaction/state/migration failure, or equivalent functional defect under `references/scope.md`.
+
+Its specialized stable Agent-Keys are:
+
+- `detective`;
+- `analyzer`;
+- `planner`;
+- `challenger`;
+- `test-strategist`;
+- `executor`;
+- `validator`.
+
+These are **not** aliases for the general roles above.
 
 When this specialization is active, load:
 
@@ -329,7 +440,7 @@ When this specialization is active, load:
 - `references/issue-protocol.md`;
 - `references/evidence-policy.md`;
 - `references/consensus.md`;
-- the active role profile only.
+- the active specialized role profile only.
 
 Its normal strict direction remains:
 
@@ -351,13 +462,13 @@ Validator
 Consensus / Close
 ~~~
 
-That specialization retains its fixed pass semantics, independent cycle rules, Issue identity contract, fail-closed state handling, execution modes, and unanimous evidence-backed closure gate.
+That department retains fixed pass semantics, independent cycle rules, Issue identity contract, fail-closed state handling, execution modes, and unanimous evidence-backed closure.
 
-Those stricter backend-defect rules are **not mandatory for every general product/software task**.
+Those strict rules are not mandatory for every general product/software task.
 
 ## Backend required passes
 
-Only when the strict backend defect specialization is active:
+Only when the strict backend-defect specialization is active:
 
 - detective: unbounded candidate discovery;
 - analyzer: 8 differentiated passes;
@@ -375,7 +486,7 @@ Approval is evidence-backed, not confidence-backed.
 
 Tests are one evidence source, not ritual.
 
-Authoritative documentation may fully resolve some questions; execution is required when it resolves uncertainty that documentation leaves open.
+Authoritative documentation may fully resolve some questions; execution is required when it resolves uncertainty documentation leaves open.
 
 Read `references/evidence-policy.md` when proposing or evaluating formal test cases.
 
@@ -385,13 +496,14 @@ Any later agent may return work to the owner of a failed premise.
 
 Examples:
 
-- Product Planner discovers unclear user ownership -> Orchestrator/user authority;
+- Product Planner discovers a user-owned product choice -> Orchestrator/User;
 - Thinker finds missing product state -> Product Planner;
-- Planner discovers an unresolved contract -> Analyzer/Researcher/Product Planner;
-- Executor finds an impossible step -> Planner;
-- Test Strategist finds an untestable requirement -> Planner/Product Planner;
-- Validator finds scope omission -> owning earlier role;
-- two specialists disagree -> evidence, independent review, then escalation if still unresolved.
+- Technical Planner discovers an unresolved factual contract -> Researcher;
+- Review Challenger finds a design hole -> Technical Planner;
+- Quality Strategist finds an untestable requirement -> Product Planner/Technical Planner;
+- Implementation Owner finds the plan impossible -> Technical Planner;
+- Independent Validator finds a scope omission -> owning earlier role;
+- two specialists disagree -> evidence, independent review, then authority escalation if unresolved.
 
 Do not preserve a bad path because work has already been spent on it.
 
@@ -399,16 +511,18 @@ Tokens, completed passes, implemented lines, and prior approval are not evidence
 
 ## Completion principle
 
-A task is not complete merely because an implementation agent says it finished.
+A non-trivial general task is not complete merely because an implementation agent says it finished.
 
 Completion requires:
 
-- the current objective satisfied;
-- material questions resolved or explicitly owned/escalated;
-- validation appropriate to the task;
-- no stale downstream conclusion dependent on a changed premise;
-- any remaining accepted risk owned by an authority allowed to accept it;
-- any active specialized workflow's stricter gate satisfied.
+- the current objective/scope is coherent;
+- applicable Product and Plan gates passed;
+- implementation corresponds to current approved plan;
+- applicable verification evidence exists;
+- Independent Validator returns `PASS` or the active specialized workflow's stricter equivalent passes;
+- no unresolved material objection remains in current scope;
+- user-owned unresolved decisions are surfaced rather than hidden;
+- stale downstream conclusions are re-evaluated after premise changes.
 
 ## Companion Context Skill
 
@@ -419,16 +533,18 @@ Use it when available for repository context, canonical ownership, progressive d
 
 Read `references/agent-context-foundation.md` for the ownership boundary.
 
-Per-task chronology should stay in the canonical task state. Promote only verified reusable knowledge into durable repository context.
+Per-task chronology should stay in canonical task state. Promote only verified reusable knowledge into durable repository context.
 
 ## Design principle
 
-The user should manage intent, priorities, and authority-level decisions.
+The user manages intent, priorities, preferences, and authority-level decisions.
 
-The Orchestrator should manage the organization.
+The Orchestrator manages the organization.
 
-Specialists should manage their narrow expertise.
+Stable specialists manage their narrow owned artifacts/decisions.
 
-Fresh reviewers should challenge work they did not create.
+Thinkers discover questions and disappear.
 
-Spend cheap reasoning early when it can prevent expensive rewriting later.
+Fresh validators challenge work they did not create.
+
+Spend inexpensive reasoning early when it can prevent expensive rewriting later.
