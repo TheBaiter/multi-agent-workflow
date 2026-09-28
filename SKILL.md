@@ -40,13 +40,29 @@ When acting as Morrison for non-trivial work, read in this order:
 6. `references/batched-delegation.md`;
 7. `references/plan-reopening.md`;
 8. `references/orchestration-state.md`;
-9. `references/skill-routing.md`;
-10. `references/thinker-waves.md` when question discovery is needed;
-11. only the department contracts and role profiles selected by routing.
+9. `references/installation-and-dependencies.md`;
+10. `references/skill-routing.md`;
+11. `references/thinker-waves.md` when question discovery is needed;
+12. only the department contracts and role profiles selected by routing.
 
 For broad products/ideas also load `references/idea-maturation.md`.
 
 Use progressive disclosure. Do not preload every specialist profile and do not invent undocumented Agent-Keys because an example mentions a capability.
+
+## Installation/dependency contract
+
+`multi-agent-workflow` can be installed as a standalone Agent Skill, but its **full-mode guarantees** depend on procedural skills that must actually be available to the runtime.
+
+Read `references/installation-and-dependencies.md` before non-trivial delegation.
+
+Required/conditional dependency set:
+
+- `agent-context-foundation` — required baseline for every stable role;
+- `intensive-ui-questioning` — required when meaningful visible/perceptible UI work activates it.
+
+A GitHub URL, profile mention, remembered summary or prior conversation is not proof that a dependency is installed/accesssible. Morrison records dependency state as `AVAILABLE`, `MISSING`, `BLOCKED` or `NOT_REQUIRED` and operates in `FULL`, `REDUCED` or `BLOCKED` mode accordingly.
+
+Do not claim a dependent skill's guarantees when its current canonical procedure cannot actually be read.
 
 ## External skill references
 
@@ -79,6 +95,8 @@ For meaningful visible or perceptible frontend/UI work, conditionally activate:
 This applies to relevant UI planners and may continue through frontend architecture, quality strategy, implementation, review and validation when the assigned artifact remains materially visible/perceptible.
 
 Treat the external skill as a live procedure. Read its current canonical entrypoint/router when activated; do not claim it was satisfied from memory or an old summary.
+
+For non-trivial delegated UI work, also apply `references/ui-questioning-rounds.md`: four fresh auditor rounds by default and five for broad/high-risk/rework-prone work, with new concrete agent identities/names every round.
 
 Skill breadth does not widen a role. If a UI skill exposes an accessibility, IA, visual, UX, frontend or product question outside the active role, route it to the correct atomic owner.
 
@@ -116,7 +134,7 @@ Morrison owns:
 - intake;
 - task/unknown/authority classification;
 - department and role selection;
-- skill-reference routing;
+- skill-reference/dependency routing;
 - child manifests;
 - same-role pairing;
 - slot/batch scheduling;
@@ -231,8 +249,9 @@ Every stable child receives an `AGENT-MANIFEST` defining at minimum:
 - Work-Phase;
 - Production-Write-Authority;
 - Batch-ID;
-- `Required-Skills`;
-- `Conditional-Skills`;
+- `Required-Skills` with actual dependency state/source;
+- `Conditional-Skills` with activation/dependency state;
+- `Context-Checkpoint-Target`;
 - Pair-Group/Pair-Position when paired;
 - Objective;
 - canonical Inputs;
@@ -258,12 +277,12 @@ The full workflow requires:
 - a host capable of real subagents or equivalent isolated contexts;
 - access to authoritative project/task state;
 - access to evidence/tools required by active roles;
-- access to current canonical external skill sources when activated;
+- actual access to current canonical external skill sources when activated;
 - when possible, control over reasoning/tool capability per child.
 
 If real isolated subagents are unavailable, do not claim independent multi-agent review occurred. A reduced single-context workflow may be used, but state that independence guarantees are reduced.
 
-If an activated external skill source cannot be accessed, do not reconstruct it from memory and claim completion. Mark the dependent path partial/blocked as appropriate.
+If a required/activated external skill source cannot be accessed, do not reconstruct it from memory and claim completion. Follow `references/installation-and-dependencies.md` and mark the dependent path `REDUCED`, `PARTIAL` or `BLOCKED` as appropriate.
 
 ## Task classification
 
@@ -315,13 +334,16 @@ A substantial product may eventually need pairs for:
 - Design System;
 - Accessibility;
 - Frontend Architecture;
-- Backend/API/Data/Auth/Security;
+- Backend Domain/Service Architecture;
+- API/Data/Auth/Security;
 - QA/Verification;
 - Performance/Observability;
 - maintainability/refactoring/redundancy analysis;
 - other formally contracted specialties.
 
 Spawn only roles that materially affect current work, schedule them in batches according to dependencies/slot capacity, and attach only the skill procedures activated by the assignment.
+
+`backend-architect` is implemented and routed through `references/departments/backend-planning.md`; API, data, auth, security, observability and performance remain separate owners/capability gaps until their own stable contracts exist.
 
 ## Plan reopening before execution
 
@@ -360,6 +382,7 @@ Core general stable roles include:
 | `quality-strategist` | falsifiable verification strategy |
 | `implementation-owner` | implement execution-ready approved work |
 | `independent-validator` | fresh final validation |
+| `backend-architect` | backend domain/service architecture when routed through Backend Planning |
 
 Additional atomic department roles are registered in `references/profiles/README.md` and routed through department contracts.
 
@@ -437,6 +460,7 @@ Maintain one durable state capable of reconstructing:
 - queued organizational backlog;
 - active pair groups;
 - canonical role artifacts;
+- skill dependency availability/mode;
 - activated skill references/status;
 - plan reopening status;
 - Council Session status;
@@ -444,9 +468,9 @@ Maintain one durable state capable of reconstructing:
 - validation status;
 - next action.
 
-Apply `agent-context-foundation` placement rules: active task history belongs to the authoritative task/state, durable reusable knowledge is promoted only after verification, and stale/superseded memory must not remain as competing truth.
+Apply `agent-context-foundation` placement rules only when that dependency is actually available. Active task history belongs to the authoritative task/state, durable reusable knowledge is promoted only after verification, and stale/superseded memory must not remain as competing truth.
 
-Read `references/orchestration-state.md` and `references/skill-routing.md`.
+Read `references/orchestration-state.md`, `references/installation-and-dependencies.md` and `references/skill-routing.md`.
 
 ## Trust boundary
 
@@ -497,7 +521,7 @@ A non-trivial task is complete only when:
 
 - objective/scope are coherent;
 - required specialist pairs produced mature canonical artifacts;
-- required skills were actually applied or explicitly blocked;
+- required skill dependencies were actually available/applied or the affected path is explicitly reduced/blocked;
 - applicable conditional skills were activated and routed to closure for the current stage;
 - material questions/objections are resolved or explicitly escalated;
 - required plan reopening passed or has a justified exception;
@@ -511,4 +535,4 @@ A non-trivial task is complete only when:
 
 ## Core principle
 
-**The user manages intent and authority. Morrison manages the organization and skill routing. Specialists manage one narrow expertise. Every stable role inherits active context/memory discipline; UI-facing work additionally uses intensive UI questioning without breaking role purity. Thinkers ask one question and die. Large organizations run in small durable batches, and important plans are challenged before expensive execution begins.**
+**The user manages intent and authority. Morrison manages the organization, dependency preflight and skill routing. Specialists manage one narrow expertise. Every stable role uses active context/memory discipline only when its required current skill is actually available; UI-facing work additionally uses intensive UI questioning without breaking role purity. Thinkers ask one question and die. Large organizations run in small durable batches, and important plans are challenged before expensive execution begins.**
