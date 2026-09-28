@@ -31,7 +31,11 @@ When acting as the user-facing Orchestrator, read in this order:
 1. `references/profiles/orchestrator/PROFILE.md`;
 2. `references/orchestrator-runtime.md`;
 3. `references/organization-model.md`;
-4. only the profiles/references required by the selected work.
+4. `references/role-purity.md`;
+5. `references/paired-delegation.md`;
+6. only the department contract and role profiles required by the selected work.
+
+Department/profile discovery is progressive: use the explicit department router in `references/orchestrator-runtime.md`. Do not preload every specialist profile, and do not invent an undocumented Agent-Key because an example sequence names a capability that has not yet been contracted.
 
 `references/orchestrator-runtime.md` is the canonical operational manual for:
 
