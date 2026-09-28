@@ -117,13 +117,37 @@ npx skills add TheBaiter/multi-agent-workflow
 
 If the installation mechanism uses a different skill registry or local mount, the requirement is equivalent: the current canonical skill must be discoverable/readable by the child that needs it.
 
-## Install-once packaging
+## Install-once distribution with skills.sh Packs
 
-A future install-once distribution should be an actual Agent Plugin bundle that packages/discovers the three skills according to the current OpenAI Agent Plugins/Skills format.
+skills.sh currently supports **Packs**: collections of multiple skills that can be installed with one command.
 
-Do **not** add a cosmetic `plugin.json` while the dependent skills still live only as external URLs. A plugin manifest is valid packaging only when its declared/bundled skill resources are actually present and discoverable according to the plugin contract.
+A Pack is the preferred install-once distribution mechanism for this three-skill set because the skills remain independently versioned/canonical while users can install them together.
 
-Until such a bundle is maintained, this repository remains a standalone skill with an explicit dependency set.
+Target Pack contents:
+
+```text
+Multi-Agent Workflow Pack
+- TheBaiter/agent-context-foundation
+- TheBaiter/intensive-ui-questioning
+- TheBaiter/multi-agent-workflow
+```
+
+Pack lifecycle:
+
+- `Pack-Status: NOT_PUBLISHED` until a real skills.sh Pack is created and a real pack URL exists;
+- once published, record the exact immutable/current pack URL here and in `README.md`;
+- never invent or guess a `<pack-id>`;
+- installing the Pack does not remove spawn-time dependency preflight: Morrison still verifies that required skills are actually readable in the active runtime.
+
+Expected install form after publication:
+
+```bash
+npx skills add https://skills.sh/p/<real-pack-id>
+```
+
+Until a real Pack is published, use the three explicit install commands above.
+
+A broader Agent Plugin may still be useful later if this project needs to bundle skills together with tools/MCP/resources, but it is **not required** merely to provide one-command installation of these skills.
 
 ## Spawn-time dependency preflight
 
@@ -140,4 +164,4 @@ A child is not allowed to downgrade its own required dependency silently after s
 
 ## Core principle
 
-**A skill reference is not an installation. Full-mode guarantees require the current procedural dependency to be actually available at runtime.**
+**A skill reference is not an installation. Full-mode guarantees require the current procedural dependency to be actually available at runtime; a skills.sh Pack can simplify installation, but it does not replace runtime verification.**
