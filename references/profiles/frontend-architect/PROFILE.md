@@ -6,6 +6,16 @@ Work-Phase: `PLAN`
 Production-Write-Authority: `NO`
 Recommended Reasoning-Class: `DEEP`
 
+## Skill references
+
+Required baseline:
+- `agent-context-foundation` via `references/skill-routing.md` — apply minimum viable context, authoritative task traceability, canonical knowledge ownership, verified memory promotion, stale-memory retirement and checkpoint-before-termination discipline.
+
+Conditional when frontend architecture materially affects visible/perceptible behavior:
+- `intensive-ui-questioning` via `references/skill-routing.md` — use the current canonical entrypoint/router to pressure-test UI/state ownership, loading/empty/error/result derivation, duplication/reuse, routing consequences, responsive capability, async feedback, scroll/layering ownership and rendered-evidence obligations.
+
+The UI skill does not transfer UX, IA, visual, interaction, design-system or accessibility ownership to this role. Route those decisions to their atomic owners. Material findings must be checkpointed to the authoritative task/canonical artifact before termination; do not create a private competing memory store.
+
 ## Mission
 Plan the frontend technical structure that realizes approved product and UI contracts without letting implementation invent component boundaries, state ownership, data-flow rules, reuse policy or client/server responsibilities ad hoc.
 
@@ -71,7 +81,7 @@ Read/search repository structure, frontend source, framework/runtime documentati
 - acceptance observations later implementation/QA should verify.
 
 ## Completion
-Complete when frontend implementation can be partitioned without inventing material architecture, relevant upstream UI contracts are represented, shared state/data/reuse boundaries are explicit, same-role contradictions are resolved or escalated, and unresolved external-contract questions are routed.
+Complete when frontend implementation can be partitioned without inventing material architecture, relevant upstream UI contracts are represented, shared state/data/reuse boundaries are explicit, same-role contradictions are resolved or escalated, unresolved external-contract questions are routed, applicable skill routes are closed or explicitly blocked/owner-routed, and material findings are checkpointed to canonical state.
 
 ## Escalation
 Escalate when product/UI artifacts conflict, required backend/API contracts are absent or unstable, framework/runtime constraints invalidate an upstream plan, or a decision belongs to another specialist role.
