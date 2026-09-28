@@ -26,6 +26,8 @@ For meaningful visible/perceptible frontend work, the organization conditionally
 
 This is commonly active for UI planners and may also apply to frontend architecture, quality, implementation, review and validation when their assigned artifact is materially visible/perceptible.
 
+For non-trivial delegated intensive-UI work, use `references/ui-questioning-rounds.md` and the dedicated `ui-question-auditor` role. The external skill now requires four fresh questioning rounds by default and five for broad/high-risk/rework-prone cases. Every round uses new concrete auditor identities/names and receives continuity only through canonical persisted state.
+
 Do not copy external skill text into every profile. Profiles inherit/register skill references through `references/skill-routing.md`, while the current canonical external skill remains the procedure source.
 
 ## General organization
@@ -49,6 +51,7 @@ Do not copy external skill text into every profile. Profiles inherit/register sk
 | design-system-planner | — | Design System Planner |
 | accessibility-planner | — | Accessibility Planner |
 | frontend-architect | — | Frontend Architect |
+| ui-question-auditor | — | Intensive UI Question / Route Auditor |
 
 Thinkers are intentionally **not** stable Agent-Key roles. They are disposable one-question contexts governed by `references/thinker-waves.md`: one material question (or clean return), then termination.
 
@@ -176,6 +179,16 @@ Plans frontend module/component boundaries, state ownership, data flow, routing/
 
 Activate `intensive-ui-questioning` when the architecture materially affects visible/perceptible frontend behavior; discovered UI-specialty decisions must be routed to their planners.
 
+### `ui-question-auditor`
+
+`references/profiles/ui-question-auditor/PROFILE.md`
+
+Dedicated review-only role for delegated `intensive-ui-questioning` coverage. It traverses assigned UI question routes, processes applicable questions individually, detects omissions/contradictions/new dependencies, rechecks persisted prior-round findings against the current artifact, and reports route closure/evidence limits.
+
+It does **not** own the UI/product decision revealed by a question. Findings route back to UX, IA, visual, interaction, accessibility, design-system, frontend or product owners.
+
+For non-trivial work, each questioning round normally uses fresh `ui-question-auditor` A+B instances. All auditors terminate after their round receipt is committed; the next round creates new runtime identities and new instance names. Read `references/ui-questioning-rounds.md`.
+
 ## Shared protocols roles must respect
 
 Before using profiles, the organization may need these shared contracts:
@@ -189,6 +202,7 @@ Before using profiles, the organization may need these shared contracts:
 - `references/thinker-waves.md` — one Thinker / one question / terminate;
 - `references/orchestration-state.md` — durable state/backlog/batches/questions;
 - `references/skill-routing.md` — inherited/conditional external skills and role-boundary rules;
+- `references/ui-questioning-rounds.md` — fresh 4/5-round intensive-UI questioning integration;
 - `references/idea-maturation.md` — broad product discovery;
 - `references/trust-boundary.md` — evidence vs authority.
 
@@ -234,6 +248,8 @@ The manifest must also resolve skill references for the assignment:
 - `Conditional-Skills` records task-specific skills such as `intensive-ui-questioning` when activated;
 - skill activation must never silently expand `Owned-Decisions`, `Can-Spawn` or `Production-Write-Authority`.
 
+For `ui-question-auditor`, the concrete manifest must additionally record the current questioning round and a unique instance name/identity that has not been used by a terminated auditor.
+
 ## Lifecycle
 
 Stable general agents:
@@ -241,6 +257,8 @@ Stable general agents:
 `CREATED -> WORKING -> QUESTIONING/WAITING/BLOCKED -> RETURNED_* -> TERMINATED`
 
 Returned role is not automatically global approval.
+
+`ui-question-auditor` follows that stable lifecycle but is single-round only: after its round return/checkpoint it must terminate and is never reactivated for the next round.
 
 Thinkers:
 
