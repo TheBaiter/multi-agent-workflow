@@ -6,102 +6,75 @@ Skill experimental para organizar trabajo de producto y software como una **orga
 
 > El usuario administra intención y autoridad. Morrison administra la organización.
 
-Morrison no es el programador por defecto. Clasifica, delega, enruta preguntas, controla gates, conserva estado canónico y sintetiza resultados.
+Morrison clasifica, delega, enruta preguntas, controla gates, conserva estado canónico y sintetiza resultados. No es el programador ni el arquitecto universal por defecto.
 
-## Modelo general
+## Modelo
 
 ```text
 USER
-  ↓
+  <->
 MORRISON / ORCHESTRATOR
-  ↓
-organizational backlog
-  ↓
-bounded delegation batches
-  ├─ one-question Thinkers
-  ├─ same-role A+B specialist pairs
-  ├─ researchers
-  ├─ implementation owners
-  └─ independent validators
-  ↓
-canonical artifacts/state
-  ↓
-MORRISON
-  ↓
+  -> preguntas / Thinkers frescos
+  -> departamentos y roles atómicos
+  -> pares A+B del mismo rol
+  -> tandas según slots disponibles
+  -> artefactos / preguntas / backlog canónico
+  -> implementación explícita
+  -> validación independiente
+  -> Morrison
+  <->
 USER
 ```
 
-La organización conceptual puede tener muchas especialidades aunque el runtime sólo permita pocos subagentes simultáneos. El trabajo se ejecuta por tandas: cada tanda persiste hallazgos/artefactos/backlog, termina contextos y libera slots para la siguiente.
+La organización conceptual puede ser mucho mayor que la concurrencia del runtime. Los agentes terminados liberan slots; sus resultados sobreviven en estado canónico.
 
-## Principios centrales
+## Reglas centrales
 
 ### Un agente, un rol
 
-Cada personalidad estable tiene:
+Cada personalidad estable tiene un `Agent-Key`, una profesión, una asignación acotada, `Work-Phase` y `Production-Write-Authority`.
 
-- un `Agent-Key`;
-- una responsabilidad profesional principal;
-- una asignación acotada;
-- un `Work-Phase`;
-- `Production-Write-Authority` explícita.
+No se crean agentes compuestos como UX+Visual+Accessibility+Frontend, Backend+DB+Security o Planner+Implementer+Validator.
 
-No se crean agentes compuestos como UX+Visual+Accessibility+Frontend o Backend+DB+Security.
+Si un rol se satura, se divide organizacionalmente.
+
+### Sólo roles contratados
+
+Un nombre mencionado como capacidad no es automáticamente un Agent-Key.
+
+Morrison sólo puede instanciar roles con perfil/contrato estable y ruta descubrible. Si falta una especialidad, registra un **capability gap** en vez de ensanchar el rol más cercano.
 
 ### A+B del mismo rol
 
 Trabajo cognitivo no trivial usa normalmente dos instancias frescas e independientes del **mismo Agent-Key**.
 
-A y B trabajan aislados primero, luego comparan, hacen cross-review dentro de su especialidad y sintetizan sólo tras resolver/rutar/escalar diferencias materiales.
+A y B trabajan aislados primero; luego comparan, hacen cross-review dentro de su especialidad y sintetizan sólo tras resolver/rutar/escalar diferencias materiales.
 
-Dos especialidades distintas no satisfacen ese par.
+Dos especialidades distintas no satisfacen el par.
 
 ### Un Thinker = una pregunta = terminar
 
-Los Thinkers son contextos descartables.
-
-Cada Thinker:
-
-1. recibe estado canónico actual;
-2. encuentra una sola pregunta material o devuelve `THINKER-CLEAN`;
-3. retorna;
-4. termina inmediatamente.
+Cada Thinker devuelve una única `THINKER-QUESTION` material o `THINKER-CLEAN` y termina inmediatamente.
 
 No planifica, implementa, valida ni mantiene memoria durable.
 
 ### Planning != implementation != validation
 
-Los planners/reviewers normalmente no escriben producción.
-
-Flujo general:
+Los planners/reviewers normalmente tienen `Production-Write-Authority: NO`.
 
 ```text
 planning
-  ↓
-plan reopening when required
-  ↓
-EXECUTION_READY
-  ↓
-Implementation Owner
-  ↓
-Independent Validator
+  -> plan reopening cuando corresponde
+  -> EXECUTION_READY
+  -> Implementation Owner
+  -> Independent Validator
 ```
 
-### Plan reopening
+## Roles/departamentos actuales
 
-Un plan `MATURE` no es automáticamente `EXECUTION_READY`.
+El catálogo canónico vive en `references/profiles/README.md`.
 
-Para trabajo importante/caro de rehacer se reabre con responsabilidades distintas:
-
-- fresh Thinkers -> huecos;
-- `review-challenger` A+B -> falsificación;
-- `alternative-planner` A+B -> alternativa materialmente distinta;
-- `risk-reviewer` A+B -> riesgo/retrabajo/fricción cuando corresponde.
-
-## Departamentos / roles actuales
-
-El catálogo canónico está en `references/profiles/README.md`.
-
-Entre los roles generales actuales:
+Roles generales contratados actualmente incluyen:
 
 - `orchestrator`;
 - `product-planner`;
@@ -123,17 +96,46 @@ Entre los roles generales actuales:
 - `implementation-owner`;
 - `independent-validator`.
 
+### UI Planning
+
+`references/departments/ui-planning.md`
+
+Separa UX, IA, diseño gráfico, interacción, design system y accesibilidad en roles atómicos.
+
+### Frontend Planning
+
+`references/departments/frontend-planning.md`
+
+`frontend-architect` posee estructura frontend: módulos/componentes, state ownership, data flow, routing/rendering e integration seams. No absorbe UX/visual/accessibility/backend/API/data ni implementación.
+
 ### Backend Planning
 
-`backend-architect` se descubre a través de `references/departments/backend-planning.md`.
+`references/departments/backend-planning.md`
 
-Posee únicamente arquitectura backend de dominio/servicios, workflows, invariantes, transacciones, concurrencia/idempotencia y semántica de fallos.
+`backend-architect` posee únicamente arquitectura backend de dominio/servicios, workflows, invariantes, transacciones, concurrencia/idempotencia, failure/recovery semantics y dependency direction.
 
-No posee API pública, persistencia/data, authentication/authorization, security, observability, performance, implementación ni QA. Esas responsabilidades se enrutan a especialistas separados o se registran como capability gaps si todavía no existe contrato estable.
+No posee API pública, persistencia/data, authn/authz, security, observability, performance, implementación ni QA. Esas responsabilidades se enrutan a especialistas separados o capability gaps.
 
-### Historical functional backend defects
+### Technical Integration
 
-El workflow histórico sigue existiendo como un departamento especializado y aislado:
+El Agent-Key histórico `technical-planner` conserva su nombre por compatibilidad, pero su rol actual es **Cross-Department Technical Integration Planner**.
+
+No es un arquitecto técnico genérico.
+
+Se usa sólo cuando **dos o más planes técnicos especializados ya maduros** necesitan reconciliar:
+
+- dependencias;
+- compatibilidad entre contratos;
+- seams/handoffs;
+- orden de implementación;
+- orden de rollout/migración/rollback;
+- contradicciones que deben volver a los premise owners.
+
+Un cambio sólo frontend va al especialista frontend. Uno sólo backend va al especialista backend. Una capacidad sin rol contratado queda como capability gap.
+
+## Historical functional backend defects
+
+El workflow histórico sigue existiendo como departamento especializado y aislado:
 
 ```text
 detective -> analyzer -> planner -> challenger -> test-strategist -> executor -> validator -> consensus
@@ -141,24 +143,32 @@ detective -> analyzer -> planner -> challenger -> test-strategist -> executor ->
 
 Sus Agent-Keys no son aliases de los roles generales.
 
+## Plan reopening
+
+Un plan `MATURE` no es automáticamente `EXECUTION_READY`.
+
+Para trabajo importante/caro de rehacer:
+
+- fresh Thinkers -> huecos;
+- `review-challenger` A+B -> falsificación;
+- `alternative-planner` A+B -> alternativa materialmente distinta;
+- `risk-reviewer` A+B -> riesgo/retrabajo/fricción cuando corresponde.
+
 ## Intensive UI Questioning
 
 Para trabajo UI/frontend visible o perceptible se activa `intensive-ui-questioning` cuando corresponde.
 
-Para trabajo delegado no trivial, MAW usa el rol `ui-question-auditor` y `references/ui-questioning-rounds.md`:
+En trabajo delegado no trivial, MAW usa `ui-question-auditor` y `references/ui-questioning-rounds.md`:
 
 - 4 rondas frescas por defecto;
 - 5 para trabajo amplio/de alto riesgo/rework-prone o cuando ronda 4 todavía cambia materialmente el artefacto;
-- agentes nuevos en cada ronda;
-- runtime IDs/nombres nuevos;
+- agentes/IDs/nombres nuevos en cada ronda;
 - preguntas procesadas una por una;
 - continuidad mediante estado canónico, no reutilizando el hidden context del auditor anterior.
 
-La skill UI puede descubrir preguntas de UX, IA, visual, accessibility, frontend, etc., pero no transfiere ownership: cada decisión se enruta al rol atómico correspondiente.
+La skill puede descubrir preguntas de muchas especialidades, pero no transfiere ownership entre roles.
 
 ## Estado canónico
-
-La organización no depende del chat para recordar el proyecto.
 
 `references/orchestration-state.md` conserva, entre otras cosas:
 
@@ -176,13 +186,11 @@ La organización no depende del chat para recordar el proyecto.
 - validación;
 - siguiente acción.
 
-Principio:
-
 > agentes pueden morir; el conocimiento canónico no.
 
 ## Dependencias de skills
 
-MAW usa skills externas como **procedimientos**, no como nuevos roles.
+MAW usa skills externas como procedimientos, no como nuevos roles.
 
 ### Requerida para modo completo
 
@@ -190,32 +198,22 @@ MAW usa skills externas como **procedimientos**, no como nuevos roles.
 
 Repositorio: `https://github.com/TheBaiter/agent-context-foundation`
 
-Aplica progressive disclosure, ownership canónico, task traceability, promoción de conocimiento verificado, retiro de memoria obsoleta y handoffs resumibles.
-
 ### Requerida cuando hay UI visible/perceptible relevante
 
 `intensive-ui-questioning`
 
 Repositorio: `https://github.com/TheBaiter/intensive-ui-questioning`
 
-### Dependency preflight
-
-Morrison no interpreta una URL como instalación.
-
-Antes de crear un agente estable registra cada dependencia como:
+Morrison hace dependency preflight antes de crear agentes estables y registra:
 
 - `AVAILABLE`;
 - `MISSING`;
 - `BLOCKED`;
 - `NOT_REQUIRED`.
 
-Y opera en:
+El modo puede ser `FULL`, `REDUCED` o `BLOCKED`.
 
-- `FULL`;
-- `REDUCED`;
-- `BLOCKED`.
-
-Ver `references/installation-and-dependencies.md` y `references/skill-routing.md`.
+Una URL no cuenta como instalación.
 
 ## Instalación
 
@@ -225,7 +223,7 @@ Ver `references/installation-and-dependencies.md` y `references/skill-routing.md
 npx skills add TheBaiter/multi-agent-workflow
 ```
 
-### Instalación completa actual
+### Conjunto completo actual
 
 Mientras no exista un Pack publicado:
 
@@ -235,13 +233,11 @@ npx skills add TheBaiter/intensive-ui-questioning
 npx skills add TheBaiter/multi-agent-workflow
 ```
 
-Instalar sólo MAW sigue siendo válido como Skill standalone, pero no autoriza a afirmar garantías `FULL` si falta una dependencia requerida para la tarea.
+Instalar sólo MAW sigue siendo válido como Skill standalone, pero no permite afirmar garantías `FULL` si una dependencia requerida no está disponible.
 
-## Instalación única con skills.sh Pack
+### Instalación única con skills.sh Pack
 
-skills.sh soporta **Packs**, colecciones de varias skills instalables con un único comando.
-
-Ése es el mecanismo recomendado para distribuir este conjunto como una sola instalación manteniendo cada skill en su repositorio canónico.
+skills.sh soporta Packs de múltiples skills. Ése es el mecanismo previsto para una instalación única manteniendo cada skill en su repositorio canónico.
 
 Pack objetivo:
 
@@ -256,55 +252,28 @@ Estado actual:
 
 `Pack-Status: NOT_PUBLISHED`
 
-No se publica ni documenta un ID ficticio.
+No se documenta un ID ficticio. Cuando exista un Pack real, debe registrarse su URL exacta.
 
-Cuando exista un Pack real, este README deberá contener su URL exacta. El formato de instalación será:
+## Runtime necesario
 
-```bash
-npx skills add https://skills.sh/p/<real-pack-id>
-```
+Para garantías completas se requiere:
 
-Un Agent Plugin puede ser útil en el futuro para empaquetar además tools/MCP/resources, pero **no es necesario** para conseguir instalación única de estas tres skills.
-
-## Requisitos de runtime
-
-Para garantías completas se necesita:
-
-- runtime capaz de crear subagentes/contextos realmente aislados;
+- subagentes/contextos realmente aislados;
 - acceso al repositorio/evidencia relevante;
 - estado durable/canónico;
 - disponibilidad real de las skills requeridas/activas;
 - idealmente control de reasoning/tools/capabilities por hijo.
 
-Si no hay subagentes reales, puede utilizarse modo degradado, pero no debe afirmarse que existió independencia multi-agente.
+Si no existen subagentes reales, puede funcionar en modo degradado, pero no debe afirmarse independencia multi-agente.
 
-## Council Session
+## Canonical entrypoint
 
-Normalmente el usuario habla sólo con Morrison.
+`SKILL.md` es el router superior. Los contratos detallados viven en `references/` y los perfiles en `references/profiles/`.
 
-Si el usuario pide discutir directamente con especialistas, Morrison puede abrir una Council Session temporal cuando el host lo soporta. Morrison sigue siendo chair; cada participante conserva una sola especialidad.
-
-Si la UI/runtime no permite múltiples voces reales, Morrison retransmite outputs etiquetados y no finge participación directa.
-
-## Contratos principales
-
-- `SKILL.md`
-- `references/profiles/orchestrator/PROFILE.md`
-- `references/orchestrator-runtime.md`
-- `references/organization-model.md`
-- `references/role-purity.md`
-- `references/paired-delegation.md`
-- `references/batched-delegation.md`
-- `references/orchestration-state.md`
-- `references/plan-reopening.md`
-- `references/installation-and-dependencies.md`
-- `references/skill-routing.md`
-- `references/thinker-waves.md`
-- `references/ui-questioning-rounds.md`
-- `references/profiles/README.md`
+El `default_prompt` de `agents/openai.yaml` es sólo bootstrap; no debe duplicar el sistema.
 
 ## Estado
 
 **Experimental.**
 
-La meta es que el usuario pueda hablar con un manager que organice especialistas, no administrar manualmente una colección de prompts; y que la organización invierta razonamiento/revisión antes de comprometerse con trabajo caro de rehacer.
+El objetivo es que el usuario hable con un manager y no tenga que administrar manualmente una colección de prompts/agentes.
