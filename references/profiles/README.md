@@ -2,317 +2,226 @@
 
 Each subdirectory owns one stable role's identity, authority boundary, expected return, completion meaning and reactivation rules.
 
-The profile filename is always `PROFILE.md`.
+`Agent-Key` values are protocol identifiers. Do not reuse an Agent-Key for a different profession and do not instantiate names that appear only as examples.
 
-Protocol behavior depends on stable `Agent-Key` values. Display identities may change without redefining role authority.
+## Global profile contract
 
-## Skill references inherited by profiles
+Every stable profile must define or inherit:
 
-Profiles may reference reusable skills in addition to their role contract.
+- `Agent-Key` and one professional mission;
+- `Work-Phase`;
+- `Production-Write-Authority`;
+- when to use / when not to use;
+- inputs;
+- owned decisions;
+- explicit non-ownership / `Must-Not`;
+- recommended `Reasoning-Class`;
+- tools/capabilities;
+- allowed support/subagent requests;
+- expected return artifact;
+- lifecycle/completion meaning;
+- escalation conditions;
+- reactivation/termination behavior;
+- neighboring roles/department when useful;
+- skill references through `references/installation-and-dependencies.md` and `references/skill-routing.md`.
 
-Read `references/installation-and-dependencies.md` and `references/skill-routing.md` for the canonical dependency/activation rules.
+If a profile accumulates multiple separable professions, subdivide it rather than appending more duties.
 
-Every stable profile inherits:
+## External skill inheritance
 
-- `agent-context-foundation` — `https://github.com/TheBaiter/agent-context-foundation` / `SKILL.md`.
+Every stable role requires `agent-context-foundation` for full-mode operation.
 
-This default gives every stable role the same baseline for minimum viable context, authoritative task traceability, canonical knowledge ownership, verified memory promotion, stale-memory retirement and resumable handoffs.
+Meaningful visible/perceptible UI work conditionally activates `intensive-ui-questioning`.
 
-A profile may also activate additional specialized skills when its assignment requires them. Skill activation never changes role ownership or production-write authority.
+For non-trivial delegated intensive UI, use `references/ui-questioning-rounds.md` and fresh `ui-question-auditor` rounds.
 
-For meaningful visible/perceptible frontend work, the organization conditionally activates:
+A profile/URL is not proof that a dependency is installed. Morrison resolves actual availability before spawn.
 
-- `intensive-ui-questioning` — `https://github.com/TheBaiter/intensive-ui-questioning` / `SKILL.md`.
-
-This is commonly active for UI planners and may also apply to frontend architecture, quality, implementation, review and validation when their assigned artifact is materially visible/perceptible.
-
-For non-trivial delegated intensive-UI work, use `references/ui-questioning-rounds.md` and the dedicated `ui-question-auditor` role. The external skill requires four fresh questioning rounds by default and five for broad/high-risk/rework-prone cases. Every round uses new concrete auditor identities/names and receives continuity only through canonical persisted state.
-
-Do not copy external skill text into every profile. Profiles inherit/register skill references through `references/skill-routing.md`, while the current canonical external skill remains the procedure source.
-
-A profile reference or GitHub URL is not proof that an external skill is installed. Morrison resolves actual dependency availability before spawn.
+Skill activation never expands role authority or production-write permission.
 
 ## General organization
 
-| Agent-Key | Display identity | Role |
+| Agent-Key | Display identity | Stable role |
 | --- | --- | --- |
-| orchestrator | Morrison | Organizational Orchestrator / Manager |
-| product-planner | Kyrie | Product / Scope Planner |
-| researcher | Lucia | Evidence Researcher / Investigator |
-| technical-planner | Credo | General Technical Planner / Design Owner |
-| review-challenger | Gloria | Adversarial Artifact Challenger |
-| alternative-planner | — | Alternative Plan Constructor |
-| risk-reviewer | — | Plan Downside / Rework Risk Reviewer |
-| quality-strategist | Patty Lowell | Verification / Quality Strategy Owner |
-| implementation-owner | Nell Goldstein | General Implementation Owner |
-| independent-validator | Eva | Independent Final Validator |
-| ux-planner | — | UX Planner |
-| information-architecture-planner | — | Information Architecture Planner |
-| graphic-design-planner | — | Graphic Design Planner |
-| interaction-design-planner | — | Interaction Design Planner |
-| design-system-planner | — | Design System Planner |
-| accessibility-planner | — | Accessibility Planner |
-| frontend-architect | — | Frontend Architect |
-| backend-architect | — | Backend Domain / Service Architect |
-| ui-question-auditor | — | Intensive UI Question / Route Auditor |
+| `orchestrator` | Morrison | Organizational Orchestrator / Manager |
+| `product-planner` | Kyrie | Product / Scope Planner |
+| `researcher` | Lucia | Evidence Researcher / Investigator |
+| `technical-planner` | Credo | Cross-Department Technical Integration Planner |
+| `review-challenger` | Gloria | Adversarial Artifact Challenger |
+| `alternative-planner` | — | Alternative Plan Constructor |
+| `risk-reviewer` | — | Plan Downside / Rework Risk Reviewer |
+| `quality-strategist` | Patty Lowell | Verification / Quality Strategy Owner |
+| `implementation-owner` | Nell Goldstein | General Implementation Owner |
+| `independent-validator` | Eva | Independent Final Validator |
+| `ux-planner` | — | UX Planner |
+| `information-architecture-planner` | — | Information Architecture Planner |
+| `graphic-design-planner` | — | Graphic Design Planner |
+| `interaction-design-planner` | — | Interaction Design Planner |
+| `design-system-planner` | — | Design System Planner |
+| `accessibility-planner` | — | Accessibility Planner |
+| `frontend-architect` | — | Frontend Architect |
+| `backend-architect` | — | Backend Domain / Service Architect |
+| `ui-question-auditor` | — | Intensive UI Question / Route Auditor |
 
-Thinkers are intentionally **not** stable Agent-Key roles. They are disposable one-question contexts governed by `references/thinker-waves.md`: one material question (or clean return), then termination.
+Thinkers are intentionally **not** stable Agent-Keys. They are disposable one-question contexts governed by `references/thinker-waves.md`.
 
-Thinkers do not maintain independent durable memory. Their parent applies `agent-context-foundation` placement/promotion rules to material findings.
-
-Do not reuse an Agent-Key for a different role.
-
-## General role routing
+## General routing summaries
 
 ### `orchestrator`
 
 `references/profiles/orchestrator/PROFILE.md`
 
-Normal user-facing front door. Owns classification, delegation, batches/slot scheduling, hierarchy, lifecycle, question routing, skill routing, plan reopening, convergence, optional Council Sessions and user-facing synthesis.
-
-It is not the default implementer.
+User-facing manager. Owns classification, dependency preflight, department/role routing, pair/batch scheduling, lifecycle/state, escalation, gates, Council Sessions and synthesis. Not the default specialist or implementer.
 
 ### `product-planner`
 
 `references/profiles/product-planner/PROFILE.md`
 
-Matures broad ideas and major feature directions. Owns Product Brief and `NOW / FOUNDATION / DEFERRED / OPTION / REJECTED` classification.
+Matures users/problem/value/scope/foundations and owns the Product Brief plus `NOW / FOUNDATION / DEFERRED / OPTION / REJECTED` classification.
 
 ### `researcher`
 
 `references/profiles/researcher/PROFILE.md`
 
-Resolves factual/technical/repository/documentation unknowns with evidence. Answers what is true, not what product should prefer.
+Resolves factual/current-state/compatibility/documentation unknowns with evidence. Does not decide product preference.
 
 ### `technical-planner`
 
 `references/profiles/technical-planner/PROFILE.md`
 
-Turns a sufficiently mature objective into an implementable technical plan with boundaries, contracts, sequencing, risks and verification expectations.
+**Cross-specialty integration only.** Reconciles dependencies, seams, compatibility, implementation ordering and rollout/rollback sequencing across already-mature specialist technical artifacts.
+
+It is not a generic frontend/backend/API/data/security/performance architect. A single-domain technical task routes directly to its owning specialist; missing specialties become capability gaps.
+
+The Agent-Key is retained for compatibility with older manifests, but older broad `TECHNICAL-PLAN` artifacts must be revalidated when they contain decisions now owned by specialist roles.
 
 ### `review-challenger`
 
 `references/profiles/review-challenger/PROFILE.md`
 
-Tries to falsify a mature artifact: unsupported assumptions, contradictions, missing branches, counterexamples and unjustified complexity. It does not construct the replacement plan.
+Attempts to falsify mature artifacts. Does not construct or implement the replacement plan.
 
 ### `alternative-planner`
 
 `references/profiles/alternative-planner/PROFILE.md`
 
-Constructs one materially different viable approach from the same objective/fixed constraints. Expands option space; does not select the final plan or implement it.
+Constructs one materially different viable approach from the same objective/constraints. Does not choose the winner or implement.
 
 ### `risk-reviewer`
 
 `references/profiles/risk-reviewer/PROFILE.md`
 
-Maps downside/rework/operational/user-friction risk in a mature plan. It does not redesign the plan, choose alternatives or accept risk for the user.
+Maps downside/rework/operational/user-friction risk. Does not redesign or accept risk for the user.
 
 ### `quality-strategist`
 
 `references/profiles/quality-strategist/PROFILE.md`
 
-Defines falsifiable acceptance and verification coverage before completion is claimed.
+Defines falsifiable acceptance and verification strategy.
 
 ### `implementation-owner`
 
 `references/profiles/implementation-owner/PROFILE.md`
 
-Implements an approved execution-ready general technical plan without silently redefining product behavior or architecture.
+Applies execution-ready approved work under explicit write ownership. Does not silently redefine product/design/architecture.
 
 ### `independent-validator`
 
 `references/profiles/independent-validator/PROFILE.md`
 
-Fresh independent final judge for substantial general work. Validates actual delivered state against objective, current plan, verification contract and evidence.
+Fresh final evaluator for substantial delivered work. Separate from authorship/implementation.
 
-### `ux-planner`
+## UI Planning Department
 
-`references/profiles/ux-planner/PROFILE.md`
+Router: `references/departments/ui-planning.md`
 
-Plans user journeys, task flows, usability expectations and recovery behavior. Does not own visual styling, information architecture or frontend implementation.
+Atomic roles:
 
-For meaningful visible/perceptible UI work, activate `intensive-ui-questioning` while preserving UX ownership boundaries.
+- `ux-planner` — journeys, task flows, usability/recovery expectations;
+- `information-architecture-planner` — hierarchy, navigation, grouping, labels, taxonomy/findability;
+- `graphic-design-planner` — visual hierarchy, typography, composition, color/imagery direction;
+- `interaction-design-planner` — control behavior, transitions, feedback, reversal/cancellation/input modes;
+- `design-system-planner` — reusable primitives, tokens/variants, component-family governance;
+- `accessibility-planner` — explicit/testable accessibility requirements.
 
-### `information-architecture-planner`
+These roles do not absorb one another merely because they all affect UI.
 
-`references/profiles/information-architecture-planner/PROFILE.md`
+## Frontend Planning Department
 
-Plans hierarchy, navigation, grouping, labels, taxonomy and findability. Does not own UX journeys, visual styling, frontend code or database architecture.
-
-For meaningful visible/perceptible UI work, activate `intensive-ui-questioning` and route non-IA findings to their owning role.
-
-### `graphic-design-planner`
-
-`references/profiles/graphic-design-planner/PROFILE.md`
-
-Plans visual hierarchy, typography, composition, color/imagery direction and scoped visual consistency. Does not own UX behavior, IA, design-system engineering or frontend implementation.
-
-For meaningful visible/perceptible UI work, activate `intensive-ui-questioning` and route non-visual findings rather than absorbing them.
-
-### `interaction-design-planner`
-
-`references/profiles/interaction-design-planner/PROFILE.md`
-
-Plans control behavior, state transitions, feedback, reversal/cancellation and input-mode interaction mechanics. Does not own journeys, visual styling, accessibility policy or frontend implementation.
-
-For meaningful visible/perceptible UI work, activate `intensive-ui-questioning`; accessibility, IA, visual or product decisions discovered through it remain routed dependencies.
-
-### `design-system-planner`
-
-`references/profiles/design-system-planner/PROFILE.md`
-
-Plans reusable UI primitives, token/variant taxonomy, component-family boundaries and design-system governance. Does not create production components or absorb page-level visual design.
-
-For meaningful visible/perceptible UI work, activate `intensive-ui-questioning` to inspect reuse/primitive/ownership questions without broadening the role.
-
-### `accessibility-planner`
-
-`references/profiles/accessibility-planner/PROFILE.md`
-
-Plans explicit, testable accessibility requirements. Constrains adjacent plans without implementing them.
-
-For meaningful visible/perceptible UI work, activate `intensive-ui-questioning` and own only accessibility decisions exposed by its routed checks.
+Router: `references/departments/frontend-planning.md`
 
 ### `frontend-architect`
 
 `references/profiles/frontend-architect/PROFILE.md`
 
-Plans frontend module/component boundaries, state ownership, data flow, routing/rendering structure and implementation seams. Does not own UI design, backend contracts or production implementation.
+Owns frontend module/component boundaries, state ownership, data-flow/routing/rendering structure and implementation seams. Does not own UX/visual/IA/accessibility/backend/API/data or production implementation.
 
-Activate `intensive-ui-questioning` when the architecture materially affects visible/perceptible frontend behavior; discovered UI-specialty decisions must be routed to their planners.
+## Backend Planning Department
+
+Router: `references/departments/backend-planning.md`
 
 ### `backend-architect`
 
 `references/profiles/backend-architect/PROFILE.md`
 
-Plans backend domain/service responsibility boundaries, business workflows, invariants, transaction boundaries, concurrency/idempotency requirements, failure/recovery semantics and backend dependency direction.
+Owns backend domain/service responsibility boundaries, workflows, invariants, transaction boundaries, concurrency/idempotency requirements, failure/recovery semantics and backend dependency direction.
 
-Route through `references/departments/backend-planning.md`.
+It does **not** own public API/transport, persistence/data, authn/authz, security, observability, performance, implementation, QA or the historical defect workflow.
 
-It does **not** own public API/transport shape, persistence/data architecture, authentication, authorization, security/threat modeling, observability, performance, production implementation, QA/final validation or the historical functional-backend-defect workflow. Those remain separately contracted specialties or explicit capability gaps.
+## Intensive UI audit role
 
 ### `ui-question-auditor`
 
 `references/profiles/ui-question-auditor/PROFILE.md`
 
-Dedicated review-only role for delegated `intensive-ui-questioning` coverage. It traverses assigned UI question routes, processes applicable questions individually, detects omissions/contradictions/new dependencies, rechecks persisted prior-round findings against the current artifact, and reports route closure/evidence limits.
+Review-only role for delegated `intensive-ui-questioning` route/question coverage. It owns audit coverage/evidence boundaries, not the product/design answer exposed by a question.
 
-It does **not** own the UI/product decision revealed by a question. Findings route back to UX, IA, visual, interaction, accessibility, design-system, frontend or product owners.
+Each required round uses fresh A+B instances; completed auditors terminate and are never reused for the next round.
 
-For non-trivial work, each questioning round normally uses fresh `ui-question-auditor` A+B instances. All auditors terminate after their round receipt is committed; the next round creates new runtime identities and new instance names. Read `references/ui-questioning-rounds.md`.
+## Historical functional-backend-defect specialization
 
-## Shared protocols roles must respect
-
-Before using profiles, the organization may need these shared contracts:
-
-- `references/orchestrator-runtime.md` — routing/gates/lifecycle;
-- `references/organization-model.md` — authority and conversation model;
-- `references/role-purity.md` — one role per agent;
-- `references/paired-delegation.md` — same-role A/B independence;
-- `references/batched-delegation.md` — slot budget and sequential batches;
-- `references/plan-reopening.md` — challenge/alternative/risk gate for mature plans;
-- `references/thinker-waves.md` — one Thinker / one question / terminate;
-- `references/orchestration-state.md` — durable state/backlog/batches/questions;
-- `references/installation-and-dependencies.md` — actual skill availability/install-mode contract;
-- `references/skill-routing.md` — inherited/conditional external skills and role-boundary rules;
-- `references/ui-questioning-rounds.md` — fresh 4/5-round intensive-UI questioning integration;
-- `references/idea-maturation.md` — broad product discovery;
-- `references/trust-boundary.md` — evidence vs authority.
-
-Use progressive disclosure: load only contracts/profiles/skills relevant to current routing.
-
-## Functional backend defect specialization
-
-Historical profiles below belong to the strict functional-backend-defect department and are not aliases for general roles.
+The following Agent-Keys belong only to the strict historical functional-backend-defect workflow and are not aliases for general roles:
 
 | Agent-Key | Display identity | Specialized role |
 | --- | --- | --- |
-| detective | Dante Sparda | Backend Defect Detective |
-| analyzer | Vergil | Backend Defect Analyzer |
-| planner | V | Backend Repair Planner |
-| challenger | Lady | Backend Repair Challenger |
-| test-strategist | Nico Goldstein | Backend Defect Test Strategist |
-| executor | Nero | Backend Repair Executor / Reducer |
-| validator | Trish | Backend Defect Final Validator |
+| `detective` | Dante Sparda | Backend Defect Detective |
+| `analyzer` | Vergil | Backend Defect Analyzer |
+| `planner` | V | Backend Repair Planner |
+| `challenger` | Lady | Backend Repair Challenger |
+| `test-strategist` | Nico Goldstein | Backend Defect Test Strategist |
+| `executor` | Nero | Backend Repair Executor / Reducer |
+| `validator` | Trish | Backend Defect Final Validator |
 
-These stable specialized profiles also inherit `agent-context-foundation` through the global skill-reference rule. Their historical backend workflow remains authoritative for backend-defect-specific ownership/gates.
-
-Specialized sequence:
-
-`detective -> analyzer -> planner -> challenger -> test-strategist -> executor/manual owner -> validator -> consensus`
-
-Use only when routed under `references/scope.md`.
-
-Do not use specialized `planner`, `executor` or `validator` as general roles merely because names are shorter.
+Route them only through the historical scope/workflow contracts. Do not use `planner`, `executor` or `validator` as convenient general aliases.
 
 ## Role creation rule
 
-Before a stable subagent is created, parent must build the `AGENT-MANIFEST` from `references/orchestrator-runtime.md`.
+Before spawning a stable child, build the concrete `AGENT-MANIFEST` from `references/orchestrator-runtime.md`.
 
-A profile defines **what the role is**.
+A profile defines the profession. A manifest defines the bounded assignment of one concrete instance.
 
-A manifest defines **what this concrete instance is doing now**.
+For non-trivial paired work, record pair group/position and batch. Resolve `Required-Skills`, `Conditional-Skills`, actual dependency availability and `Context-Checkpoint-Target` before spawn.
 
-For non-trivial paired work the manifest also records Pair-Group/Position and current Batch-ID.
+A role mentioned in conceptual examples is **not usable** unless its stable profile exists and the router can discover it.
 
-The manifest must also resolve skill references for the assignment:
+## Shared protocols
 
-- `Required-Skills` always includes inherited `agent-context-foundation` for stable roles;
-- `Conditional-Skills` records task-specific skills such as `intensive-ui-questioning` when activated;
-- `Context-Checkpoint-Target` names the authoritative persistence target;
-- dependency state must be verified as actual runtime availability, not inferred from a URL;
-- skill activation must never silently expand `Owned-Decisions`, `Can-Spawn` or `Production-Write-Authority`.
+Load progressively as required:
 
-For `ui-question-auditor`, the concrete manifest must additionally record the current questioning round and a unique instance name/identity that has not been used by a terminated auditor.
-
-## Lifecycle
-
-Stable general agents:
-
-`CREATED -> WORKING -> QUESTIONING/WAITING/BLOCKED -> RETURNED_* -> TERMINATED`
-
-Returned role is not automatically global approval.
-
-`ui-question-auditor` follows that stable lifecycle but is single-round only: after its round return/checkpoint it must terminate and is never reactivated for the next round.
-
-Thinkers:
-
-`CREATED -> WORKING -> ONE QUESTION/CLEAN -> RETURNED -> TERMINATED`
-
-A Thinker is never resumed for another question.
-
-Completed stable agents should also terminate after their result is committed to canonical state unless they still own active coordination/question work.
-
-## Profile contract
-
-Each stable profile should define or inherit:
-
-- Agent-Key and one professional mission;
-- `Work-Phase`;
-- `Production-Write-Authority`;
-- when/when-not to use;
-- inputs;
-- owned decisions;
-- explicit non-ownership/forbidden actions;
-- recommended Reasoning-Class;
-- tools/capabilities;
-- allowed support/subagents;
-- expected return artifact;
-- states/completion meaning;
-- escalation conditions;
-- reactivation/termination behavior;
-- neighboring roles/departments where useful;
-- `Skill-References`, either explicitly in the profile or through `references/skill-routing.md` inheritance.
-
-At minimum, every stable profile inherits `agent-context-foundation`. Additional skills require explicit activation conditions and actual availability under `references/installation-and-dependencies.md`.
-
-If a profile becomes saturated with multiple professional responsibilities, subdivide it deliberately rather than continuing to append duties.
+- `references/orchestrator-runtime.md`;
+- `references/organization-model.md`;
+- `references/role-purity.md`;
+- `references/paired-delegation.md`;
+- `references/batched-delegation.md`;
+- `references/plan-reopening.md`;
+- `references/thinker-waves.md`;
+- `references/orchestration-state.md`;
+- `references/installation-and-dependencies.md`;
+- `references/skill-routing.md`;
+- `references/ui-questioning-rounds.md`;
+- `references/idea-maturation.md`;
+- `references/trust-boundary.md`.
 
 ## Core separation
 
-General organization profiles optimize for flexible product/software work.
-
-Backend-defect profiles optimize for a strict auditable bug-resolution protocol.
-
-Morrison chooses department/protocol first, then atomic role, then applicable skills. It must not blur contracts into one ambiguous agent.
+**General roles optimize broad product/software organization. Historical backend-defect roles optimize a strict specialized bug-resolution protocol. Atomic ownership, not convenient naming, determines routing.**
