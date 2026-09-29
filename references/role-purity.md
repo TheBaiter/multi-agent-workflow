@@ -2,172 +2,202 @@
 
 ## Purpose
 
-Every agent instance in this organization must have **one role only**.
+Every stable agent instance has **one professional role only**.
 
-An agent may perform several steps that belong naturally to that role, but it must not combine distinct professional responsibilities merely to reduce the number of agents.
-
-The organization should gain coverage by creating more bounded specialists, not by turning one subagent into a miniature full-stack organization.
+An agent may perform several steps that naturally belong to that profession, but it must not combine distinct professional responsibilities merely to reduce agent count.
 
 ## Core rule
 
-**One agent instance = one Agent-Key + one professional role + one bounded assignment.**
+**One stable agent instance = one Agent-Key + one professional responsibility + one bounded assignment.**
 
 Do not create composite identities such as:
 
-- UX/UI/Graphic Designer;
-- Frontend Architect + Accessibility Reviewer;
-- Backend + Database + Security Planner;
-- QA + Performance + Security Validator;
-- Planner + Implementer + Final Validator.
+- UX + visual + accessibility + frontend;
+- frontend architect + implementer + reviewer;
+- backend + database + security;
+- performance + observability + optimization;
+- planner + implementer + final validator.
 
-If a task needs those responsibilities, create separate agent instances for the separate roles.
+If several responsibilities are material, route them to separate roles/owners.
 
-## Role versus task
+## Stable role versus assignment
 
-A role answers **what responsibility this agent owns**.
+A role answers **what profession/authority this agent owns**.
 
-A task answers **what this instance must produce right now**.
+An assignment answers **what bounded result this concrete instance must return now**.
 
 Example:
 
-~~~text
+```text
 Agent-Key: graphic-design-planner
 Role: Graphic Design Planner
-Task: define visual hierarchy, typography, color, imagery, composition and reusable visual rules for the authenticated dashboard
-~~~
+Assignment: define the visual hierarchy and composition plan for the authenticated dashboard
+```
 
-The task may be narrow or broad, but the role remains Graphic Design Planner.
+The assignment can narrow the scope; it cannot widen the profession.
 
-## Planning and execution are different roles
+## Only contracted Agent-Keys are instantiable
 
-Planning agents must not silently become executors.
+Conceptual examples may mention future specialties such as API planning, data architecture, security planning, performance planning or domain-specific implementation.
 
-If the organization needs to determine how something should be built, use a planning/design role whose output is an artifact, specification, decision set or plan.
+Those labels are **capabilities, not automatically valid Agent-Keys**.
 
-If the organization later needs to apply that plan, create a separate implementation role.
+Morrison may instantiate a role only when:
 
-Examples:
+1. a stable profile/contract exists;
+2. its authority boundary is defined;
+3. the router/department can discover it;
+4. the concrete manifest preserves that boundary.
 
-- `graphic-design-planner` plans visual direction; a later design-production role creates final assets when needed;
-- `ux-planner` plans flows/interactions; a later frontend implementation role applies approved behavior;
-- `frontend-architect` plans frontend boundaries/contracts; `frontend-implementer` writes frontend code;
-- `backend-architect` plans backend contracts/data flow; `backend-implementer` writes backend code;
-- `security-planner` defines controls/threat responses; a security implementation owner or relevant code owner applies them;
-- `qa-strategist` defines verification; test automation/QA execution roles execute it.
+If a needed specialty lacks a stable contract, record a capability gap. Do not invent the Agent-Key inside a live task.
 
-A planning agent may inspect code/design artifacts and may write its own planning artifact, but it must not apply production changes unless its stable role explicitly is an implementation role.
+## Planning, implementation and validation are different responsibilities
 
-## Review inside one role
+Planning/design agents produce plans/specifications/decisions/artifacts. They do not silently become production writers.
 
-Reviewing another agent's artifact does not automatically create a second professional role when the review stays strictly inside the same specialization.
+Implementation belongs to explicit implementation ownership.
 
-Example:
+Final validation belongs to a fresh independent validation role.
 
-Two `graphic-design-planner` instances may independently create visual plans and then critique each other's visual-plan decisions. They remain Graphic Design Planners because the review concerns the same responsibility they own.
+Examples using **currently contracted general roles**:
 
-What they may not do is expand that cross-review into unrelated UX research, backend architecture, security, QA, or implementation work.
+- `graphic-design-planner` defines visual direction; an explicit implementation owner later applies approved production changes;
+- `ux-planner` defines user flows/usability requirements; it does not implement frontend code;
+- `frontend-architect` defines frontend structure; it does not own production implementation;
+- `backend-architect` defines backend domain/service architecture; it does not own public API/data/security or production implementation;
+- `technical-planner` integrates already-owned specialist plans; it does not replace those specialists;
+- `quality-strategist` defines verification strategy; it does not act as the final validator;
+- `implementation-owner` implements execution-ready work; it does not validate its own substantial work as final judge;
+- `independent-validator` validates and normally has no production-write authority.
 
-## Pairing rule
+A future specialized implementation role may be added deliberately, but its name is not valid merely because an example would be convenient.
 
-For non-trivial planning/reasoning work, paired delegation should normally instantiate **at least two agents of the same role**.
+## Review inside one profession
 
-Examples:
+Reviewing another instance's artifact does not create a second profession when the review remains strictly inside the same specialization.
 
-~~~text
-thinker-A + thinker-B
+Example: two `graphic-design-planner` instances may independently create visual plans and then critique each other's visual decisions. They remain Graphic Design Planners.
+
+They may not turn that cross-review into UX research, backend planning, security analysis, QA ownership or implementation.
+
+## Same-role pairing
+
+For non-trivial cognitive/planning/review work, normally create at least two fresh independent instances of the **same contracted Agent-Key**.
+
+Valid current examples include:
+
+```text
 product-planner-A + product-planner-B
-graphic-design-planner-A + graphic-design-planner-B
+researcher-A + researcher-B
 ux-planner-A + ux-planner-B
+graphic-design-planner-A + graphic-design-planner-B
 frontend-architect-A + frontend-architect-B
 backend-architect-A + backend-architect-B
-security-planner-A + security-planner-B
-qa-strategist-A + qa-strategist-B
-performance-planner-A + performance-planner-B
-~~~
+technical-planner-A + technical-planner-B
+review-challenger-A + review-challenger-B
+alternative-planner-A + alternative-planner-B
+risk-reviewer-A + risk-reviewer-B
+quality-strategist-A + quality-strategist-B
+```
 
-Other specialties may participate later as separate role pairs or separate departmental stages. They do not substitute for the same-role pair.
+Thinkers follow their own disposable one-question contract rather than stable Agent-Key profiles.
+
+Different specialties never satisfy one another's pair requirement.
 
 ## Department sequencing
 
-A department can contain many specialist roles, but each role remains atomic.
+A department may contain many professions, but each profile remains atomic.
 
-Example UI/design department:
+Example UI planning sequence when all are materially required:
 
-~~~text
-UI / DESIGN DEPARTMENT
-  -> UX Planner A + UX Planner B
-  -> Information Architecture Planner A + B
-  -> Graphic Design Planner A + B
-  -> Interaction Design Planner A + B
-  -> Design-System Planner A + B
-  -> Accessibility Planner A + B
-~~~
+```text
+UX Planner A+B
+Information Architecture Planner A+B
+Graphic Design Planner A+B
+Interaction Design Planner A+B
+Design-System Planner A+B
+Accessibility Planner A+B
+```
 
-The Orchestrator should activate only the roles materially needed for the task.
+This is not a mandatory ritual. Activate only responsibilities that materially affect the task.
 
-Do not merge these responsibilities into one "UI expert" merely because all of them relate to interface work.
+## Technical integration is not generic architecture
+
+`technical-planner` is intentionally narrowed to cross-specialty integration.
+
+It may reconcile:
+
+- dependencies;
+- compatibility;
+- handoffs;
+- implementation order;
+- rollout/rollback order;
+- contradictions that must be routed back to premise owners.
+
+It may not absorb frontend/backend/API/data/security/performance architecture to avoid creating/routing the correct specialist.
 
 ## Thinker distinction
 
-A Thinker has exactly one role: discover missing questions, assumptions, branches and validation gaps.
+A Thinker has one responsibility only: return one strongest material unanswered question (or clean) and terminate.
 
-A Thinker does not become:
+A Thinker does not become planner, designer, researcher, implementer or validator.
 
-- planner;
-- designer;
-- researcher;
-- implementer;
-- validator.
-
-A thinker may phrase a discovered gap precisely, but the owning specialist role decides what to do about it.
+The owning stable role decides what to do with the question.
 
 ## Synthesis
 
-Synthesis is coordination of outputs, not permission to absorb specialist responsibilities.
+Synthesis coordinates already-owned outputs. It does not transfer domain authority to the synthesizer.
 
-The parent/Orchestrator may:
+Morrison may compare artifacts, route contradictions and record resolved canonical state.
 
-- compare two same-role artifacts;
-- list agreements and contradictions;
-- route contradictions back to the paired specialists;
-- record the resolved canonical artifact.
+`technical-planner` may integrate mature specialist technical artifacts when cross-specialty sequencing/compatibility is itself the assigned profession.
 
-It should not invent missing domain decisions itself when those decisions belong to the specialist pair.
+Neither may invent missing specialist decisions.
 
-For a highly technical or domain-heavy synthesis, use a dedicated synthesis owner whose single responsibility is to reconcile already-produced specialist artifacts without becoming their executor.
+## Manifest requirement
 
-## Agent manifest requirement
+Every stable manifest includes at minimum:
 
-Every stable `AGENT-MANIFEST` must include:
-
-~~~text
-Agent-Key: <one stable role>
+```text
+Agent-Key: <one contracted stable role>
 Role: <one professional responsibility>
 Assignment: <one bounded result>
 Work-Phase: DISCOVER | PLAN | REVIEW | SYNTHESIZE | IMPLEMENT | VERIFY
 Production-Write-Authority: YES | NO
-~~~
+```
 
-`Work-Phase` narrows what the role is doing in this instance; it does not grant a second role.
+It also preserves role-specific authority, tools, skill dependencies, batch/pair state and escalation rules under `references/orchestrator-runtime.md`.
 
-For planning roles, `Production-Write-Authority` defaults to `NO`.
+For planning/design/research/review roles, production writes default to `NO`.
 
-For Thinkers, `Work-Phase` is `DISCOVER` and `Production-Write-Authority` is always `NO`.
+## Saturation test
+
+Treat a role as a candidate for subdivision when it materially:
+
+- owns multiple separable professions;
+- produces artifacts that need independent owners;
+- requires very different knowledge/tools/reasoning modes;
+- mixes conflicting completion criteria;
+- accumulates adjacent responsibilities through repeated `also`/`when applicable` clauses;
+- needs excessive context from unrelated domains;
+- can no longer go deep on its primary responsibility.
+
+Refactor ownership rather than making the prompt larger.
 
 ## Anti-patterns
 
 Do not:
 
-- define a role with `and`/`+` responsibilities that belong to separate professions merely for convenience;
+- define a stable role as a bundle of neighboring professions;
 - let a planner implement because it already knows the plan;
-- let an implementer redefine product/design requirements because they seem incomplete;
-- let a reviewer silently fix production code unless its stable role explicitly owns implementation;
-- use one "general expert" where the organization actually requires several distinct specialist decisions;
-- count two different specialties as the required same-role A/B pair;
-- allow a Thinker to become the owner of the solution it questioned.
+- let an implementer invent unresolved product/design/architecture;
+- let a reviewer silently become a production fixer;
+- use one generic expert when several independent decisions exist;
+- count two different specialties as an A+B pair;
+- let Thinkers own their solutions;
+- instantiate uncontracted names from examples;
+- solve a capability gap by widening the nearest existing role.
 
-## Design principle
+## Core principle
 
-**Specialization should be represented by organizational structure, not compressed into individual prompts.**
-
-The Orchestrator should know which single-responsibility roles to instantiate and should combine their artifacts at the organizational level.
+**Specialization belongs in organizational structure, not inside oversized prompts.**
