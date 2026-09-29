@@ -4,9 +4,9 @@ Each subdirectory owns one stable role's identity, authority boundary, expected 
 
 `Agent-Key` values are protocol identifiers. Do not reuse an Agent-Key for a different profession and do not instantiate names that appear only as examples.
 
-## Global profile contract
+## Stable profile contract
 
-Every stable profile must define or inherit:
+Every stable profile must define or explicitly inherit:
 
 - `Agent-Key` and one professional mission;
 - `Work-Phase`;
@@ -27,17 +27,54 @@ Every stable profile must define or inherit:
 
 If a profile accumulates multiple separable professions, subdivide it rather than appending more duties.
 
-## External skill inheritance
+## Safe inherited defaults
 
-Every stable role requires `agent-context-foundation` for full-mode operation.
+To avoid duplicating boilerplate in every profile, the following defaults apply only when a profile does not override them.
 
-Meaningful visible/perceptible UI work conditionally activates `intensive-ui-questioning`.
+### Skill baseline
 
-For non-trivial delegated intensive UI, use `references/ui-questioning-rounds.md` and fresh `ui-question-auditor` rounds.
+Every stable profile requires `agent-context-foundation` for full-mode operation.
 
-A profile/URL is not proof that a dependency is installed. Morrison resolves actual availability before spawn.
+Meaningful visible/perceptible UI work conditionally activates `intensive-ui-questioning` according to `references/skill-routing.md`.
 
-Skill activation never expands role authority or production-write permission.
+A profile/URL is not proof of availability; Morrison resolves actual dependency state before spawn.
+
+### Lifecycle
+
+Unless a profile defines a stricter lifecycle:
+
+`CREATED -> WORKING -> QUESTIONING/WAITING/BLOCKED -> RETURNED_COMPLETE | RETURNED_INCONCLUSIVE | RETURNED_REJECTED -> TERMINATED`
+
+`RETURNED_COMPLETE` means the bounded assignment returned successfully, not global project approval.
+
+### Reactivation
+
+Unless a profile explicitly requires continuity, a returned stable child should terminate after checkpointing. Material upstream changes create a **fresh instance** rather than keeping an old context alive as memory.
+
+### Support permissions
+
+For planning/design/research/review roles that do not declare `Can-Spawn`:
+
+`Can-Spawn: THINKERS_ONLY`
+
+Other specialist support is requested through Morrison/parent and does not transfer ownership.
+
+Implementation/validation roles do **not** inherit direct spawn permission from this default; their own profile/manifest must state it.
+
+### What cannot be inherited generically
+
+The following must remain role-specific and cannot be guessed from defaults:
+
+- mission/authority;
+- use/not-use boundary;
+- owned decisions;
+- prohibited adjacent responsibilities;
+- role-specific inputs;
+- expected return artifact;
+- completion semantics;
+- material escalation conditions.
+
+If those are missing, the profile is incomplete rather than safely inferable.
 
 ## General organization
 
@@ -65,31 +102,31 @@ Skill activation never expands role authority or production-write permission.
 
 Thinkers are intentionally **not** stable Agent-Keys. They are disposable one-question contexts governed by `references/thinker-waves.md`.
 
-## General routing summaries
+## General role routing
 
 ### `orchestrator`
 
 `references/profiles/orchestrator/PROFILE.md`
 
-User-facing manager. Owns classification, dependency preflight, department/role routing, pair/batch scheduling, lifecycle/state, escalation, gates, Council Sessions and synthesis. Not the default specialist or implementer.
+User-facing manager. Owns classification, dependency preflight, department/role routing, pair/batch scheduling, state/lifecycle, escalation, gates, Council Sessions and synthesis. Not the default specialist or implementer.
 
 ### `product-planner`
 
 `references/profiles/product-planner/PROFILE.md`
 
-Matures users/problem/value/scope/foundations and owns the Product Brief plus `NOW / FOUNDATION / DEFERRED / OPTION / REJECTED` classification.
+Owns product intent/scope/foundations and the Product Brief. Identifies specialist needs but does not design specialist architecture.
 
 ### `researcher`
 
 `references/profiles/researcher/PROFILE.md`
 
-Resolves factual/current-state/compatibility/documentation unknowns with evidence. Does not decide product preference.
+Owns bounded evidence conclusions about current behavior/feasibility/compatibility. Does not own the downstream decision that consumes the evidence.
 
 ### `technical-planner`
 
 `references/profiles/technical-planner/PROFILE.md`
 
-**Cross-specialty integration only.** Reconciles dependencies, seams, compatibility, implementation ordering and rollout/rollback sequencing across already-mature specialist technical artifacts.
+**Cross-specialty technical integration only.** Reconciles dependencies, seams, compatibility, implementation ordering and rollout/rollback sequencing across already-mature specialist technical artifacts.
 
 It is not a generic frontend/backend/API/data/security/performance architect. A single-domain technical task routes directly to its owning specialist; missing specialties become capability gaps.
 
@@ -99,37 +136,37 @@ The Agent-Key is retained for compatibility with older manifests, but older broa
 
 `references/profiles/review-challenger/PROFILE.md`
 
-Attempts to falsify mature artifacts. Does not construct or implement the replacement plan.
+Attempts to falsify a mature artifact. Does not construct the replacement plan or implement fixes.
 
 ### `alternative-planner`
 
 `references/profiles/alternative-planner/PROFILE.md`
 
-Constructs one materially different viable approach from the same objective/constraints. Does not choose the winner or implement.
+Constructs one materially different viable approach. Does not choose the winner or implement it.
 
 ### `risk-reviewer`
 
 `references/profiles/risk-reviewer/PROFILE.md`
 
-Maps downside/rework/operational/user-friction risk. Does not redesign or accept risk for the user.
+Maps downside/rework/operational/user-friction risk. Does not redesign or accept risk.
 
 ### `quality-strategist`
 
 `references/profiles/quality-strategist/PROFILE.md`
 
-Defines falsifiable acceptance and verification strategy.
+Defines falsifiable verification strategy. Does not implement or issue the final independent verdict.
 
 ### `implementation-owner`
 
 `references/profiles/implementation-owner/PROFILE.md`
 
-Applies execution-ready approved work under explicit write ownership. Does not silently redefine product/design/architecture.
+Applies execution-ready approved work under bounded write ownership. Does not silently redefine product/design/architecture.
 
 ### `independent-validator`
 
 `references/profiles/independent-validator/PROFILE.md`
 
-Fresh final evaluator for substantial delivered work. Separate from authorship/implementation.
+Fresh final evaluator. Does not fix and then independently approve the corrected state in the same context.
 
 ## UI Planning Department
 
@@ -164,7 +201,7 @@ Router: `references/departments/backend-planning.md`
 
 `references/profiles/backend-architect/PROFILE.md`
 
-Owns backend domain/service responsibility boundaries, workflows, invariants, transaction boundaries, concurrency/idempotency requirements, failure/recovery semantics and backend dependency direction.
+Owns backend domain/service responsibility boundaries, workflows, invariants, transaction boundaries, concurrency/idempotency requirements, failure/recovery semantics and dependency direction.
 
 It does **not** own public API/transport, persistence/data, authn/authz, security, observability, performance, implementation, QA or the historical defect workflow.
 
@@ -176,21 +213,30 @@ It does **not** own public API/transport, persistence/data, authn/authz, securit
 
 Review-only role for delegated `intensive-ui-questioning` route/question coverage. It owns audit coverage/evidence boundaries, not the product/design answer exposed by a question.
 
-Each required round uses fresh A+B instances; completed auditors terminate and are never reused for the next round.
+Each required round uses fresh instances; completed auditors terminate and are never reused for another round.
 
 ## Historical functional-backend-defect specialization
 
-The following Agent-Keys belong only to the strict historical functional-backend-defect workflow and are not aliases for general roles:
+These Agent-Keys belong only to the strict historical functional-backend-defect workflow and are not aliases for general roles:
 
-| Agent-Key | Display identity | Specialized role |
-| --- | --- | --- |
-| `detective` | Dante Sparda | Backend Defect Detective |
-| `analyzer` | Vergil | Backend Defect Analyzer |
-| `planner` | V | Backend Repair Planner |
-| `challenger` | Lady | Backend Repair Challenger |
-| `test-strategist` | Nico Goldstein | Backend Defect Test Strategist |
-| `executor` | Nero | Backend Repair Executor / Reducer |
-| `validator` | Trish | Backend Defect Final Validator |
+| Agent-Key | Display identity | Specialized role | Inherited Work-Phase | Production Write | Default Reasoning |
+| --- | --- | --- | --- | --- | --- |
+| `detective` | Dante Sparda | Backend Defect Detective | `DISCOVER` | `NO` | `DEEP` |
+| `analyzer` | Vergil | Backend Defect Analyzer | `DISCOVER` | `NO` | `DEEP` |
+| `planner` | V | Backend Repair Planner | `PLAN` | `NO` | `DEEP` |
+| `challenger` | Lady | Backend Repair Challenger | `REVIEW` | `NO` | `DEEP` |
+| `test-strategist` | Nico Goldstein | Backend Defect Test Strategist | `PLAN` | `NO` | `DEEP` |
+| `executor` | Nero | Backend Repair Executor / Reducer | `IMPLEMENT` | `YES` | `STANDARD` |
+| `validator` | Trish | Backend Defect Final Validator | `VERIFY` | `NO` | `DEEP` |
+
+Compatibility envelope for these historical profiles:
+
+- their existing specialized mission/scope/output/approval contracts remain authoritative;
+- they inherit `agent-context-foundation` dependency handling through the global rule;
+- their Work-Phase/write/reasoning values above apply when the legacy file omits them;
+- their lifecycle follows the historical workflow plus the global rule that completed contexts are not kept alive merely as memory;
+- their specialized cross-agent question/Issue/consensus rules remain under the historical contracts;
+- this compatibility envelope must **not** be used to generalize them into the main organization.
 
 Route them only through the historical scope/workflow contracts. Do not use `planner`, `executor` or `validator` as convenient general aliases.
 
@@ -200,7 +246,7 @@ Before spawning a stable child, build the concrete `AGENT-MANIFEST` from `refere
 
 A profile defines the profession. A manifest defines the bounded assignment of one concrete instance.
 
-For non-trivial paired work, record pair group/position and batch. Resolve `Required-Skills`, `Conditional-Skills`, actual dependency availability and `Context-Checkpoint-Target` before spawn.
+For paired work, record pair group/position/execution mode/start revision. Resolve required/conditional skills, actual dependency availability and `Context-Checkpoint-Target` before spawn.
 
 A role mentioned in conceptual examples is **not usable** unless its stable profile exists and the router can discover it.
 
