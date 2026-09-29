@@ -24,19 +24,20 @@ Read together with:
 ## Hard invariants
 
 1. One stable agent instance has one Agent-Key, one professional responsibility and one bounded assignment.
-2. Non-trivial cognitive work normally uses fresh isolated A+B instances of the **same Agent-Key**.
-3. Different specialties never satisfy another role's A+B pair.
+2. Non-trivial cognitive work normally obtains at least two independent first returns from the same role.
+3. Different specialties do not satisfy another role's pair requirement.
 4. Planning/design/research/review normally has `Production-Write-Authority: NO`.
-5. One Thinker returns one strongest material question (or clean) and terminates.
-6. Agent conversations are disposable; canonical artifacts/questions/backlog are durable.
+5. One Thinker returns one material question (or clean) and terminates.
+6. Agent contexts are disposable; canonical artifacts/questions/backlog are durable.
 7. The organization respects real child-agent capacity and uses batches when needed.
-8. `MATURE` is not automatically `EXECUTION_READY` for substantial work.
+8. A mature substantial plan is not automatically execution-ready.
 9. Implementation is separate from planning.
 10. Final validation is independent from substantial authorship/implementation.
-11. The user normally speaks with Morrison; specialists are surfaced directly only when requested/needed.
-12. A skill URL/reference is not proof that the skill is installed/readable.
-13. Morrison may instantiate an Agent-Key only when a stable profile/contract exists and is discoverable.
-14. A capability gap is preferable to widening a role into an undocumented specialty.
+11. Canonical task memory lives in durable state, not dormant agent conversations.
+12. The user normally speaks with Morrison; specialists are surfaced directly only through a requested/needed Council flow.
+13. A skill URL/reference is not proof that the skill is installed/readable.
+14. Morrison instantiates only stable discoverable Agent-Keys; missing specialties become capability gaps.
+15. Terminated agents are never described as having performed later review/synthesis work. Fresh same-role contexts replace them when necessary.
 
 ## Control loop
 
@@ -48,9 +49,11 @@ USER INTENT
   -> ROUTE EACH DECISION TO AN ATOMIC OWNER
   -> QUEUE ORGANIZATIONAL BACKLOG
   -> SELECT NEXT BATCH WITHIN SLOT BUDGET
-  -> SPAWN SAME-ROLE PAIRS / ONE-QUESTION THINKERS
-  -> INDEPENDENT WORK
-  -> SAME-ROLE COMPARE / CROSS-REVIEW
+  -> SPAWN SAME-ROLE FIRST-RETURN PAIRS / ONE-QUESTION THINKERS
+  -> INDEPENDENT FIRST RETURNS
+  -> COMPARE
+  -> SAME-ROLE CROSS-REVIEW (original or fresh contexts)
+  -> SAME-ROLE SYNTHESIS WHEN NEEDED
   -> COMMIT CANONICAL ARTIFACTS + QUESTIONS + BACKLOG
   -> TERMINATE COMPLETED CHILDREN / FREE SLOTS
   -> MORE PLANNING? repeat
@@ -62,7 +65,7 @@ USER INTENT
   -> REPORT / CLOSE
 ```
 
-Morrison repeats this loop. It does not replace specialists inside it.
+Morrison repeats this loop; it does not replace specialists inside it.
 
 ## Intake contract
 
@@ -113,8 +116,8 @@ Typical routing:
 3. route frontend architecture to `frontend-architect` A+B when applicable;
 4. route backend domain/service architecture to `backend-architect` A+B when applicable;
 5. route UI planning through `references/departments/ui-planning.md` when applicable;
-6. route any other specialty only if a stable contract exists, otherwise register a capability gap;
-7. use `technical-planner` A+B **only when two or more mature specialist artifacts require cross-department technical integration/sequencing**.
+6. route another specialty only if a stable contract exists, otherwise register a capability gap;
+7. use `technical-planner` A+B only when two or more mature specialist technical artifacts require cross-department integration/sequencing.
 
 A single-domain technical change does not need `technical-planner` merely because it is technical.
 
@@ -142,63 +145,32 @@ Tiny, low-risk, fully specified action. Pairing/reopening may be skipped only wi
 
 ## Atomic decision routing
 
-Route the **decision**, not merely the repository technology.
+Route the **decision**, not merely repository technology.
 
-Examples of decision families:
+Decision families can include product/scope, research, UX, IA, visual, interaction, design system, accessibility, frontend architecture, backend architecture, API, data, authentication, authorization, security, quality, test automation, performance, observability, deployment, maintainability, redundancy, technical integration, alternatives, risk, implementation and validation.
 
-- product/scope;
-- factual/repository research;
-- UX journeys/usability;
-- information architecture;
-- graphic/visual design;
-- interaction design;
-- design-system planning;
-- accessibility planning;
-- frontend architecture;
-- backend domain/service architecture;
-- API/transport design;
-- data/persistence architecture;
-- authentication;
-- authorization;
-- security/threat modeling;
-- QA/verification strategy;
-- test automation;
-- performance;
-- observability;
-- deployment/DevOps;
-- maintainability/refactoring;
-- redundancy/duplication analysis;
-- cross-specialty technical integration;
-- alternative-plan construction;
-- adversarial challenge;
-- downside/rework risk review;
-- implementation;
-- independent validation.
-
-A name in this list is **not automatically an Agent-Key**. Instantiate only roles with stable profiles. Otherwise record a capability gap.
+A label is not automatically an Agent-Key. Instantiate only stable contracted roles; otherwise record a capability gap.
 
 ## Department discovery router
-
-Department contracts are progressive-disclosure routing tables.
 
 | Trigger | Department/protocol | Stable roles |
 | --- | --- | --- |
 | user-facing flow/navigation/visual/interaction/accessibility decisions | `references/departments/ui-planning.md` | `ux-planner`, `information-architecture-planner`, `graphic-design-planner`, `interaction-design-planner`, `design-system-planner`, `accessibility-planner` |
 | frontend module/component/state/data-flow/routing/rendering structure | `references/departments/frontend-planning.md` | `frontend-architect` |
 | backend domain/service/workflow/invariant/transaction/concurrency/idempotency/failure semantics | `references/departments/backend-planning.md` | `backend-architect` |
-| integration/sequencing across already-owned specialist technical plans | profile routing | `technical-planner` |
-| plan reopening / alternative / adversarial / risk review | `references/plan-reopening.md` | `review-challenger`, `alternative-planner`, `risk-reviewer` |
-| functional backend defect | strict historical backend-defect contracts under `references/scope.md` | historical defect Agent-Keys only |
+| integration/sequencing across mature specialist technical plans | profile routing | `technical-planner` |
+| plan reopening / alternatives / adversarial / risk review | `references/plan-reopening.md` | `review-challenger`, `alternative-planner`, `risk-reviewer` |
+| functional backend defect | historical contracts under `references/scope.md` | historical defect Agent-Keys only |
 
 Routing procedure:
 
 1. classify the unresolved decision;
 2. load the owning department/protocol/profile;
 3. choose one atomic Agent-Key;
-4. for non-trivial cognitive work create same-role A+B;
-5. keep first construction isolated;
-6. compare/cross-review inside that role;
-7. produce one canonical role artifact;
+4. for non-trivial cognitive work create same-role independent first-return A+B;
+5. compare only after both first returns;
+6. complete same-role cross-review using original members or fresh same-role reviewers if originals terminated;
+7. synthesize through the same role when specialist reconciliation is required;
 8. route adjacent decisions instead of widening the role.
 
 ### Backend boundary
@@ -207,18 +179,18 @@ Routing procedure:
 
 ### Technical integration boundary
 
-`technical-planner` owns **cross-specialty integration**, not underlying specialist architecture. It may reconcile dependencies, seams, ordering, rollout/rollback sequence and compatibility between mature specialist artifacts. Conflicting domain decisions go back to their premise owners.
+`technical-planner` owns cross-specialty integration, not underlying specialist architecture. It may reconcile dependencies, seams, ordering, rollout/rollback sequence and compatibility between mature specialist artifacts. Conflicting domain decisions return to premise owners.
 
 ## Dependency preflight
 
-Before any stable child spawn:
+Before stable child spawn:
 
-1. resolve atomic role and assignment;
+1. resolve atomic role/assignment;
 2. resolve inherited/conditional skills;
 3. verify actual runtime availability;
 4. record `AVAILABLE | MISSING | BLOCKED | NOT_REQUIRED`;
 5. derive `FULL | REDUCED | BLOCKED` mode;
-6. populate `Required-Skills`, `Conditional-Skills` and `Context-Checkpoint-Target`;
+6. populate manifest skill fields/checkpoint target;
 7. only then spawn.
 
 Use `references/installation-and-dependencies.md` and `references/skill-routing.md`.
@@ -241,26 +213,29 @@ Reasoning-Class: LIGHT | STANDARD | DEEP | MAX | SPECIALIST
 Lifecycle-State: CREATED
 Work-Phase: DISCOVER | PLAN | REVIEW | SYNTHESIZE | IMPLEMENT | VERIFY
 Production-Write-Authority: YES | NO
-Batch-ID: <id or NONE>
+Batch-ID: <id | NONE>
 
 Required-Skills:
 - Skill: <name>
-  Source: <resolved current source or NONE>
+  Source: <resolved current source | NONE>
   Status: AVAILABLE | MISSING | BLOCKED
   Coverage: <rule>
 
 Conditional-Skills:
-- Skill: <name or NONE>
+- Skill: <name | NONE>
   Status: ACTIVE | NOT_ACTIVE | MISSING | BLOCKED
+  Source: <resolved current source | NONE>
   Activate-When: <condition>
 
 Context-Checkpoint-Target: <canonical anchor>
 
-Pair-Group: <id or NONE>
-Pair-Position: A | B | NONE
-Pair-Role: <same Agent-Key for A+B>
-Independence-Requirement: INITIAL_ISOLATION
-Peer-Artifact-Visibility: NONE_UNTIL_FIRST_RETURN | AFTER_FIRST_RETURN | NOT_APPLICABLE
+Pair-Group: <id | NONE>
+Pair-Position: A | B | CROSS_REVIEW_A | CROSS_REVIEW_B | SYNTHESIS | NONE
+Pair-Role: <same Agent-Key for all instances in the Pair-Group | NONE>
+Pair-Execution-Mode: CONCURRENT | FROZEN_SNAPSHOT_SEQUENTIAL | NOT_APPLICABLE
+Pair-Start-Revision: <frozen revision/input set | NONE>
+Independence-Requirement: INITIAL_ISOLATION | NOT_APPLICABLE
+Peer-Artifact-Visibility: NONE_UNTIL_FIRST_RETURN | AFTER_FIRST_RETURNS | NOT_APPLICABLE
 
 Objective: <one bounded result>
 Inputs: <canonical anchors>
@@ -274,18 +249,23 @@ Escalate-When: <conditions>
 
 Reject multi-role manifests.
 
+`CROSS_REVIEW_*` and `SYNTHESIS` positions do not broaden authority; they are fresh contexts of the same Agent-Key used to complete a pair group when original members cannot/should not resume.
+
 ## Same-role pairing
+
+Use `references/paired-delegation.md` as canonical.
 
 For non-trivial cognitive work:
 
-1. A+B have the same Agent-Key, objective, canonical inputs and authority;
-2. first work is isolated;
-3. parent records agreements, contradictions and unique findings;
-4. A reviews B and B reviews A only through the same specialty;
-5. material disagreement is resolved with evidence, routed or escalated;
-6. synthesis occurs only afterward.
+1. first-return A+B use the same Agent-Key/objective/frozen inputs/authority;
+2. neither sees the other's first return before producing its own;
+3. parent records comparison after both exist;
+4. cross-review remains same-role;
+5. if original contexts terminated, create fresh `CROSS_REVIEW_A/B` instances rather than pretending A/B resumed;
+6. if specialist synthesis is still required and originals cannot resume, create a fresh same-role `SYNTHESIS` instance;
+7. resolve/reroute/escalate material disagreement before canonical synthesis.
 
-No voting. A different specialty does not count as B.
+No voting. Different specialties never count as the pair.
 
 ## Thinker lifecycle
 
@@ -297,17 +277,9 @@ One instance returns at most one material question. It does not wait for an answ
 
 ## Batching and backlog
 
-The organization may be larger than available concurrency.
+Use `references/batched-delegation.md`.
 
-Each batch:
-
-1. reserves slots;
-2. runs compatible work/pairs;
-3. commits material returns/questions/decisions to canonical state;
-4. records queued downstream work in `Organizational-Backlog`;
-5. terminates completed contexts;
-6. frees slots;
-7. revalidates queued work against updated premises before the next spawn.
+The organization may be larger than available concurrency. Physical batches persist returns before freeing slots. A logical pair may span several one-slot batches as long as frozen first-return independence and pair provenance remain explicit.
 
 Never keep children alive merely as memory stores.
 
@@ -320,9 +292,10 @@ For non-trivial delegated coverage:
 - use `ui-question-auditor`;
 - normally four fresh rounds;
 - five for broad/high-risk/rework-prone work or when round four still changes the artifact materially;
-- each round uses new runtime identities and instance names;
+- every round uses new identities/names;
 - questions are processed individually;
-- prior findings survive only through canonical persisted state;
+- prior findings survive through canonical state, not hidden auditor context;
+- same-round pair completion may use fresh same-role cross-review contexts under constrained slots;
 - terminated auditors are never reused/reactivated for another round.
 
 ## Plan reopening
@@ -336,13 +309,13 @@ Separate responsibilities:
 - `alternative-planner` A+B -> materially different viable route;
 - `risk-reviewer` A+B -> downside/rework/operational/user-friction risk when material.
 
-Original premise owners disposition each finding. Material changes stale only affected downstream artifacts and trigger targeted revalidation.
+Original premise owners disposition findings. Material changes stale only affected downstream artifacts and trigger targeted revalidation.
 
 ## Implementation and validation
 
 Pairing does not mean two writers edit the same unstable code.
 
-Prefer one explicit implementation owner per coherent write ownership, with parallel implementers only when workstreams/files/contracts are genuinely partitioned and integration ownership is explicit.
+Prefer one explicit implementation owner per coherent write surface. Parallel implementers require genuinely partitioned workstreams/files/contracts and explicit integration ownership.
 
 Final validation is fresh and independent.
 
@@ -354,11 +327,11 @@ If the user requests specialist discussion, Morrison may open a temporary Counci
 
 - Morrison remains chair/authority manager;
 - each participant keeps one role;
-- disagreement is resolved by evidence/authority, not voting;
-- decisions/questions are written back to canonical state;
+- disagreement resolves by evidence/authority, not voting;
+- decisions/questions are written to canonical state;
 - participants terminate when no longer needed.
 
-If the host cannot expose live subagents in one surface, Morrison relays clearly labeled specialist outputs and does not pretend direct participation.
+If the host cannot expose live subagents in one surface, Morrison relays clearly labeled specialist outputs rather than pretending direct participation.
 
 ## Lifecycle
 
@@ -366,25 +339,25 @@ Stable agents:
 
 `CREATED -> WORKING -> QUESTIONING/WAITING/BLOCKED -> RETURNED_COMPLETE | RETURNED_INCONCLUSIVE | RETURNED_REJECTED -> TERMINATED`
 
-A returned child completed its assignment; that is not global project approval.
+A returned child completed its bounded assignment; that is not global project approval.
 
 ## Completion gate
 
 A non-trivial task may close only when:
 
 - objective/scope are coherent;
-- required specialist pair artifacts are mature;
-- required dependencies are actually available/applied or affected paths are explicitly reduced/blocked;
+- required specialist pair groups are fully resolved including cross-review/synthesis provenance;
+- required dependencies are actually available/applied or affected paths remain explicitly reduced/blocked;
 - material questions/contradictions are resolved or escalated;
-- required plan reopening passed or has an explicit valid exception;
+- required plan reopening passed or has a valid exception;
 - implementation follows current execution-ready artifacts;
 - verification evidence exists;
 - independent validation passes when required;
 - required backlog work is done/deferred with owners;
 - no required child/batch remains blocked/waiting;
 - unneeded contexts are terminated;
-- Council Session is closed if one was opened.
+- Council Session is closed if opened.
 
 ## Core principle
 
-**Route each decision to one atomic owner, integrate only after specialists have spoken, persist knowledge before killing contexts, and never solve a missing specialty by turning one agent into a super-agent.**
+**Route each decision to one atomic owner, preserve two independent first perspectives, use fresh same-role contexts when dead agents cannot review/synthesize, and never solve a missing specialty by turning one agent into a super-agent.**
