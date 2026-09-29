@@ -4,7 +4,7 @@
 
 Morrison must not rely on conversational memory to reconstruct the organization.
 
-Every non-trivial task keeps one canonical durable state that records objective, authority, dependency availability, artifacts, questions, pair independence, batches, backlog, reopening, implementation and validation.
+Every non-trivial task keeps one canonical durable state that records objective, authority, dependency availability, artifacts, questions, pair independence/review, batches, backlog, reopening, implementation and validation.
 
 This may live in a GitHub Issue, structured task document/runtime state or another authoritative durable artifact. Do not create a competing source of truth when the project already has one.
 
@@ -130,15 +130,15 @@ For every non-trivial cognitive workstream governed by `references/paired-delega
 PAIR-GROUP
 
 Pair-Group: <stable id>
-Agent-Key: <same contracted role for A+B>
+Agent-Key: <same contracted role for all pair/review/synthesis instances>
 Purpose: <research/planning/review/etc>
-Owner: <synthesis owner>
-State: CREATED | INDEPENDENT_WORK | FIRST_RETURNS | CROSS_REVIEW | SYNTHESIS | RESOLVED | BLOCKED | STALE
+Owner: <organizational owner of the pair group>
+State: CREATED | INDEPENDENT_WORK | FIRST_RETURNS | COMPARISON | CROSS_REVIEW | SYNTHESIS | RESOLVED | BLOCKED | STALE
 Pair-Execution-Mode: CONCURRENT | FROZEN_SNAPSHOT_SEQUENTIAL
 Pair-Start-Revision: <one frozen canonical revision/input-set id>
 Independence-Requirement: INITIAL_ISOLATION
-Member-A: <agent instance>
-Member-B: <agent instance>
+First-Return-A-Instance: <agent instance>
+First-Return-B-Instance: <agent instance>
 First-Return-A: <anchor/status>
 First-Return-B: <anchor/status>
 Peer-Visibility-Before-First-Returns: NONE
@@ -146,16 +146,25 @@ Agreements: <anchor/summary>
 Contradictions: <anchor/summary>
 Unique-Findings-A: <anchor/summary>
 Unique-Findings-B: <anchor/summary>
-Cross-Review: <anchor/status>
+Cross-Review-Mode: ORIGINAL_MEMBERS | FRESH_SAME_ROLE_REVIEWERS
+Cross-Reviewer-A: <instance | NOT_REQUIRED>
+Cross-Reviewer-B: <instance | NOT_REQUIRED>
+Cross-Review-A: <anchor/status>
+Cross-Review-B: <anchor/status>
+Synthesis-Mode: ORIGINAL_MEMBER | FRESH_SAME_ROLE_SYNTHESIZER
+Synthesis-Instance: <instance>
 Synthesis-Artifact: <anchor/status>
 Unresolved-Material-Disagreement: <NONE | question ids>
 ```
 
 Rules:
 
-- both pair members start from the same logical frozen inputs;
-- in `FROZEN_SNAPSHOT_SEQUENTIAL`, B must not see A's first return and A-derived changes must not alter B's start state;
-- if equivalent starting evidence cannot be preserved, full pair independence is not satisfied;
+- first-return A+B start from the same logical frozen input set;
+- B never sees A's first return before producing B's first return;
+- in `FROZEN_SNAPSHOT_SEQUENTIAL`, A-derived changes do not alter B's starting evidence;
+- if original members terminated, cross-review must use fresh instances of the **same Agent-Key** rather than pretending old contexts resumed;
+- a fresh synthesizer, when needed, uses the same Agent-Key and receives durable first-return/comparison/cross-review artifacts;
+- if equivalent starting evidence/isolation cannot be preserved, full pair independence is not satisfied;
 - agreement alone is not proof;
 - different Agent-Keys never satisfy the pair.
 
@@ -177,9 +186,7 @@ Committed-Returns: <anchors>
 Queued-After: <backlog item ids>
 ```
 
-A batch becomes `COMMITTED` only after every material result/question/decision needed from it is durable elsewhere.
-
-Pair members can span sequential child executions under a single logical pair even when one slot forces `FROZEN_SNAPSHOT_SEQUENTIAL`; preserve pair start revision and isolation explicitly.
+A physical batch becomes `COMMITTED` after every material return expected from that batch is durable. Its logical pair group may still be waiting for B, cross-review or synthesis in later one-slot batches.
 
 ## Organizational Backlog
 
@@ -197,6 +204,8 @@ Last-Revalidated-At: <state revision>
 ```
 
 Queued work must be revalidated after material upstream changes.
+
+Pair continuation work (missing B, fresh cross-reviewers, fresh synthesizer) should be represented by the Pair Group plus the next required batch/action rather than by idle agents.
 
 ## Agent Instance Registry
 
@@ -220,8 +229,8 @@ Waiting-On: <question/agent/evidence | NONE>
 Spawn-Permission: NONE | THINKERS_ONLY | NAMED_SUPPORT_ROLE_REQUESTS | DELEGATED_OWNER
 Started-From: <canonical revision/artifact anchors>
 Pair-Group: <group id | NONE>
-Pair-Position: A | B | NONE
-Peer-Artifact-Visibility: NONE_UNTIL_FIRST_RETURN | AFTER_FIRST_RETURN | NOT_APPLICABLE
+Pair-Position: A | B | CROSS_REVIEW_A | CROSS_REVIEW_B | SYNTHESIS | NONE
+Peer-Artifact-Visibility: NONE_UNTIL_FIRST_RETURN | AFTER_FIRST_RETURNS | NOT_APPLICABLE
 Last-Checkpoint: <timestamp/revision when available>
 ```
 
@@ -287,7 +296,7 @@ Last-Material-Change: <anchor/revision>
 Final-Route-Closure: COMPLETE | OPEN_DEPENDENCIES | BLOCKED | NOT_REACHED
 ```
 
-Each round uses new agent identities. Same-round A+B may be concurrent or frozen-snapshot sequential according to `references/batched-delegation.md`.
+Each round uses new agent identities. Same-round first-return A+B may be concurrent or frozen-snapshot sequential; when originals terminate, fresh same-role cross-reviewers complete the round before the receipt is finalized.
 
 ## Plan Reopening Registry
 
@@ -361,8 +370,8 @@ Increment `State-Revision` for material organizational changes, including:
 - owner change;
 - stable child spawn/termination;
 - dependency availability/activation change;
-- pair/batch state change;
-- backlog mutation;
+- pair first-return/cross-review/synthesis state change;
+- batch/backlog mutation;
 - plan maturity/reopening change;
 - Council open/close;
 - gate change;
@@ -378,9 +387,9 @@ A fresh Morrison recovers by:
 2. loading the current runtime/dependency/role contracts;
 3. re-resolving actual skill availability;
 4. loading only current artifacts/active role profiles;
-5. identifying active/incomplete pairs/batches/backlog;
-6. validating pair start revisions/independence mode;
-7. recreating stale contexts as needed;
+5. identifying incomplete pair stage (first returns, cross-review or synthesis), batches and backlog;
+6. validating pair start revision/visibility guarantees;
+7. creating fresh continuation instances rather than resurrecting terminated contexts;
 8. continuing from `Next-Action`.
 
 Do not reconstruct authoritative task state from raw chat history when canonical state exists.
@@ -396,6 +405,7 @@ Set `Current-Gate: COMPLETE` only when:
 - required dependency states are resolved and required skills were actually applied, or affected paths remain explicitly reduced/blocked instead of falsely passed;
 - conditional skill routes are closed for current scope;
 - no material contradiction/question remains unowned;
+- no required pair cross-review/synthesis is incomplete;
 - no required batch/agent is blocked/waiting;
 - no required backlog item remains unfinished;
 - validation passed when required;
@@ -405,4 +415,4 @@ Set `Current-Gate: COMPLETE` only when:
 
 ## Core principle
 
-**The organization may forget conversations and terminate entire batches; it must not forget state, dependencies, pair independence, questions, evidence, artifacts, risk or ownership.**
+**The organization may forget conversations and terminate entire batches; it must not forget state, dependencies, independent first returns, cross-review/synthesis provenance, questions, evidence, artifacts, risk or ownership.**
