@@ -2,208 +2,222 @@
 
 ## Purpose
 
-A multi-agent organization must remain useful even when the host can run only a limited number of child agents concurrently.
+A multi-agent organization must remain useful even when the host can run only a few child contexts concurrently.
 
-The Orchestrator must therefore treat concurrent agent capacity as a **slot budget**, not as permission to keep an entire organization alive at once.
+Treat concurrency as a **slot budget**, not permission to keep the entire organization alive.
 
-The organization advances in bounded batches. Each batch produces durable artifacts, returns them to its parent, terminates contexts that are no longer needed, and frees capacity for the next batch.
+Canonical artifacts/questions/decisions/backlog are durable. Agent conversations are disposable execution contexts.
 
 ## Core rule
 
-**Do not keep agents alive merely because later work may need their conclusions. Persist conclusions; terminate contexts.**
-
-Canonical artifacts, question records, decisions, evidence anchors and backlog items are durable. Agent conversations are disposable execution contexts.
+**Persist conclusions; terminate contexts. Do not keep completed agents alive merely because later work may need their conclusions.**
 
 ## Capacity discovery
 
-The Orchestrator must not hard-code assumptions such as `8` or `10` concurrent children.
-
 At task start, determine when possible:
 
-- `Max-Concurrent-Children`: host/runtime limit;
-- `Currently-Available-Slots`: usable capacity now;
-- `Reserved-Capacity`: capacity intentionally left free for routing, urgent evidence work or required pair completion.
+- `Max-Concurrent-Children`;
+- `Currently-Available-Slots`;
+- `Reserved-Capacity` when useful.
 
-If the host does not expose a reliable limit, use a conservative working batch of **2 to 4 children** and adapt if the runtime reports saturation.
+Never hard-code assumptions such as 8 or 10 children.
 
-Same-role A/B pairs must fit completely in one batch. Do not run A now and B much later against a materially different state and call them an independent pair.
+If the host exposes no reliable limit, start with a conservative working batch of roughly 2-4 children and adapt.
 
-## Batch lifecycle
+## Same-role pair scheduling
 
-~~~text
-QUEUED WORK
-    ↓
-select highest-value compatible items
-    ↓
-create BATCH
-    ↓
-spawn children within slot budget
-    ↓
-independent work / pair protocol
-    ↓
-collect returns
-    ↓
-write canonical artifacts + findings + backlog
-    ↓
-terminate completed children
-    ↓
-free slots
-    ↓
-next BATCH
-~~~
+### Preferred mode: concurrent pair
 
-A batch is organizational scheduling only. It does not merge professional roles.
+When at least two compatible slots exist, run A+B of the same role concurrently from the same canonical starting revision.
 
-## Batch contract
+### Constrained mode: frozen-snapshot sequential pair
+
+A host with fewer than two child slots must not make same-role pairing impossible.
+
+If only one child slot is available, A and B may execute sequentially **only when independence is preserved**:
+
+1. freeze one canonical input snapshot/revision for the pair;
+2. run A from that snapshot;
+3. seal/persist A's first return where B cannot see it;
+4. do not apply A-derived changes to B's input state yet;
+5. create a fresh B instance from the exact same frozen snapshot/authority/objective;
+6. collect B's first return without exposing A's artifact/reasoning;
+7. only after both first returns, enter comparison/cross-review;
+8. then update canonical state.
 
 Record:
 
-~~~text
+```text
+Pair-Execution-Mode: CONCURRENT | FROZEN_SNAPSHOT_SEQUENTIAL
+Pair-Start-Revision: <same revision for A+B>
+```
+
+Do **not** run B later against a materially changed state and call it the independent pair for A.
+
+If the runtime cannot preserve an equivalent frozen starting snapshot or isolate B from A's first return, record pairing as reduced/blocked rather than claiming full independence.
+
+## Batch lifecycle
+
+```text
+QUEUED WORK
+  -> select highest-value compatible items
+  -> create batch
+  -> spawn work within slot budget
+  -> independent work / pair protocol
+  -> collect returns
+  -> commit canonical artifacts + findings + backlog
+  -> terminate completed contexts
+  -> free slots
+  -> next batch
+```
+
+A batch is scheduling only; it never merges professions.
+
+## Batch contract
+
+```text
 DELEGATION-BATCH
 
 Batch-ID: <stable id>
 Parent: <orchestrator/delegated owner>
 Started-From: <state revision>
-Slot-Budget: <integer or UNKNOWN_CONSERVATIVE>
+Slot-Budget: <integer | UNKNOWN_CONSERVATIVE>
 Active-Children: <instances>
 Pair-Groups: <ids>
 Objectives: <bounded objectives>
 Expected-Returns: <artifacts>
 Queued-After: <backlog anchors>
 State: QUEUED | ACTIVE | COLLECTING | COMMITTED | TERMINATED
-~~~
+```
 
-`COMMITTED` means all material outputs required from the batch have been persisted into canonical state/artifacts. Only after that should contexts be terminated and slots reused.
+`COMMITTED` means every material result required from the batch is durable elsewhere. Only then should completed contexts be discarded/reused.
 
 ## Scheduling priorities
 
-Prefer batches that:
+Prefer scheduling that:
 
-1. complete a same-role pair rather than leave one half waiting;
-2. resolve blockers for multiple downstream roles;
-3. isolate independent departments that can safely work from the same canonical revision;
-4. avoid spawning reviewers before the artifact they must review exists;
-5. keep implementation writers from competing for the same unstable ownership;
-6. free contexts promptly once their return is durable.
+1. preserves same-role pair independence;
+2. completes pair first returns before letting one member's conclusions alter the other's starting premises;
+3. resolves blockers for multiple downstream roles;
+4. runs truly independent departments from compatible canonical revisions;
+5. avoids reviewers before their target artifact exists;
+6. avoids competing implementation writers on the same unstable ownership;
+7. frees contexts promptly after canonical commit.
 
-## Planning organization in chunks
+## Planning in chunks
 
-A large product may need many departments, but they do not need to be alive simultaneously.
+A large product may need many departments without keeping them alive simultaneously.
 
-Example:
+Example with four available slots:
 
-~~~text
+```text
 Batch 1
   Thinker 1 -> one question -> terminate
   Thinker 2 -> one question -> terminate
-  Product Planner A
-  Product Planner B
-        ↓
-commit questions + Product Brief
-terminate completed contexts
+  Product Planner A+B
+  -> commit questions + Product Brief
+  -> terminate
 
 Batch 2
-  UX Planner A
-  UX Planner B
-  IA Planner A
-  IA Planner B
-        ↓
-commit UX + IA artifacts
-terminate
+  UX Planner A+B
+  IA Planner A+B
+  -> commit artifacts
+  -> terminate
 
 Batch 3
   Graphic Design Planner A+B
   Interaction Design Planner A+B
-        ↓
-commit artifacts
-terminate
+  -> commit artifacts
+  -> terminate
 
 Batch 4
   Frontend Architect A+B
   Backend Architect A+B
-        ↓
-...
-~~~
+  -> commit artifacts
+  -> terminate
+```
 
-The exact grouping depends on dependencies and available slots. Do not force four children when only two are useful.
+With one available child slot, the same conceptual organization runs sequentially using frozen-snapshot A/B first-return scheduling.
 
-## Durable backlog
+Do not force a particular batch size when fewer children are useful.
 
-Work that cannot fit in the current batch belongs in a durable organizational backlog, not in the memory of waiting agents.
+## Durable organizational backlog
 
-Each item should record:
+Work that does not fit the active batch belongs in durable state, not waiting-agent memory.
 
-~~~text
+```text
 ORGANIZATIONAL-BACKLOG-ITEM
 
 Item-ID: ...
-Required-Role: <Agent-Key>
+Required-Role: <contracted Agent-Key or capability gap>
 Objective: ...
 Depends-On: <artifact/question ids>
 Priority: ...
 Reason: ...
 Expected-Return: ...
 Status: QUEUED | READY | BLOCKED | DONE | DROPPED
-~~~
+Last-Revalidated-At: <state revision>
+```
 
-When a batch finishes, re-evaluate queued items against the newest canonical state before spawning them. A downstream task may become unnecessary or need different inputs after upstream planning changes.
+Revalidate queued work after upstream changes before spawning it.
 
 ## Parent continuity
 
-For a large delegated workstream, one parent owner may remain alive across multiple batches if active coordination genuinely benefits from continuity.
+A bounded parent/work owner may remain alive across batches only when active coordination materially benefits from continuity.
 
-Its children should not remain alive for that reason.
+Children do not remain alive for memory.
 
-If even the parent must terminate, its work must first be checkpointed so a fresh owner can reconstruct:
+Before even the parent terminates, checkpoint objective, current artifacts, fixed decisions, open questions, backlog and next action so a fresh owner can resume.
 
-- objective;
-- current canonical artifacts;
-- open questions;
-- queued work;
-- decisions fixed;
-- next batch.
+## Thinkers
 
-## Interaction with Thinker Waves
+Thinkers fit batching naturally:
 
-Thinkers are especially suitable for slot-based batching because each instance is single-use.
+- occupy one slot;
+- return one strongest material question/clean;
+- terminate;
+- never wait for the answer;
+- new questions use new contexts.
 
-A thinker occupies one slot, returns one material question, and terminates. New questions require new thinker instances, potentially in the next batch.
+## Plan reopening
 
-Do not keep a Thinker waiting while another role answers its question.
+Review perspectives may run in sequential batches:
 
-## Interaction with plan reopening
-
-A mature plan may require several review specialties. Run them in sequential batches when capacity is limited:
-
-~~~text
+```text
 fresh one-question Thinkers
-    ↓
-Review Challenger A+B
-    ↓
-Alternative Planner A+B
-    ↓
-Risk Reviewer A+B when warranted
-    ↓
-plan owner revision
-~~~
+-> Review Challenger A+B
+-> Alternative Planner A+B
+-> Risk Reviewer A+B when warranted
+-> premise-owner revisions
+```
 
-Each stage persists its report before freeing slots for the next.
+Each stage commits its report before freeing slots.
+
+Same-role A+B inside those stages follows the concurrent/frozen-snapshot rule above.
+
+## Intensive UI rounds
+
+Each intensive-UI questioning round uses fresh `ui-question-auditor` instances.
+
+Prefer concurrent A+B. With one child slot, run the round's A and B sequentially from the same frozen round-start revision, without exposing A's first return to B. Comparison/cross-review happens only after both first returns.
+
+Complete/persist/disposition the current round before starting the next round with entirely new instance identities.
 
 ## Anti-patterns
 
 Do not:
 
-- hard-code a host concurrency limit without evidence;
-- keep completed agents alive as memory stores;
-- spawn more children than the host can reliably support;
-- split an A/B pair across incompatible canonical revisions;
-- lose findings when terminating a batch;
-- use queued agents as a substitute for a durable backlog;
+- hard-code concurrency without evidence;
+- keep completed agents alive as memory;
+- exceed reliable slot capacity;
+- run pair members from materially different starting revisions;
+- expose A's first return to B before B's independent first return;
+- call sequential work independent when the second member saw the first member's conclusions;
+- lose findings when killing a batch;
+- use idle agents instead of durable backlog;
 - spawn every department at task start;
-- leave stale queued work unreviewed after upstream plans change.
+- leave stale backlog unreviewed after upstream changes.
 
-## Design principle
+## Core principle
 
-**The organization can be larger than the runtime's concurrent capacity because durable state carries work between batches.**
-
-Scale breadth through sequential batches, not through an ever-growing set of live contexts.
+**The organization can be larger than concurrent runtime capacity. Pair independence comes from equivalent isolated starting evidence—not from requiring simultaneous execution when the host cannot provide it.**
