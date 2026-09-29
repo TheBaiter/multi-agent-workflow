@@ -1,112 +1,132 @@
-# Workflow
+# Historical Functional Backend Defect Workflow
+
+## Scope
+
+This document governs the **historical specialized functional-backend-defect department** only.
+
+It does not define the normal general organization. Morrison enters this workflow only when `references/scope.md` classifies the task as an in-scope functional backend defect.
 
 ## Normal direction
 
-~~~text
+```text
 1 Detective
-    ↓
-2 Analyzer
-    ↓
-3 Planner
-    ↓
-4 Challenger
-    ↓
-5 Test Strategist
-    ↓
-6 Implementation
-    ├─ AGENT_EXECUTOR -> Executor / Reducer
-    └─ MANUAL_OWNER  -> Human / repository owner
-    ↓
-7 Final Validator
-    ↓
-8 Consensus / Close
-~~~
+  -> 2 Analyzer
+  -> 3 Planner
+  -> 4 Challenger
+  -> 5 Test Strategist
+  -> 6 Implementation
+       - AGENT_EXECUTOR -> Executor / Reducer
+       - MANUAL_OWNER   -> Human / repository owner
+  -> 7 Final Validator
+  -> 8 Consensus / Close
+```
 
-This is a normal direction, not a linear guarantee.
+This is the normal dependency direction, not a guarantee that work never returns upstream.
 
 ## Core rule
 
-Every downstream output is allowed to question upstream conclusions.
+Every downstream role may question upstream conclusions.
 
-Previous approval is evidence of prior review, not immunity from new evidence.
+Prior approval is evidence of earlier review, not immunity from new evidence.
+
+Historical Agent-Keys remain specialized and are not aliases for general roles.
 
 ## Pass semantics
 
-Pass counts mean distinct investigation purposes.
+Configured passes/cycles represent distinct investigation purposes.
 
 They do not mean:
 
 - repeat the same prompt;
 - restate the same conclusion;
-- search the same files eight times;
-- force APPROVED after the final number.
+- search the same files mechanically;
+- force APPROVED because the configured count was reached.
 
-A role may finish its required passes and still conclude REJECTED, INCONCLUSIVE, or BLOCKED.
+A role may complete its passes and still return `REJECTED`, `INCONCLUSIVE` or `BLOCKED`.
 
 ## Independent cycle semantics
 
-If a project configuration doubles or otherwise extends a role into multiple review cycles, later cycles must be independent in purpose.
+When a project configuration gives a historical role multiple review cycles:
 
-For a two-cycle configuration:
+- Cycle A performs the normal role investigation;
+- Cycle B reconstructs from canonical/primary evidence and actively tries to disprove Cycle A;
+- Cycle B must not start from "Cycle A is probably right";
+- later cycles must search a materially different cause/path/configuration/data state/contract interpretation/counterexample when relevant;
+- one explicit synthesis compares the independent cycle artifacts.
 
-- **Cycle A** performs the role's normal investigation.
-- **Cycle B** reconstructs the role's conclusion from primary evidence and actively tries to disprove Cycle A.
-- Cycle B must not begin from "Cycle A is probably right".
-- Cycle B must search for a different cause, path, configuration/version, data state, contract interpretation, or counterexample where relevant.
-- After both cycles, perform one explicit synthesis comparing them.
+### Runtime-context rule
 
-The extra cycle adds value only if it can disagree with the first one.
+A logical cycle does **not** require keeping the previous runtime context alive.
 
-## Ephemeral Thinker Waves
+Prefer fresh instances from the authoritative Issue/task evidence when independence or slot pressure makes that safer.
 
-The orchestrator may insert temporary **Thinker Waves** before a stage handoff or after a material revision when the active workflow needs broader questioning rather than another implementation/review owner.
+If an old specialized profile says `reactivate`, `wake`, or `remain dormant`, interpret that as **reactivate the logical role**, not necessarily resume the same model context.
 
-A Thinker Wave is not a stable workflow role. It is a disposable set of isolated subagents whose only responsibility is to discover material unanswered questions, hidden assumptions, omitted branches, missing validation, and likely rework risks.
+Completed runtime contexts should normally terminate after their durable checkpoint.
 
-Each wave:
+## Thinker Waves inside the historical workflow
 
-1. receives the current objective, canonical work product, and relevant current/primary evidence;
-2. independently generates questions and gaps;
-3. returns them to the orchestrator;
-4. terminates completely.
+Morrison may insert temporary Thinkers before a stage handoff or after a material revision.
 
-The orchestrator deduplicates and routes material questions to the stable role that owns the premise. That owner must resolve the question with evidence or change its artifact/state. The thinker itself does not approve, implement, or own the answer.
+Thinkers obey the global current contract:
 
-If another questioning round is useful, create a **new isolated wave** against the updated canonical state. Do not continue the old thinker context and do not preload the new wave with the previous thinker's conversational reasoning.
+**one Thinker = one strongest material question (or clean) = terminate.**
 
-The durable task remembers resolved evidence and decisions; the reviewer context does not remember how the previous reviewer thought.
+A wave may contain several fresh isolated Thinkers when capacity permits, but each individual Thinker returns at most one question.
 
-Read `references/thinker-waves.md` for the full lifecycle, output contract, insertion points, convergence gate, and anti-patterns.
+Workflow:
+
+```text
+current canonical Issue/state
+  -> fresh one-question Thinkers
+  -> each returns THINKER-QUESTION or THINKER-CLEAN
+  -> all Thinker contexts terminate
+  -> Morrison deduplicates/materiality-filters
+  -> surviving questions receive Question-IDs and premise owners
+  -> stable owner updates evidence/artifact/state
+  -> new fresh wave only if useful
+```
+
+Thinkers never approve, implement, validate, answer their own question or maintain durable memory.
+
+Use `references/thinker-waves.md` for the current canonical Thinker contract.
 
 ## Stage handoff gate
 
-A role does not hand the workflow forward merely because its current pass is persuasive.
+A historical role does not hand work forward merely because one pass is persuasive.
 
-For a fixed-pass role, normal downstream work begins only when:
+For a configured fixed-pass role, downstream work normally begins only when:
 
-1. the role completed its configured N/N differentiated passes;
-2. its state says `Assessment-Maturity: FINAL`;
-3. it records an explicit terminal decision with reason and evidence.
+1. configured differentiated passes/cycles are complete;
+2. its durable state says `Assessment-Maturity: FINAL` when that field applies;
+3. terminal decision/reason/evidence is recorded in the authoritative Issue/task state.
 
-Before that, the downstream role remains WAITING and may only read provisional findings or ask a material directed question.
+Before that, downstream roles remain waiting/provisional and may only inspect durable provisional findings or route material questions.
 
-This means, for example, Analyzer 3/8 or Validator 7/10 is useful context but not a completed role judgment.
+Project-specific orchestration may increase pass count. The configured count then becomes that workflow instance's gate; count alone never implies approval.
 
-Project-specific orchestration may intentionally increase the pass count (for example 8 -> 16). When it does, the configured higher count becomes the handoff gate for that workflow instance.
+## Dormancy means logical addressability, not a zombie context
 
-## Dormancy
+When a historical role completes/approves its stage, the **logical role becomes dormant for the Issue**.
 
-When a role finishes and sets APPROVED, it becomes dormant for that Issue.
+Dormant means:
 
-A dormant role should not keep commenting or recomputing merely because another agent is working.
+- its durable artifact/state remains addressable by Agent-Key;
+- its runtime child context may and normally should terminate;
+- it does not recompute/comment merely because downstream work is active;
+- it can be instantiated fresh later if a directed question/new evidence requires that profession again.
 
-Wake it only when:
+Wake/reactivate the logical role only when:
 
 - a directed question targets its Agent-Key;
 - material new evidence affects one of its decisions;
 - a test fails against its premise;
-- implementation diverges from its owned decision;
-- a later role explicitly returns the case.
+- implementation diverges from its owned premise;
+- a later stage explicitly returns the case.
+
+When reactivated, prefer a **fresh instance** reconstructed from authoritative Issue/task evidence rather than a dormant hidden conversation.
+
+Never keep a child alive solely as memory.
 
 ## Backward return
 
@@ -114,57 +134,101 @@ Any later stage can return to the owner of a failed premise.
 
 Examples:
 
-- Validator discovers the original behavior is documented as intentional -> Detective/Analyzer;
-- Test Strategist discovers scope not modeled -> Analyzer;
+- Validator discovers expected behavior may actually be intentional -> Detective/Analyzer;
+- Test Strategist finds scope not modeled -> Analyzer;
 - Challenger finds an unhandled repair branch -> Planner;
-- Agent Executor cannot implement plan without changing contract -> Planner and possibly Analyzer;
-- Manual owner reports that the plan cannot be implemented as written -> Planner and possibly Analyzer;
-- Validator finds code differs from plan -> Executor when AGENT_EXECUTOR, or manual implementation handoff/owner when MANUAL_OWNER.
+- Executor cannot implement without changing a planned premise -> Planner and possibly Analyzer;
+- Manual owner cannot implement plan as written -> Planner and possibly Analyzer;
+- Validator finds implementation diverges from plan -> Executor in AGENT_EXECUTOR mode or manual owner in MANUAL_OWNER mode.
 
-Returning backward invalidates downstream conclusions that depended on the changed premise.
+A backward return marks downstream conclusions that depended on the changed premise stale.
 
-Those roles must be re-evaluated before closure.
+Re-evaluate only affected downstream stages after the premise owner updates canonical state.
+
+## Slot/batch behavior
+
+Historical workflow roles use the same global runtime capacity discipline:
+
+- do not assume fixed concurrency;
+- persist each role/cycle result to the authoritative Issue before terminating its context;
+- use the durable Issue/state as continuity between stages;
+- do not keep all seven personalities alive simultaneously;
+- if same-role independent paired/cycle work is configured, use current `references/paired-delegation.md` and `references/batched-delegation.md` semantics where compatible with this historical protocol.
+
+The historical stage order describes **logical ownership**, not simultaneous live agents.
 
 ## Cost principle
 
 Do not continue a wrong path because it was expensive.
 
-Tokens spent, number of passes completed, implemented lines, or prior approvals are not evidence.
+Tokens spent, passes completed, implemented lines or prior approvals are not evidence.
 
 ## Efficiency principle
 
-The workflow is expensive by design, but should avoid waste:
+The workflow is intentionally strict but should avoid waste:
 
-- load only the current role profile;
-- reuse Issue evidence rather than rediscovering everything;
-- run differentiated passes;
-- keep state comments compact;
-- use permanent events only for material transitions;
-- reactivate only affected roles.
-
+- load only current stage/profile plus required shared contracts;
+- reuse authoritative Issue evidence;
+- use differentiated passes/cycles;
+- checkpoint durable state compactly;
+- reactivate only affected logical roles;
+- terminate completed runtime contexts;
+- do not rediscover evidence already anchored unless freshness is required.
 
 ## Manual implementation mode
 
 When `Execution-Mode: MANUAL_OWNER`:
 
-1. Test Strategist finishes and APPROVES the verification contract.
-2. The automated workflow enters `WAITING_FOR_MANUAL_IMPLEMENTATION`.
-3. No agent edits source code on behalf of the Executor role.
-4. The repository owner implements the change.
-5. The Issue receives a durable `MANUAL_IMPLEMENTATION` handoff identifying the exact code state to validate.
-6. Validator wakes and validates that implementation.
-7. If Validator finds an implementation-only defect, it returns to the manual owner through a permanent event rather than waking Executor.
-8. If the implementation exposes a plan/scope/test defect, return to the responsible agent role normally.
+1. Test Strategist finishes/records the verification contract.
+2. Workflow enters `WAITING_FOR_MANUAL_IMPLEMENTATION`.
+3. No agent edits production source on behalf of Executor.
+4. Repository owner implements.
+5. Issue receives durable `MANUAL_IMPLEMENTATION` handoff identifying exact code state.
+6. A fresh Validator instance validates that implementation.
+7. Implementation-only defects return to manual owner rather than Executor.
+8. Plan/scope/test defects return to the owning historical role normally.
 
-Manual ownership removes automated implementation; it does not remove evidence, test, or validation requirements.
+Manual ownership removes automated implementation; it does not remove evidence, test or independent-validation requirements.
 
+## Cross-session continuity
 
-## Cross-chat continuity
+Never assume a later execution shares hidden context with an earlier one.
 
-Do not assume the next execution shares the current chat context.
+The authoritative Issue/task must expose enough state to reconstruct:
 
-The authoritative Issue must therefore expose the current position of every automation/role that has inspected the active case.
+- current stage;
+- role decisions/evidence;
+- waiting/blocking condition;
+- directed questions;
+- implementation mode/state;
+- validation state;
+- next action.
 
-Each execution refreshes its own state comment checkpoint, including while WAITING or dormant. This makes the workflow reconstructable from GitHub alone.
+A role checkpoint is updated when that logical role actually executes or materially transitions. A terminated/dormant role does **not** need a live agent repeatedly refreshing comments merely to prove it is dormant.
 
-Waiting is a real state and should be visible. Silence between executions must not be used as the only representation of waiting.
+Waiting/dormancy is represented durably in state, not by keeping a context alive or by periodic no-op execution.
+
+## Relationship to general MAW
+
+General organization contracts still govern:
+
+- dependency preflight;
+- agent-context-foundation usage;
+- durable state/memory discipline;
+- one-question Thinkers;
+- truthful runtime capacity;
+- no zombie contexts;
+- user authority and Morrison as manager.
+
+Historical defect-specific contracts remain authoritative for:
+
+- defect scope/admission;
+- specialized Agent-Key responsibilities;
+- Issue protocol/events;
+- evidence policy;
+- stage-specific pass semantics;
+- consensus/closure rules.
+
+## Core principle
+
+**Historical roles remain logically addressable through durable Issue state; their runtime contexts are disposable. Wake the profession when evidence requires it, not the old conversation.**
