@@ -2,88 +2,69 @@
 
 ## Purpose
 
-A single capable subagent can still stop too early once it finds one plausible framing. For non-trivial reasoning and planning work, the organization therefore defaults to **at least two independent instances of the same role** before a material artifact is treated as mature.
+A capable subagent can still stop at the first plausible framing. For non-trivial cognitive work, the organization therefore normally uses **at least two fresh independent instances of the same contracted role** before treating a material artifact as mature.
 
-This protocol is not a voting system and it is not permission to combine several professions inside one prompt.
+This is not voting and not permission to combine professions.
 
-Read `references/role-purity.md` with this protocol.
+Read with `references/role-purity.md`.
 
 ## Core rule
 
-For every **non-trivial cognitive workstream**, the Orchestrator should normally create at least two isolated agents with the **same Agent-Key / same professional responsibility**.
+For every non-trivial cognitive workstream:
 
-Examples:
+- A and B use the **same Agent-Key**;
+- they have the same professional responsibility;
+- they receive the same objective, relevant canonical evidence and authority boundary;
+- they work independently before seeing the peer artifact;
+- they compare/cross-review only after first return;
+- synthesis happens only after material differences are resolved, routed, rejected with evidence or escalated.
 
-- `thinker-A` + `thinker-B`;
-- `product-planner-A` + `product-planner-B`;
-- `graphic-design-planner-A` + `graphic-design-planner-B`;
-- `ux-planner-A` + `ux-planner-B`;
-- `frontend-architect-A` + `frontend-architect-B`;
-- `backend-architect-A` + `backend-architect-B`;
-- `security-planner-A` + `security-planner-B`;
-- `qa-strategist-A` + `qa-strategist-B`.
+Two different specialties do **not** satisfy the pair requirement.
 
-Two different specialties do **not** satisfy the same-role pair requirement. If the task needs UX and Graphic Design, create a UX pair and a Graphic Design pair as separate stages or branches.
+## Contracted-role rule
 
-## Planning before execution
+Pair examples are valid only for Agent-Keys that actually exist as stable profiles.
 
-The default paired pattern is for thinking, discovery, planning, design and review artifacts.
+Current general examples include:
 
-The pair should determine **how the work should be done**, not apply the work unless their stable role is explicitly an implementation role.
+```text
+product-planner-A + product-planner-B
+researcher-A + researcher-B
+ux-planner-A + ux-planner-B
+information-architecture-planner-A + B
+graphic-design-planner-A + B
+interaction-design-planner-A + B
+design-system-planner-A + B
+accessibility-planner-A + B
+frontend-architect-A + frontend-architect-B
+backend-architect-A + backend-architect-B
+technical-planner-A + technical-planner-B
+review-challenger-A + review-challenger-B
+alternative-planner-A + alternative-planner-B
+risk-reviewer-A + risk-reviewer-B
+quality-strategist-A + quality-strategist-B
+```
 
-For example:
+A conceptual capability such as API/security/performance planning does not become an Agent-Key merely because it would logically use A+B later. Until a stable role exists, record a capability gap.
 
-~~~text
-Graphic Design Planner A ─┐
-                          ├─ visual plan/specification
-Graphic Design Planner B ─┘
+Thinkers are not stable Agent-Key roles and follow `references/thinker-waves.md`; for non-trivial questioning, use multiple fresh one-question Thinkers when capacity permits.
 
-later
-
-Graphic/Frontend Implementer -> applies approved plan
-~~~
-
-Do not let a planning pair silently become production executors.
-
-## Default pattern
-
-~~~text
-canonical objective + evidence
-        ↓
-   ┌─────────────┐
-   │             │
-Role A          Role B
-same role       same role
-isolated        isolated
-plan            plan
-   │             │
-   └──────┬──────┘
-          ↓
-compare agreements / contradictions / omissions
-          ↓
-A reviews B's role-specific artifact
-B reviews A's role-specific artifact
-          ↓
-resolve with evidence / escalation
-          ↓
-canonical role-specific synthesis
-~~~
-
-## Phase 1 — Independent construction
+## Phase 1 — independent construction
 
 A and B receive:
 
-- the same current objective;
-- the same canonical state/evidence needed for that role;
-- the same authority boundary;
-- the same role contract;
-- the same expected artifact class.
+- identical current objective;
+- identical canonical inputs/evidence relevant to the role;
+- identical authority boundary;
+- identical role contract;
+- identical expected artifact class;
+- comparable reasoning capability when the host permits it.
 
-They must not see each other's draft or reasoning before their first return.
+They must not see the other agent's draft/reasoning before their first return.
 
-They may choose different approaches inside the same professional role.
+Independence means different contexts, not different responsibilities.
 
-## Phase 2 — Comparison
+## Phase 2 — comparison
 
 The parent records:
 
@@ -92,167 +73,114 @@ The parent records:
 - unique findings from A;
 - unique findings from B;
 - assumptions made by only one side;
-- evidence needed to resolve disagreement;
-- questions that belong to another specialist role or the user.
+- evidence needed to resolve disagreements;
+- questions that belong to another owner.
 
-Do not resolve by majority vote.
+Do not count agreement as proof by itself.
 
-## Phase 3 — Same-role cross-review
+## Phase 3 — same-role cross-review
 
-A receives B's material artifact and reviews it **only through the same role it already owns**.
+After first returns:
 
-B does the same against A.
+- A receives B's material artifact;
+- B receives A's material artifact;
+- each critiques only through the profession it already owns.
 
-Example: a Graphic Design Planner may critique visual hierarchy, typography, composition, visual consistency and related graphic-design decisions. It must not turn that review into UX research, backend planning, security analysis or code implementation.
+A frontend architect critiques frontend architecture, not product strategy or backend ownership. A graphic-design planner critiques visual design, not UX research. A backend architect critiques backend domain/service architecture, not public API/data/security.
 
-## Phase 4 — Synthesis
+## Phase 4 — synthesis
 
-The canonical role artifact is produced only after material disagreements are:
+One canonical role artifact is produced only after every material difference is:
 
 - resolved with evidence;
 - incorporated;
-- explicitly rejected with evidence by the owning role/authority; or
-- escalated.
+- rejected with explicit evidence by the proper owner/authority;
+- routed to another role;
+- or escalated.
 
-The Orchestrator may coordinate the synthesis but must not invent missing domain decisions. Unresolved specialist decisions go back to the same-role pair or to the appropriate new specialist pair.
+No majority vote.
 
-## Recurrent Thinker loops
+Morrison may coordinate synthesis but must not invent missing domain decisions.
 
-Thinkers are the first example of this protocol.
+For cross-specialty technical artifacts, `technical-planner` may later integrate already-mature specialist outputs; that integration pair does not replace the underlying specialist pairs.
 
-For non-trivial ideation/discovery:
+## Pair manifest
 
-~~~text
-Thinker Wave 1
-  -> Thinker A
-  -> Thinker B
-  -> merge material questions
-  -> owners answer/update canonical state
-  -> destroy both contexts
+Each pair records at minimum:
 
-Thinker Wave 2
-  -> new Thinker A
-  -> new Thinker B
-  -> repeat against updated state
-~~~
-
-Every wave uses fresh contexts. Continue until the configured convergence gate is met or unresolved material uncertainty requires escalation.
-
-Thinkers only discover questions/gaps. They do not become planners or solution owners.
-
-## Department sequencing
-
-A complex project should normally move through **pairs of narrowly defined roles**, not one broad agent that tries to cover the whole department.
-
-Example:
-
-~~~text
-IDEA
-  ↓
-Thinker A + Thinker B (fresh waves until useful convergence)
-  ↓
-Product Planner A + Product Planner B
-  ↓
-UX Planner A + UX Planner B
-  ↓
-Graphic Design Planner A + Graphic Design Planner B
-  ↓
-Information Architecture Planner A + B (when needed)
-  ↓
-Frontend Architecture Planner A + B
-  ↓
-Backend Architecture Planner A + B
-  ↓
-Security Planner A + B
-  ↓
-QA Strategy Planner A + B
-  ↓
-approved cross-department synthesis
-  ↓
-implementation roles
-  ↓
-independent validation roles
-~~~
-
-The exact departments depend on the task. Do not spawn unnecessary pairs merely as ritual.
-
-## Execution rule
-
-The two-perspective planning rule does **not** mean two implementers should edit the same unstable source in parallel.
-
-Preferred execution pattern:
-
-~~~text
-mature paired plan
-    ↓
-Implementation Owner
-    ↓
-Independent Reviewer / Validator
-~~~
-
-Parallel implementers are permitted only when workstreams have explicit, non-overlapping ownership and integration responsibility is recorded.
-
-## Agent manifest additions
-
-For paired work, each instance records:
-
-~~~text
-Pair-Group: <stable group id>
+```text
+Pair-Group: <stable id>
+Pair-Role: <Agent-Key>
+Member-A: <unique instance>
+Member-B: <unique instance>
 Pair-Position: A | B
-Pair-Role: <same Agent-Key for both members>
 Independence-Requirement: INITIAL_ISOLATION
-Peer-Artifact-Visibility: NONE_UNTIL_FIRST_RETURN | AFTER_FIRST_RETURN
-Work-Phase: DISCOVER | PLAN | REVIEW | SYNTHESIZE | IMPLEMENT | VERIFY
-Production-Write-Authority: YES | NO
-~~~
+Peer-Artifact-Visibility: NONE_UNTIL_FIRST_RETURN
+Started-From: <same canonical revision/artifact set>
+Expected-Return: <same artifact class>
+```
 
-For a valid planning pair:
+Both instances must use the same `Pair-Role` / Agent-Key.
 
-- `Pair-Role` must match;
-- `Work-Phase` should normally be `PLAN` (or `DISCOVER` for Thinkers);
-- `Production-Write-Authority` should normally be `NO`.
+## Pair lifecycle
 
-## Orchestrator responsibilities
+Recommended states:
 
-Before accepting a non-trivial role artifact, the Orchestrator must be able to answer:
+```text
+CREATED
+-> INDEPENDENT_WORK
+-> FIRST_RETURNS
+-> COMPARISON
+-> CROSS_REVIEW
+-> SYNTHESIS
+-> RESOLVED | BLOCKED | STALE
+```
 
-- Who was role-instance A?
-- Who was role-instance B?
-- Did both have the same stable role?
-- Did they form their initial plans independently?
-- What did each uniquely identify?
-- What did they disagree on?
-- How was each material disagreement resolved?
-- Is the resulting artifact still planning/specification, or did someone exceed authority and implement?
+If an upstream premise changes materially, mark affected pair synthesis `STALE` and create fresh instances when rework is required. Do not revive old contexts merely because their previous draft exists.
 
-If A and B are different professions, the same-role pair requirement was not satisfied.
+## Batching / slot limits
+
+Same-role pairing must coexist with `references/batched-delegation.md`.
+
+Prefer keeping A+B in a compatible batch/revision so they receive equivalent premises.
+
+If runtime capacity is constrained:
+
+- reduce unrelated concurrent work;
+- keep the pair logically aligned to the same starting revision;
+- never replace B with a different specialty to save a slot;
+- persist first returns before cross-review;
+- terminate completed contexts after canonical commit.
+
+## Thinker waves
+
+For non-trivial question discovery:
+
+```text
+fresh Thinker instances
+-> each returns one strongest question/clean
+-> parent deduplicates/routes
+-> owners update canonical state
+-> all Thinkers terminate
+-> new fresh instances if another questioning round is useful
+```
+
+Do not reuse a Thinker for a second question.
+
+## Planning before execution
+
+The default paired pattern is for cognitive work such as research, planning, design, architecture and review.
+
+It does **not** imply two implementers should edit the same unstable code.
+
+For execution, prefer one coherent implementation owner followed by independent review/validation. Parallel writers require genuinely partitioned workstreams/files/contracts and explicit integration ownership.
 
 ## Exceptions
 
-The pair may be skipped only for genuinely trivial, low-risk, fully specified work where a second same-role perspective adds no material uncertainty reduction.
+A pair may be skipped only when work is trivial/low-risk/fully specified or the runtime cannot support real independent contexts.
 
-Record:
+Record the reason. Do not claim independent dual perspective if it did not occur.
 
-`Pairing-Exception: <reason>`
+## Core principle
 
-Token cost or impatience alone is not sufficient justification for ambiguous, architectural, user-facing, security-sensitive or expensive-to-rework work.
-
-## Anti-patterns
-
-Do not:
-
-- use two different specialties as the required pair;
-- define one agent with several roles to avoid creating the needed organization;
-- give B the answer from A before B forms its own position;
-- use the pair as a vote;
-- let planning pairs apply production changes;
-- let Thinkers become planners or implementers;
-- make one "UI expert" simultaneously own UX, graphic design, accessibility, frontend architecture and validation;
-- run two implementers against the same unstable files merely to satisfy a numeric rule;
-- keep paired agents alive as memory stores after their assignment is complete.
-
-## Design principle
-
-**Important work should normally be planned by at least two independent instances of the same narrowly defined role before the organization commits to downstream execution.**
-
-Coverage comes from many well-defined roles and departments. Independence comes from multiple isolated instances of each important role.
+**Two independent minds are useful only when they are independently doing the same profession against the same problem; different professions complement one another but never substitute for the required pair.**
