@@ -9,7 +9,7 @@ Each subdirectory owns one stable role's identity, authority boundary, expected 
 Every stable profile must define or explicitly inherit:
 
 - `Agent-Key` and one professional mission;
-- `Work-Phase`;
+- `Work-Phase` or explicitly allowed role-local phases;
 - `Production-Write-Authority`;
 - when to use / when not to use;
 - inputs;
@@ -18,7 +18,7 @@ Every stable profile must define or explicitly inherit:
 - recommended `Reasoning-Class`;
 - tools/capabilities;
 - allowed support/subagent requests;
-- expected return artifact;
+- expected return artifact(s);
 - lifecycle/completion meaning;
 - escalation conditions;
 - reactivation/termination behavior;
@@ -26,6 +26,8 @@ Every stable profile must define or explicitly inherit:
 - skill references through `references/installation-and-dependencies.md` and `references/skill-routing.md`.
 
 If a profile accumulates multiple separable professions, subdivide it rather than appending more duties.
+
+Multiple `Work-Phase` values are acceptable only when they remain modes of the **same profession** (for example, `ui-question-auditor` REVIEW first-return/cross-review instances and SYNTHESIZE coverage owner). A phase change must never smuggle in a second professional responsibility.
 
 ## Safe inherited defaults
 
@@ -211,9 +213,19 @@ It does **not** own public API/transport, persistence/data, authn/authz, securit
 
 `references/profiles/ui-question-auditor/PROFILE.md`
 
-Review-only role for delegated `intensive-ui-questioning` route/question coverage. It owns audit coverage/evidence boundaries, not the product/design answer exposed by a question.
+Atomic audit profession for delegated `intensive-ui-questioning`.
 
-Each required round uses fresh instances; completed auditors terminate and are never reused for another round.
+Concrete instances may have bounded modes inside the same profession:
+
+- `A/B` -> independent first-return route/question audits (`Work-Phase: REVIEW`);
+- `CROSS_REVIEW_A/B` -> same-role audit cross-review (`REVIEW`);
+- `SYNTHESIS` -> complete route-coverage reconciliation/round receipt (`SYNTHESIZE`).
+
+The synthesis mode owns **coverage completeness**, not UX/product/design/architecture answers. It reads/reconciles the complete external entrypoint/router inventory for the round and routes domain decisions to their atomic owners.
+
+`Can-Spawn: NONE`.
+
+Each required round uses fresh identities; completed auditors are never reused for another round.
 
 ## Historical functional-backend-defect specialization
 
@@ -229,26 +241,26 @@ These Agent-Keys belong only to the strict historical functional-backend-defect 
 | `executor` | Nero | Backend Repair Executor / Reducer | `IMPLEMENT` | `YES` | `STANDARD` |
 | `validator` | Trish | Backend Defect Final Validator | `VERIFY` | `NO` | `DEEP` |
 
-Compatibility envelope for these historical profiles:
+Compatibility envelope:
 
-- their existing specialized mission/scope/output/approval contracts remain authoritative;
-- they inherit `agent-context-foundation` dependency handling through the global rule;
-- their Work-Phase/write/reasoning values above apply when the legacy file omits them;
-- their lifecycle follows the historical workflow plus the global rule that completed contexts are not kept alive merely as memory;
-- their specialized cross-agent question/Issue/consensus rules remain under the historical contracts;
-- this compatibility envelope must **not** be used to generalize them into the main organization.
+- specialized historical mission/scope/output/approval contracts remain authoritative;
+- `agent-context-foundation` dependency handling is inherited globally;
+- Work-Phase/write/reasoning values above fill legacy omissions;
+- `dormant/reactivate` means logical role addressability; completed runtime contexts normally terminate and reactivation creates a fresh instance from durable Issue/task evidence;
+- specialized Issue/question/consensus rules remain historical-contract owned;
+- this envelope must not generalize historical roles into the main organization.
 
-Route them only through the historical scope/workflow contracts. Do not use `planner`, `executor` or `validator` as convenient general aliases.
+Route them only through historical scope/workflow contracts. Do not use `planner`, `executor` or `validator` as general aliases.
 
 ## Role creation rule
 
 Before spawning a stable child, build the concrete `AGENT-MANIFEST` from `references/orchestrator-runtime.md`.
 
-A profile defines the profession. A manifest defines the bounded assignment of one concrete instance.
+A profile defines the profession. A manifest defines one bounded concrete instance/mode.
 
-For paired work, record pair group/position/execution mode/start revision. Resolve required/conditional skills, actual dependency availability and `Context-Checkpoint-Target` before spawn.
+For paired work, record pair group, position, execution mode, start revision, cross-review/synthesis provenance. Resolve dependencies and `Context-Checkpoint-Target` before spawn.
 
-A role mentioned in conceptual examples is **not usable** unless its stable profile exists and the router can discover it.
+A conceptual role name is not usable unless a stable profile exists and routing can discover it.
 
 ## Shared protocols
 
