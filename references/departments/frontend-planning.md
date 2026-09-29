@@ -1,82 +1,120 @@
 # Frontend Planning Department
 
 ## Mission
-Translate approved product/UI contracts into a frontend technical architecture before production implementation, while keeping frontend architecture separate from UX/design, backend/data ownership, implementation and validation.
+
+Translate approved product/UI contracts into frontend technical architecture before production implementation, while keeping frontend architecture separate from UX/design, backend/data ownership, implementation and validation.
 
 ## Activation
-Activate `frontend-architect` when frontend work has material structural decisions: multiple surfaces, shared state, asynchronous data, routing/layout boundaries, rendering responsibilities, reusable behavior, or significant integration seams.
 
-Do not activate merely because a task contains frontend code. Tiny fully specified changes may use the documented trivial exception.
+Activate `frontend-architect` when frontend work has material structural decisions such as:
 
-All stable frontend-planning roles inherit `agent-context-foundation` through `references/skill-routing.md`.
+- multiple surfaces/modules/components;
+- shared/local/server state ownership;
+- asynchronous data flows;
+- routing/layout/rendering boundaries;
+- reusable frontend behavior;
+- loading/empty/error integration;
+- significant external integration seams.
 
-When architecture materially affects visible/perceptible frontend behavior, also activate:
+Do not activate merely because a task touches frontend code. Tiny fully specified structural changes may use the documented trivial exception.
 
-- `intensive-ui-questioning` — `https://github.com/TheBaiter/intensive-ui-questioning` / `SKILL.md`.
+## Skill routing
 
-The UI skill is a questioning/evidence procedure, not permission for `frontend-architect` to take over UX, IA, visual, interaction, design-system or accessibility ownership.
+All stable roles require `agent-context-foundation` for full-mode operation.
+
+When architecture materially affects visible/perceptible behavior, also activate `intensive-ui-questioning` according to `references/skill-routing.md` and `references/ui-questioning-rounds.md`.
+
+The UI skill is a procedure, not permission for `frontend-architect` to absorb UX, IA, visual, interaction, design-system or accessibility ownership.
 
 ## Atomic planning stage
+
 For non-trivial frontend architecture:
 
 1. create `frontend-architect` A+B;
-2. give both the same canonical upstream artifacts, skill activation and architecture objective;
-3. keep initial work isolated;
-4. require independent `FRONTEND-ARCHITECTURE-PLAN` returns;
-5. compare unique findings and contradictions;
+2. give both the same canonical starting revision, upstream artifacts, objective and authority;
+3. preserve initial isolation under `references/paired-delegation.md` and `references/batched-delegation.md`;
+4. require independent `FRONTEND-ARCHITECTURE-PLAN` first returns;
+5. compare agreements/contradictions/unique findings;
 6. perform same-role cross-review;
-7. route unresolved UX/IA/visual/interaction/accessibility/backend/API/data/security/performance questions to their owning roles rather than letting frontend architecture absorb them;
+7. route UX/IA/visual/interaction/accessibility/backend/API/data/security/performance questions to their actual owner or capability gap;
 8. synthesize one canonical frontend architecture artifact.
 
-Different specialties never replace A or B.
+Different specialties never substitute for A or B.
 
 ## Required upstream inputs
-Use only applicable artifacts, but do not make frontend architecture invent missing material decisions:
+
+Use only applicable mature artifacts, but do not make frontend architecture invent missing material premises:
+
 - product scope;
-- UX/IA/visual/interaction plans;
-- design-system/accessibility constraints;
-- existing frontend evidence;
-- external API/data contracts sufficiently stable for the planned integration.
+- applicable UX/IA/visual/interaction/design-system/accessibility artifacts;
+- current frontend evidence;
+- external contracts sufficiently stable for planned integration;
+- runtime/framework/platform constraints.
 
-If a required upstream decision is material and missing, route it and hold the affected portion of the architecture.
+If a required premise is material and missing, route it and block only the affected architecture portion.
 
-## Intensive UI Questioning integration
+## Intensive UI questioning integration
 
-When active, use the current canonical `intensive-ui-questioning` source rather than remembered guidance.
+When active, use the current canonical external skill and repeated fresh-auditor protocol.
 
-Within frontend-architecture authority, use it to pressure-test matters such as:
+Within frontend-architecture authority, pressure-test:
 
 - canonical UI/state ownership;
 - loading/empty/error/result derivation;
 - duplicate representations/actions;
-- routing/navigation consequences;
-- responsive capability and component ownership;
-- async feedback and blocking scope;
+- routing/navigation consequences at architecture level;
+- responsive capability/component ownership;
+- async feedback/blocking scope;
 - reuse of existing primitives/components;
-- overlays/layering/scroll ownership when architectural;
-- rendered-state/evidence requirements that implementation and validation must preserve.
+- overlay/layer/scroll ownership when architectural;
+- rendered-state evidence obligations downstream.
 
-If a routed question is actually a UX, IA, visual, interaction, accessibility, product or backend decision, record it as a dependency and return it to that owner.
+A question owned by UX/IA/visual/interaction/accessibility/product/backend/etc. becomes a routed dependency, not a frontend-architect decision.
 
-Material frontend architecture changes can make prior UI-skill coverage stale; reopen only affected routes instead of assuming previous coverage remains valid.
+Material architecture changes can stale prior UI-questioning coverage; reopen only affected routes.
 
 ## Gate
+
 Pass when:
-- same-role A+B pairing is satisfied or a valid trivial exception exists;
-- module/component/state/data-flow/rendering boundaries are explicit enough for implementation;
-- approved UI contracts are represented rather than silently reinterpreted;
-- applicable `intensive-ui-questioning` routes are complete, explicitly owner-routed, or blocked;
-- material external dependencies are stable or explicitly blocked/routed;
+
+- same-role A+B pairing is satisfied or a valid exception exists;
+- module/component/state/data-flow/routing/rendering boundaries are explicit enough for implementation;
+- approved upstream UI contracts are represented rather than reinterpreted;
+- skill routes are complete/owner-routed/blocked as appropriate;
+- external dependencies are stable or explicitly owned/blocked;
 - contradictions are resolved/escalated;
-- the canonical plan identifies implementation ownership seams;
-- no frontend planner has written production code.
+- implementation ownership seams are explicit;
+- no planner wrote production code.
 
-## Downstream
-After the gate, create frontend implementation role(s) only for explicit, separable implementation ownership. Do not reactivate a planner as an implementer.
+## Downstream execution
 
-For visible/perceptible frontend implementation and validation, Morrison should keep `intensive-ui-questioning` active through the relevant implementation/QA/evidence stages according to `references/skill-routing.md`.
+Do **not** invent `frontend-implementer` or another ad-hoc Agent-Key.
 
-Implementation remains subject to independent review/validation and any required security, performance, QA or accessibility verification.
+Use the contracted `implementation-owner` role with a frontend-bounded manifest when production frontend work is ready:
+
+```text
+Agent-Key: implementation-owner
+Assignment: <bounded frontend implementation ownership>
+Production-Write-Authority: YES
+```
+
+Parallel implementation owners require genuinely separated workstreams/files/contracts and explicit integration ownership.
+
+For visible/perceptible frontend implementation, quality and validation, keep `intensive-ui-questioning` active when required.
+
+Use `quality-strategist` for verification strategy and `independent-validator` for final validation. Any missing security/performance/other specialty remains a capability gap until a stable profile exists; do not invent a role from the department text.
 
 ## Anti-patterns
-Do not create a generic `frontend-expert` that owns UX, visual design, architecture, coding and validation. Do not let `frontend-architect` redesign backend/API/data contracts silently. Do not count an accessibility, backend or performance specialist as the second frontend architect. Do not use implementation to resolve architecture that should have been fixed at this gate. Do not treat `intensive-ui-questioning` as authority to absorb other UI professions.
+
+Do not:
+
+- create a generic `frontend-expert` owning UX + design + architecture + coding + validation;
+- invent `frontend-implementer` without a stable profile;
+- let frontend architecture silently redesign backend/API/data;
+- count accessibility/backend/performance as the second frontend architect;
+- resolve architecture during implementation because planning skipped it;
+- use `intensive-ui-questioning` as permission to merge professions.
+
+## Core principle
+
+**Frontend architecture owns frontend structure; execution belongs to an explicit implementation owner, and adjacent specialties remain separately owned.**
